@@ -1,0 +1,150 @@
+﻿@using System.Reflection
+@using Tasky.Client.Services
+@using static Tasky.Shared.NoteModel
+@inject IJSRuntime JS
+@inject IMemberService memberService;
+@inject ITaskService taskService;
+
+<div class="taskContainer">
+    @if (IsClicked)
+    {
+        <input type="text" id="taskInput" @onkeydown="@Enter" placeholder="Task Name" @bind-value="Task.Name" @bind-value:event="oninput" autofocus=true />
+    }
+    else
+    {
+        if (Task.Name == null || Task.Name == String.Empty)
+        {
+            <input @onclick="toggleIsClicked" />
+        }
+        else
+        {
+            <div @onclick="toggleIsClicked">@Task.Name</div>
+        }
+    }
+
+    <div class="taskInfoContainer">
+        @if (members.Count > 0)
+        {
+            <select @bind-value="Task.Assignee" @bind-value:event="onchange">
+                @foreach (var member in members)
+                {
+                    <option value="@member.MemberId">@member.Name</option>
+                }
+            </select>
+        }
+        else
+        {
+            <select>
+                <option>No Options</option>
+            </select>
+        }
+
+        <select @bind-value="Task.PriorityLevel" @bind-value:event="onchange">
+            @foreach (var priority in Enum.GetValues(typeof(Priority)))
+            {
+                <option>@priority</option>
+            }
+        </select>
+
+        <select @bind-value="Task.status" @bind-value:event="onchange">
+            @foreach (var status in Enum.GetValues(typeof(Status)))
+            {
+                <option>@status</option>
+            }
+        </select>
+        <input type="date" placeholder="Due Date" @bind-value="Task.DueDate" @bind-value:event="onchange" />
+        @if(Task.Name != null)
+        {
+        <button @onclick="(()=> DeleteTask(Task.TaskId))">X</button>
+        }
+    </div>
+
+    @if (Task.Name != String.Empty && IsClicked)
+    {
+        <button id="saveButton" @onclick="(() => SaveTask(Task))">Save</button>
+    }
+
+</div>
+
+
+
+
+@code {
+    public List<Member> members = new List<Member>();
+    public List<NoteModel> tasks = new List<NoteModel>();
+
+    [Parameter]
+    public NoteModel? Task { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshList { get; set; }
+
+    PropertyInfo[]? properties;
+    Priority priorities;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetMembers();
+
+        Type type = typeof(NoteModel);
+        properties = type.GetProperties();
+
+        await base.OnParametersSetAsync();
+    }
+
+
+    public async Task GetMembers()
+    {
+        members = await memberService.GetMembers();
+    }
+
+
+    //onclick for each task descriptor assignee, priority, status, due date
+    //when clicked. Turn into an input which listens for input. Bring up save button when an input is available
+
+    public bool IsClicked = false;
+
+    public async void ClickSaveBtn()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("saveOnEnter");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    async void SaveTask(NoteModel task)
+    {
+        await taskService.AddTask(task);
+        toggleIsClicked();
+        await RefreshList.InvokeAsync();
+    }
+
+    async void DeleteTask(int id)
+    {
+        await taskService.DeleteTask(id);
+        await RefreshList.InvokeAsync();
+    }
+
+
+    void toggleIsClicked()
+    {
+        IsClicked = !IsClicked;
+    }
+
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            ClickSaveBtn();
+            //javascript
+            
+        }
+       
+    }
+
+}
