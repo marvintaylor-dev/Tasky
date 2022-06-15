@@ -5,30 +5,29 @@
 @inject IMemberService memberService;
 @inject ITaskService taskService;
 
+
 <div class="taskContainer">
-    @if (IsClicked)
+
+    @if (IsClicked || !IsClicked && Task.TaskId == 0)
     {
-        <input type="text" id="taskInput" @onkeydown="@Enter" placeholder="Task Name" @bind-value="Task.Name" @bind-value:event="oninput" autofocus=true />
+        <input type="text" id="taskInput" placeholder="Enter Task Name" autofocus=true
+           @onfocus="@Clicked"
+           @onkeydown="@Enter"
+           @bind-value="Task.Name"
+           @bind-value:event="oninput" />
     }
-    else
+    else if (!IsClicked)
     {
-        if (Task.Name == null || Task.Name == String.Empty)
-        {
-            <input @onclick="toggleIsClicked" />
-        }
-        else
-        {
-            <div @onclick="toggleIsClicked">@Task.Name</div>
-        }
+        <div @onclick="toggleIsClicked">@Task.Name</div>
     }
 
     <div class="taskInfoContainer">
         @if (members.Count > 0)
         {
-            <select @bind-value="Task.Assignee" @bind-value:event="onchange">
+            <select @bind-value="Task.Assignee" @bind-value:event="onchange" @onfocus="@Clicked">
                 @foreach (var member in members)
                 {
-                    <option value="@member.MemberId">@member.Name</option>
+                    <option @onkeydown="@Enter" value="@member.MemberId">@member.Name</option>
                 }
             </select>
         }
@@ -39,31 +38,38 @@
             </select>
         }
 
-        <select @bind-value="Task.PriorityLevel" @bind-value:event="onchange">
+        <select @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="@Clicked">
             @foreach (var priority in Enum.GetValues(typeof(Priority)))
             {
                 <option>@priority</option>
             }
         </select>
 
-        <select @bind-value="Task.status" @bind-value:event="onchange">
+        <select @bind-value="Task.status" @bind-value:event="onchange" @onfocus="@Clicked">
             @foreach (var status in Enum.GetValues(typeof(Status)))
             {
                 <option>@status</option>
             }
         </select>
-        <input type="date" placeholder="Due Date" @bind-value="Task.DueDate" @bind-value:event="onchange" />
-        @if(Task.Name != null)
+        <input type="date" placeholder="Due Date" @bind-value="Task.DueDate" @bind-value:event="onchange" @onfocus="@Clicked" />
+        @if (Task.TaskId > 0)
         {
-        <button @onclick="(()=> DeleteTask(Task.TaskId))">X</button>
+            <button @onclick="(()=> DeleteTask(Task.TaskId))">X</button>
+        }
+        else
+        {
+            <button @onclick="(()=> DeleteUnsavedTask())">X</button>
+        }
+
+        @if (Task.Name != String.Empty && IsClicked && Task.TaskId > 0)
+        {
+            <button id="editButton" @onclick="(()=> EditTask(Task))">Edit</button>
+        }
+        else if (Task.Name != String.Empty && IsClicked)
+        {
+            <button id="saveButton" @onclick="(() => SaveTask(Task))">Save</button>
         }
     </div>
-
-    @if (Task.Name != String.Empty && IsClicked)
-    {
-        <button id="saveButton" @onclick="(() => SaveTask(Task))">Save</button>
-    }
-
 </div>
 
 
@@ -78,6 +84,9 @@
 
     [Parameter]
     public EventCallback RefreshList { get; set; }
+
+
+
 
     PropertyInfo[]? properties;
     Priority priorities;
@@ -103,7 +112,63 @@
     //onclick for each task descriptor assignee, priority, status, due date
     //when clicked. Turn into an input which listens for input. Bring up save button when an input is available
 
+
     public bool IsClicked = false;
+
+
+    async void SaveTask(NoteModel task)
+    {
+        await taskService.AddTask(task);
+        UnClick();
+        await RefreshList.InvokeAsync();
+    }
+
+    async void DeleteTask(int id)
+    {
+        await taskService.DeleteTask(id);
+        await RefreshList.InvokeAsync();
+    }
+
+    async void EditTask(NoteModel task)
+    {
+        await taskService.UpdateTask(task);
+        UnClick();
+        await RefreshList.InvokeAsync();
+    }
+
+    async void DeleteUnsavedTask()
+    {
+        tasks.Remove(Task);
+        await RefreshList.InvokeAsync();
+    }
+
+    void UnClick()
+    {
+        IsClicked = false;
+    }
+
+    void Clicked()
+    {
+        IsClicked = true;
+    }
+
+    void toggleIsClicked()
+    {
+        IsClicked = !IsClicked;
+    }
+
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            ClickSaveBtn();
+        }
+    }
+
+    public void EnterOnSelect(EventArgs e)
+    {
+        ClickSaveBtn();
+    }
 
     public async void ClickSaveBtn()
     {
@@ -116,35 +181,4 @@
             Console.WriteLine(ex);
         }
     }
-
-    async void SaveTask(NoteModel task)
-    {
-        await taskService.AddTask(task);
-        toggleIsClicked();
-        await RefreshList.InvokeAsync();
-    }
-
-    async void DeleteTask(int id)
-    {
-        await taskService.DeleteTask(id);
-        await RefreshList.InvokeAsync();
-    }
-
-
-    void toggleIsClicked()
-    {
-        IsClicked = !IsClicked;
-    }
-
-    public void Enter(KeyboardEventArgs e)
-    {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            ClickSaveBtn();
-            //javascript
-            
-        }
-       
-    }
-
 }

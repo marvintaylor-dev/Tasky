@@ -51,7 +51,7 @@ namespace Tasky.Server.Controllers
             try
             {
                 NoteModel addedTask = await _repository.AddTask(task);
-                if(addedTask == null)
+                if (addedTask == null)
                 {
                     return BadRequest();
                 }
@@ -66,46 +66,45 @@ namespace Tasky.Server.Controllers
         [HttpPut]
         public async Task<ActionResult<NoteModel>> UpdateTask(NoteModel task)
         {
-
-            if (task == null)
-            {
-                return NotFound($"Could not find task.");
-            }
-            else
-            {
-                try
-                {
-                    var updatedTask = await _repository.GetTaskById(task.TaskId);
-                    await _repository.UpdateTask(updatedTask);
-                    return Ok(updatedTask);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<NoteModel>> DeleteTask(int id)
-        {
             try
             {
+                NoteModel taskToUpdate = await _repository.GetTaskById(task.TaskId);
 
-                NoteModel FindDeletedTask = await _repository.GetTaskById(id);
-                if (FindDeletedTask == null)
+                if (taskToUpdate == null)
                 {
-                    return NotFound($"Cannot delete task with an id of {id}, as it was not found");
+                    return NotFound($"Could not find task.");
                 }
-               
-               NoteModel deletedTask = await _repository.DeleteTask(id);
-               return Ok(deletedTask);
                 
+                await _repository.UpdateTask(task);
+                return Ok(task);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting data");
+                return BadRequest(ex.Message);
             }
         }
+    
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<NoteModel>> DeleteTask(int id)
+    {
+        try
+        {
+
+            NoteModel FindDeletedTask = await _repository.GetTaskById(id);
+            if (FindDeletedTask == null)
+            {
+                return NotFound($"Cannot delete task with an id of {id}, as it was not found");
+            }
+
+            NoteModel deletedTask = await _repository.DeleteTask(id);
+            return Ok(deletedTask);
+
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting data");
+        }
     }
+}
 }

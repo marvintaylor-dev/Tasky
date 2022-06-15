@@ -37,5 +37,12 @@ namespace Tasky.Client.Services
 
             return tasks;
         }
+
+        public async Task<NoteModel> UpdateTask(NoteModel updateTask)
+        {
+            var result = await _httpClient.PutAsJsonAsync($"api/notemodels", updateTask);
+            var task = await result.Content.ReadFromJsonAsync<NoteModel>();
+            return task;
+        }
     }
 }

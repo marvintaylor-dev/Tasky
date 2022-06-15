@@ -67,7 +67,13 @@ namespace Tasky.Server.Services
         {
             NoteModel result = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == model.TaskId) ?? throw new Exception("Could not find id");
 
-            result = model;
+            result.Name = model.Name;
+            result.Assignee = model.Assignee;
+            result.PriorityLevel = model.PriorityLevel;
+            result.DueDate = model.DueDate;
+            result.Note = model.Note;
+            result.status = model.status;
+          
             await _context.SaveChangesAsync();
             return result;
 
