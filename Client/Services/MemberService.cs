@@ -14,15 +14,8 @@ namespace Tasky.Client.Services
 
         public async Task<List<Member>> GetMembers()
         {
-            
             var members = await _httpClient.GetFromJsonAsync<List<Member>>("api/members");
-
-            if(members == null)
-            {
-                return null;
-            }
-
-            return members;
+            return members;   
         }
     }
 }

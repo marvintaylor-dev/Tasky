@@ -17,7 +17,23 @@ else
 {
     foreach (var task in tasks)
     {
-        <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+        if (task.isSubTask == false)
+        {
+            <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="AddNewSubTask"></TaskComponent>
+        }
+         if(task.isSubTask==true && task.Assignee == 0)
+        {
+            NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
+            if (isTaskAvailable == null)
+            {
+                <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks"></SubTaskComponent>
+            }
+            else
+            {
+                Console.WriteLine(isTaskAvailable);
+            }
+        }
+
     }
 }
 
@@ -50,10 +66,26 @@ else
         StateHasChanged();
     }
 
+    void AddNewSubTask()
+    {
+        tasks.Add(newTask);
+        newTask.Name = String.Empty;
+        newTask.isSubTask = true;
+        StateHasChanged();
+    }
+
+
     public async Task RefreshList()
     {
         tasks = await taskService.GetTasks();
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
+    }
+
+     public async void RefreshSubTasks()
+    {
+        tasks = await taskService.GetTasks();
+        StateHasChanged();
+        Console.WriteLine("Refresh SubTasks Has Been Called");
     }
 }

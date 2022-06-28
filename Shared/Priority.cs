@@ -8,9 +8,9 @@ namespace Tasky.Shared
 {
     public enum Priority
     {
-        Low,
-        Medium,
-        High,
-        Critical
+        MayHave,
+        CouldHave,
+        ShouldHave,
+        MustHave
     }
 }

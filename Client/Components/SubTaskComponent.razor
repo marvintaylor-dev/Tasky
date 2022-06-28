@@ -6,30 +6,51 @@
 @inject ITaskService taskService;
 
 
-<div class="taskContainer">
+<div class="subTaskContainer">
     <div class="d-flex gap-5">
-        @if (IsClicked || !IsClicked && Task.TaskId == 0)
+        <div class="d-flex">
+        @if (IsClicked || !IsClicked && SubTask.TaskId == 0)
         {
             <input type="text" id="taskInput" placeholder="Enter Task Name" autofocus=true
                @onfocus="@Clicked"
                @onkeydown="@Enter"
-               @bind-value="Task.Name"
+               @bind-value="SubTask.Name"
                @bind-value:event="oninput" />
         }
         else if (!IsClicked)
         {
-            <div @onclick="toggleIsClicked">@Task.Name</div>
-        }
-        @if (Task.isSubTask == false && Task.TaskId > 0)
-        {
-            <button @onclick="AddNewSubTask">&#167;</button>
+            <div @onclick="toggleIsClicked">@SubTask.Name</div>
         }
     </div>
+    <div>
+
+        <span>Move to:</span>
+        <select 
+            @bind-value="SubTask.LinkTo" 
+            @bind-value:event="onchange" 
+            @onfocus="@Clicked">
+            @foreach (var task in tasks)
+            {
+                if (task.isSubTask == false)
+                {
+                    <option @onkeydown="@Enter" value="@task.TaskId">@task.Name</option>
+                }
+                else
+                {
+                    <select>
+                        <option>No Options</option>
+                    </select>
+                }
+            }
+        </select>
+    </div>
+    </div>
+    
 
     <div class="taskInfoContainer">
         @if (members.Count > 0)
         {
-            <select @bind-value="Task.Assignee" @bind-value:event="onchange" @onfocus="@Clicked">
+            <select @bind-value="SubTask.Assignee" @bind-value:event="onchange" @onfocus="@Clicked">
                 @foreach (var member in members)
                 {
                     <option @onkeydown="@Enter" value="@member.MemberId">@member.Name</option>
@@ -43,51 +64,39 @@
             </select>
         }
 
-        <select @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="@Clicked">
+        <select @bind-value="SubTask.PriorityLevel" @bind-value:event="onchange" @onfocus="@Clicked">
             @foreach (var priority in Enum.GetValues(typeof(Priority)))
             {
                 <option>@priority</option>
             }
         </select>
 
-        <select @bind-value="Task.status" @bind-value:event="onchange" @onfocus="@Clicked">
+        <select @bind-value="SubTask.status" @bind-value:event="onchange" @onfocus="@Clicked">
             @foreach (var status in Enum.GetValues(typeof(Status)))
             {
                 <option>@status</option>
             }
         </select>
-        <input type="date" placeholder="Due Date" @bind-value="Task.DueDate" @bind-value:event="onchange" @onfocus="@Clicked" />
-        @if (Task.TaskId > 0)
+        <input type="date" placeholder="Due Date" @bind-value="SubTask.DueDate" @bind-value:event="onchange" @onfocus="@Clicked" />
+        @if (SubTask.TaskId > 0)
         {
-            <button @onclick="(()=> DeleteTask(Task.TaskId))">X</button>
+            <button @onclick="(()=> DeleteSubTask(SubTask.TaskId))">X</button>
         }
         else
         {
-            <button @onclick="(()=> DeleteUnsavedTask())">X</button>
+            <button @onclick="(()=> DeleteUnsavedSubTask())">X</button>
         }
 
-        @if (Task.Name != String.Empty && IsClicked && Task.TaskId > 0)
+        @if (SubTask.Name != String.Empty && IsClicked && SubTask.TaskId > 0)
         {
-            <button id="editButton" @onclick="(()=> EditTask(Task))">Edit</button>
+            <button id="editButton" @onclick="(()=> EditTask(SubTask))">Edit</button>
         }
-        else if (Task.Name != String.Empty && IsClicked)
+        else if (SubTask.Name != String.Empty && IsClicked)
         {
-            <button id="saveButton" @onclick="(() => SaveTask(Task))">Save</button>
+            <button id="saveButton" @onclick="(() => SaveTask(SubTask))">Save</button>
         }
     </div>
 </div>
-
-
-@foreach (var task in tasks)
-{
-    if (task.isSubTask == true)
-    {
-        if (task.LinkTo == Task.TaskId)
-        {
-            <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks" CallSubTask="AddSubTask"></SubTaskComponent>
-        }
-    }
-}
 
 
 
@@ -98,18 +107,16 @@
 
 
     [Parameter]
-    public NoteModel Task { get; set; }
+    public NoteModel SubTask { get; set; }
 
     [Parameter]
-    public EventCallback RefreshList { get; set; }
+    public EventCallback RefreshSubTasks { get; set; }
 
     [Parameter]
     public EventCallback CallSubTask { get; set; }
 
-    async void AddSubTask()
-    {
-        await CallSubTask.InvokeAsync();
-    }
+
+
 
     PropertyInfo[]? properties;
 
@@ -118,6 +125,8 @@
     {
         await GetMembers();
         tasks = await taskService.GetTasks();
+
+
 
         Type type = typeof(NoteModel);
         properties = type.GetProperties();
@@ -132,8 +141,6 @@
     }
 
 
-
-
     //onclick for each task descriptor assignee, priority, status, due date
     //when clicked. Turn into an input which listens for input. Bring up save button when an input is available
 
@@ -145,43 +152,26 @@
     {
         await taskService.AddTask(task);
         UnClick();
-        await RefreshList.InvokeAsync();
+        await RefreshSubTasks.InvokeAsync();
     }
 
-    async void DeleteTask(int id)
+    async void DeleteSubTask(int id)
     {
         await taskService.DeleteTask(id);
-        await RefreshList.InvokeAsync();
+        await RefreshSubTasks.InvokeAsync();
     }
 
     async void EditTask(NoteModel task)
     {
         await taskService.UpdateTask(task);
         UnClick();
-        await RefreshList.InvokeAsync();
+        await RefreshSubTasks.InvokeAsync();
     }
 
-    async void DeleteUnsavedTask()
+    async void DeleteUnsavedSubTask()
     {
-        tasks.Remove(Task);
-        await RefreshList.InvokeAsync();
-    }
-
-    void AddNewSubTask()
-    {
-        tasks.Add(newSubTask);
-        newSubTask.Name = String.Empty;
-        newSubTask.isSubTask = true;
-        newSubTask.LinkTo = Task.TaskId;
-        StateHasChanged();
-    }
-
-    public async void RefreshSubTasks()
-    {
-        tasks = await taskService.GetTasks();
-        StateHasChanged();
-        await RefreshList.InvokeAsync();
-        Console.WriteLine("Refresh SubTasks Has Been Called");
+        tasks.Remove(SubTask);
+        await RefreshSubTasks.InvokeAsync();
     }
 
     void UnClick()

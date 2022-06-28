@@ -71,8 +71,9 @@ namespace Tasky.Server.Services
             result.Assignee = model.Assignee;
             result.PriorityLevel = model.PriorityLevel;
             result.DueDate = model.DueDate;
-            result.Note = model.Note;
+            result.LinkTo = model.LinkTo;
             result.status = model.status;
+            result.isSubTask = model.isSubTask;
           
             await _context.SaveChangesAsync();
             return result;

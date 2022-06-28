@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -10,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Tasky.Shared
 {
-    public class NoteModel
+    public class SubTask
     {
         [Key]
-        public int TaskId { get; set; }
+        public int SubTaskId { get; set; }
         [Required]
         public string Name { get; set; } = string.Empty;
 
@@ -21,17 +19,13 @@ namespace Tasky.Shared
         public int Assignee { get; set; }
 
         public Priority PriorityLevel { get; set; } = Priority.MustHave;
-        public DateTime DueDate {get; set;} = DateTime.Now;
-        
-        public List<Note>? Notes { get; set; }
-
+        public DateTime DueDate { get; set; } = DateTime.Now;
+      
         public Status status { get; set; } = Status.ToDo;
 
-        public bool? isSubTask { get; set; } = false;
+        public List<Note>? Notes { get; set; }
 
-        public int? LinkTo { get; set; }
-
-
+        [ForeignKey("TaskId")]
+        public int AssignedToTask { get; set; }
     }
-
 }
