@@ -7,28 +7,10 @@
 
 
 <div class="subTaskContainer">
-    <div class="d-flex gap-5">
-        <div class="d-flex">
-        @if (IsClicked || !IsClicked && SubTask.TaskId == 0)
-        {
-            <input type="text" id="taskInput" placeholder="Enter Task Name" autofocus=true
-               @onfocus="@Clicked"
-               @onkeydown="@Enter"
-               @bind-value="SubTask.Name"
-               @bind-value:event="oninput" />
-        }
-        else if (!IsClicked)
-        {
-            <div @onclick="toggleIsClicked">@SubTask.Name</div>
-        }
-    </div>
+    <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="SubTask"></TaskInputComponent>
     <div>
-
         <span>Move to:</span>
-        <select 
-            @bind-value="SubTask.LinkTo" 
-            @bind-value:event="onchange" 
-            @onfocus="@Clicked">
+        <select @bind-value="SubTask.LinkTo" @bind-value:event="onchange" @onfocus="@Clicked">
             @foreach (var task in tasks)
             {
                 if (task.isSubTask == false)
@@ -44,56 +26,15 @@
             }
         </select>
     </div>
-    </div>
-    
-
     <div class="taskInfoContainer">
-        @if (members.Count > 0)
+        <MemberComponent OnClick="Activate" Task="SubTask"></MemberComponent>
+        <PriorityComponent OnClick="Activate" Task="SubTask"></PriorityComponent>
+        <StatusComponent OnClick="Activate" Task="SubTask"></StatusComponent>
+        <DateComponent OnClick="Activate" Task="SubTask"></DateComponent>
+        <DeleteTaskComponent Task="SubTask" RefreshList="RefreshSubTasks"></DeleteTaskComponent>
+        @if(IsClicked)
         {
-            <select @bind-value="SubTask.Assignee" @bind-value:event="onchange" @onfocus="@Clicked">
-                @foreach (var member in members)
-                {
-                    <option @onkeydown="@Enter" value="@member.MemberId">@member.Name</option>
-                }
-            </select>
-        }
-        else
-        {
-            <select>
-                <option>No Options</option>
-            </select>
-        }
-
-        <select @bind-value="SubTask.PriorityLevel" @bind-value:event="onchange" @onfocus="@Clicked">
-            @foreach (var priority in Enum.GetValues(typeof(Priority)))
-            {
-                <option>@priority</option>
-            }
-        </select>
-
-        <select @bind-value="SubTask.status" @bind-value:event="onchange" @onfocus="@Clicked">
-            @foreach (var status in Enum.GetValues(typeof(Status)))
-            {
-                <option>@status</option>
-            }
-        </select>
-        <input type="date" placeholder="Due Date" @bind-value="SubTask.DueDate" @bind-value:event="onchange" @onfocus="@Clicked" />
-        @if (SubTask.TaskId > 0)
-        {
-            <button @onclick="(()=> DeleteSubTask(SubTask.TaskId))">X</button>
-        }
-        else
-        {
-            <button @onclick="(()=> DeleteUnsavedSubTask())">X</button>
-        }
-
-        @if (SubTask.Name != String.Empty && IsClicked && SubTask.TaskId > 0)
-        {
-            <button id="editButton" @onclick="(()=> EditTask(SubTask))">Edit</button>
-        }
-        else if (SubTask.Name != String.Empty && IsClicked)
-        {
-            <button id="saveButton" @onclick="(() => SaveTask(SubTask))">Save</button>
+        <EditSaveComponent OnClick="Activate" Task="SubTask" RefreshList="RefreshSubTasks"></EditSaveComponent>
         }
     </div>
 </div>
@@ -101,7 +42,7 @@
 
 
 @code {
-    public List<Member> members = new List<Member>();
+   
     public List<NoteModel> tasks = new List<NoteModel>();
     public NoteModel newSubTask = new NoteModel();
 
@@ -115,37 +56,20 @@
     [Parameter]
     public EventCallback CallSubTask { get; set; }
 
+    public bool IsClicked { get; set; }
 
-
-
-    PropertyInfo[]? properties;
+    void Activate(bool isClicked)
+    {
+        IsClicked = isClicked;   
+    }
 
 
     protected override async Task OnParametersSetAsync()
-    {
-        await GetMembers();
+    {      
         tasks = await taskService.GetTasks();
-
-
-
-        Type type = typeof(NoteModel);
-        properties = type.GetProperties();
-
         await base.OnParametersSetAsync();
     }
 
-
-    public async Task GetMembers()
-    {
-        members = await memberService.GetMembers();
-    }
-
-
-    //onclick for each task descriptor assignee, priority, status, due date
-    //when clicked. Turn into an input which listens for input. Bring up save button when an input is available
-
-
-    public bool IsClicked = false;
 
 
     async void SaveTask(NoteModel task)

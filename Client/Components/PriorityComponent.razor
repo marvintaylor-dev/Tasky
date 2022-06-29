@@ -1,0 +1,26 @@
+﻿<select @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="@ChildClicked">
+    @foreach (var priority in Enum.GetValues(typeof(Priority)))
+    {
+        <option>@priority</option>
+    }
+</select>
+
+@code {
+
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+     public bool IsClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
+    async void ChildClicked()
+    {
+        IsClicked = true;
+        await OnClick.InvokeAsync(IsClicked);
+    }
+
+
+
+}

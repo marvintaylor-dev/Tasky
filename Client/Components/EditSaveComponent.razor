@@ -1,0 +1,61 @@
+﻿@using Tasky.Client.Services
+@using static Tasky.Shared.NoteModel
+@inject IJSRuntime JS
+@inject IMemberService memberService;
+@inject ITaskService taskService;
+
+
+<div class="d-flex">
+
+    @if (Task.TaskId > 0)
+    {
+        <button id="editButton" @onclick="(()=> EditTask(Task))">Edit</button>
+    }
+    else
+    {
+        <button id="saveButton" @onclick="(() => SaveTask(Task))">Save</button>
+    }
+</div>
+
+
+
+@code {
+
+
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshList { get; set; }
+
+
+    public bool IsClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
+    async void ChildClicked()
+    {
+        IsClicked = false;
+        await OnClick.InvokeAsync(IsClicked);
+    }
+
+    async void SaveTask(NoteModel task)
+    {
+        await taskService.AddTask(task);
+        ChildClicked();
+        await RefreshList.InvokeAsync();
+    }
+
+    async void EditTask(NoteModel task)
+    {
+        await taskService.UpdateTask(task);
+        ChildClicked();
+        await RefreshList.InvokeAsync();
+    }
+
+
+
+
+
+}

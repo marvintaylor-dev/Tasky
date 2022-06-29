@@ -1,0 +1,75 @@
+﻿@using Tasky.Client.Services
+@inject IJSRuntime JS
+@inject IMemberService memberService; 
+
+
+@if (members.Count > 0)
+        {
+            <select @bind-value="Task.Assignee" @bind-value:event="onchange" @onfocus="@ChildClicked">
+                @foreach (var member in members)
+                {
+                    <option @onkeydown="@Enter" value="@member.MemberId">@member.Name</option>
+                }
+            </select>
+        }
+        else
+        {
+            <select>
+                <option>No Options</option>
+            </select>
+        }
+
+@code {
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    public List<Member> members = new List<Member>();
+
+    public bool IsClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
+    async void ChildClicked()
+    {
+        IsClicked = true;
+        await OnClick.InvokeAsync(IsClicked);
+    }
+
+     protected override async Task OnParametersSetAsync()
+    {  
+        await GetMembers();
+        await base.OnParametersSetAsync();
+    }
+
+     public async Task GetMembers()
+    {
+        members = await memberService.GetMembers();
+    }
+
+     public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            ClickSaveBtn();
+        }
+    }
+
+    public void EnterOnSelect(EventArgs e)
+    {
+        ClickSaveBtn();
+    }
+
+    public async void ClickSaveBtn()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("saveOnEnter");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+}

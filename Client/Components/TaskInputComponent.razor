@@ -1,0 +1,79 @@
+﻿@inject IJSRuntime JS
+
+<div class="d-flex gap-5">
+        @if (IsClicked || !IsClicked && Task.TaskId == 0 && ReadClicked == false)
+        {
+            <input type="text" id="taskInput" placeholder="Enter Task Name" autofocus=true
+               @onfocus="@ChildClicked"
+               @onfocusout="UnClicked"
+               @onkeydown="@Enter"
+               @bind-value="Task.Name"
+               @bind-value:event="oninput" />
+        }
+        else if (!IsClicked)
+        {
+            <div @onclick="Clicked">@Task.Name</div>
+        }
+    </div>
+
+@code {
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public bool ReadClicked { get; set; }
+
+    public bool IsClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set;}
+
+    async void ChildClicked()
+    {
+        IsClicked = true;
+        await OnClick.InvokeAsync(IsClicked);
+    }
+
+    async void ChildUnclicked()
+    {
+        IsClicked = false;
+        await OnClick.InvokeAsync(IsClicked);
+    }
+
+
+    async void Clicked()
+    {
+        IsClicked = true;
+    }
+
+     async void UnClicked()
+    {
+        IsClicked = false;
+    }
+
+     public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            ClickSaveBtn();
+        }
+    }
+
+    public void EnterOnSelect(EventArgs e)
+    {
+        ClickSaveBtn();
+    }
+
+    public async void ClickSaveBtn()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("saveOnEnter");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+}

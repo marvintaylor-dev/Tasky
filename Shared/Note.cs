@@ -23,6 +23,5 @@ namespace Tasky.Shared
         public int AssignedToTask { get; set; }
         [ForeignKey("SubTaskId")]
         public int AssignedToSubTask { get; set; }
-
     }
 }

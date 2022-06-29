@@ -1,0 +1,40 @@
+﻿@inject ITaskService taskService;
+
+
+@if (Task.TaskId > 0)
+{
+    <button @onclick="(()=> DeleteTask(Task.TaskId))">X</button>
+}
+else
+{
+    <button @onclick="(()=> DeleteUnsavedTask())">X</button>
+}
+
+@code {
+
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshList { get; set; }
+
+    public List<NoteModel> tasks = new List<NoteModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await taskService.GetTasks();
+        await base.OnInitializedAsync();
+    }
+
+     async void DeleteTask(int id)
+    {
+        await taskService.DeleteTask(id);
+        await RefreshList.InvokeAsync();
+    }
+
+    async void DeleteUnsavedTask()
+    {
+        tasks.Remove(Task);
+        await RefreshList.InvokeAsync();
+    }
+}
