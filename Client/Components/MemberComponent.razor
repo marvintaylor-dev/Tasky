@@ -1,23 +1,23 @@
 ﻿@using Tasky.Client.Services
 @inject IJSRuntime JS
-@inject IMemberService memberService; 
+@inject IMemberService memberService;
 
 
 @if (members.Count > 0)
+{
+    <select @bind-value="Task.Assignee" @bind-value:event="onchange" @onfocus="@ChildClicked">
+        @foreach (var member in members)
         {
-            <select @bind-value="Task.Assignee" @bind-value:event="onchange" @onfocus="@ChildClicked">
-                @foreach (var member in members)
-                {
-                    <option @onkeydown="@Enter" value="@member.MemberId">@member.Name</option>
-                }
-            </select>
+            <option @onkeydown="@Enter" value="@member.MemberId">@member.Name</option>
         }
-        else
-        {
-            <select>
-                <option>No Options</option>
-            </select>
-        }
+    </select>
+}
+else
+{
+    <select>
+        <option>No Options</option>
+    </select>
+}
 
 @code {
     [Parameter]
@@ -36,18 +36,18 @@
         await OnClick.InvokeAsync(IsClicked);
     }
 
-     protected override async Task OnParametersSetAsync()
-    {  
+    protected override async Task OnParametersSetAsync()
+    {
         await GetMembers();
         await base.OnParametersSetAsync();
     }
 
-     public async Task GetMembers()
+    public async Task GetMembers()
     {
         members = await memberService.GetMembers();
     }
 
-     public void Enter(KeyboardEventArgs e)
+    public void Enter(KeyboardEventArgs e)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {

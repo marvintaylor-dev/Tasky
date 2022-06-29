@@ -6,43 +6,47 @@
 @inject ITaskService taskService;
 
 
-<div class="subTaskContainer">
+<div class="taskContainer subtaskContainer">
     <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="SubTask"></TaskInputComponent>
-    <div>
-        <span>Move to:</span>
-        <select @bind-value="SubTask.LinkTo" @bind-value:event="onchange" @onfocus="@Clicked">
-            @foreach (var task in tasks)
+    <div class="taskContainerRight">
+        <div class="taskComponentsContainer">
+            <div>
+                <div class="taskFont">Reassign to:</div>
+                <select @bind-value="SubTask.LinkTo" @bind-value:event="onchange" @onfocus="@Clicked">
+                    @foreach (var task in tasks)
+                    {
+                        if (task.isSubTask == false)
+                        {
+                            <option @onkeydown="@Enter" value="@task.TaskId">@task.Name</option>
+                        }
+                        else
+                        {
+                            <select>
+                                <option>No Options</option>
+                            </select>
+                        }
+                    }
+                </select>
+            </div>
+            <MemberComponent OnClick="Activate" Task="SubTask"></MemberComponent>
+            <PriorityComponent OnClick="Activate" Task="SubTask"></PriorityComponent>
+            <StatusComponent OnClick="Activate" Task="SubTask"></StatusComponent>
+            <DateComponent OnClick="Activate" Task="SubTask"></DateComponent>
+        </div>
+        <div class="taskButtonsContainer">
+            <DeleteTaskComponent Task="SubTask" RefreshList="RefreshSubTasks"></DeleteTaskComponent>
+            @if (IsClicked)
             {
-                if (task.isSubTask == false)
-                {
-                    <option @onkeydown="@Enter" value="@task.TaskId">@task.Name</option>
-                }
-                else
-                {
-                    <select>
-                        <option>No Options</option>
-                    </select>
-                }
+                <EditSaveComponent OnClick="Activate" Task="SubTask" RefreshList="RefreshSubTasks"></EditSaveComponent>
             }
-        </select>
-    </div>
-    <div class="taskInfoContainer">
-        <MemberComponent OnClick="Activate" Task="SubTask"></MemberComponent>
-        <PriorityComponent OnClick="Activate" Task="SubTask"></PriorityComponent>
-        <StatusComponent OnClick="Activate" Task="SubTask"></StatusComponent>
-        <DateComponent OnClick="Activate" Task="SubTask"></DateComponent>
-        <DeleteTaskComponent Task="SubTask" RefreshList="RefreshSubTasks"></DeleteTaskComponent>
-        @if(IsClicked)
-        {
-        <EditSaveComponent OnClick="Activate" Task="SubTask" RefreshList="RefreshSubTasks"></EditSaveComponent>
-        }
+        </div>
     </div>
 </div>
 
 
 
 @code {
-   
+
     public List<NoteModel> tasks = new List<NoteModel>();
     public NoteModel newSubTask = new NoteModel();
 
@@ -60,12 +64,12 @@
 
     void Activate(bool isClicked)
     {
-        IsClicked = isClicked;   
+        IsClicked = isClicked;
     }
 
 
     protected override async Task OnParametersSetAsync()
-    {      
+    {
         tasks = await taskService.GetTasks();
         await base.OnParametersSetAsync();
     }

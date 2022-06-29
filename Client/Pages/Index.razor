@@ -59,6 +59,23 @@ else
         await base.OnInitializedAsync();
     }
 
+    //Code to make index page register a click when a task component is clicked
+    //add OnActive="DeActivate" to a task component for this to work
+
+    //public bool IsActive { get; set; }
+
+    //void DeActivate(bool isActive)
+    //{
+    //    IsActive = isActive;
+    //    foreach(var task in tasks)
+    //    {
+    //        if (IsActive)
+    //        {
+    //        Console.WriteLine($"{task.Name} is Active");           
+    //        }
+    //    }
+    //}
+
     void AddNewTask()
     {
         tasks.Add(newTask);

@@ -8,22 +8,25 @@
         <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></TaskInputComponent>
         @if (Task.isSubTask == false && Task.TaskId > 0)
         {
-            <button @onclick="AddNewSubTask">&#167;</button>
+            <button class="addSubtaskButton" @onclick="AddNewSubTask">&#167;</button>
         }
     </div>
 
-    <div class="taskInfoContainer">
-        <MemberComponent OnClick="Activate" Task="Task"></MemberComponent>
-        <PriorityComponent OnClick="Activate" Task="Task"></PriorityComponent>
-        <StatusComponent OnClick="Activate" Task="Task"></StatusComponent>
-        <DateComponent OnClick="Activate" Task="Task"></DateComponent>
-        <DeleteTaskComponent Task="Task" RefreshList="RefreshList"></DeleteTaskComponent>
-        @if(IsClicked)
-        {
-        <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshList"></EditSaveComponent>
-        }
+    <div class="taskContainerRight">
+        <div class="taskComponentsContainer">
+            <MemberComponent OnClick="Activate" Task="Task"></MemberComponent>
+            <PriorityComponent OnClick="Activate" Task="Task"></PriorityComponent>
+            <StatusComponent OnClick="Activate" Task="Task"></StatusComponent>
+            <DateComponent OnClick="Activate" Task="Task"></DateComponent>
+        </div>
+        <div class="taskButtonsContainer">
+            <DeleteTaskComponent Task="Task" RefreshList="RefreshList"></DeleteTaskComponent>
+            @if (IsClicked)
+            {
+                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshList"></EditSaveComponent>
+            }
+        </div>
     </div>
-
 </div>
 
 
@@ -48,7 +51,7 @@
 
     void Activate(bool isClicked)
     {
-        IsClicked = isClicked;   
+        IsClicked = isClicked;
     }
 
 
@@ -60,6 +63,20 @@
 
     [Parameter]
     public EventCallback CallSubTask { get; set; }
+
+    //Code to make index page register a click when a task component is clicked
+    //add @onclick="TaskClicked" to the taskContainer for this to work
+
+    //[Parameter]
+    //public EventCallback<bool> OnActive { get; set; }
+
+    //public bool IsActive { get; set; }
+
+    //async void TaskClicked()
+    //{
+    //    IsActive = true;
+    //    await OnActive.InvokeAsync(IsActive);
+    //}
 
 
     protected override async Task OnParametersSetAsync()

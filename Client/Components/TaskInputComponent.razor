@@ -1,20 +1,24 @@
 ﻿@inject IJSRuntime JS
 
-<div class="d-flex gap-5">
-        @if (IsClicked || !IsClicked && Task.TaskId == 0 && ReadClicked == false)
-        {
-            <input type="text" id="taskInput" placeholder="Enter Task Name" autofocus=true
-               @onfocus="@ChildClicked"
-               @onfocusout="UnClicked"
-               @onkeydown="@Enter"
-               @bind-value="Task.Name"
-               @bind-value:event="oninput" />
-        }
-        else if (!IsClicked)
-        {
-            <div @onclick="Clicked">@Task.Name</div>
-        }
-    </div>
+<div>
+    @if (IsClicked || !IsClicked && Task.TaskId == 0 && ReadClicked == false)
+    {
+        <input 
+            type="text" 
+            id="taskInput" 
+            placeholder="Enter Task Name" 
+            autofocus=true
+           @onfocus="@ChildClicked"
+           @onfocusout="UnClicked"
+           @onkeydown="@Enter"
+           @bind-value="Task.Name"
+           @bind-value:event="oninput" />
+    }
+    else if (!IsClicked)
+    {
+        <div @onclick="Clicked" class="taskName">@Task.Name</div>
+    }
+</div>
 
 @code {
     [Parameter]
@@ -26,7 +30,7 @@
     public bool IsClicked { get; set; }
 
     [Parameter]
-    public EventCallback<bool> OnClick { get; set;}
+    public EventCallback<bool> OnClick { get; set; }
 
     async void ChildClicked()
     {
@@ -46,12 +50,12 @@
         IsClicked = true;
     }
 
-     async void UnClicked()
+    async void UnClicked()
     {
         IsClicked = false;
     }
 
-     public void Enter(KeyboardEventArgs e)
+    public void Enter(KeyboardEventArgs e)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
