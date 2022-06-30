@@ -21,7 +21,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid black;
+    border-top: .5px solid lightgrey;
     padding: .5rem;
     margin-bottom: .5rem;
     position: relative;

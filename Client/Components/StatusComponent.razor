@@ -1,7 +1,7 @@
 ﻿<select @bind-value="Task.status" @bind-value:event="onchange" @onfocus="@ChildClicked">
     @foreach (var status in Enum.GetValues(typeof(Status)))
     {
-        <option>@status</option>
+        <option value="@status">@SplitCamelCase(@status.ToString())</option>
     }
 </select>
 
@@ -9,7 +9,7 @@
     [Parameter]
     public NoteModel Task { get; set; }
 
-     public bool IsClicked { get; set; }
+    public bool IsClicked { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
@@ -20,7 +20,8 @@
         await OnClick.InvokeAsync(IsClicked);
     }
 
-
-   
-
+    public static string SplitCamelCase(string input)
+    {
+        return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
+    }
 }

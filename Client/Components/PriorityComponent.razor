@@ -1,7 +1,7 @@
 ﻿<select @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="@ChildClicked">
-    @foreach (var priority in Enum.GetValues(typeof(Priority)))
+    @foreach (var priority in priorities)
     {
-        <option>@priority</option>
+        <option value="@priority">@SplitCamelCase(priority.ToString())</option>
     }
 </select>
 
@@ -10,7 +10,9 @@
     [Parameter]
     public NoteModel Task { get; set; }
 
-     public bool IsClicked { get; set; }
+    public bool IsClicked { get; set; }
+
+    Array priorities;
 
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
@@ -19,6 +21,17 @@
     {
         IsClicked = true;
         await OnClick.InvokeAsync(IsClicked);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        priorities = Enum.GetValues(typeof(Priority));
+        await base.OnInitializedAsync();
+    }
+
+     public static string SplitCamelCase(string input)
+    {
+        return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
     }
 
 }

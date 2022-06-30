@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Tasky.Shared
 {
@@ -11,7 +8,7 @@ namespace Tasky.Shared
     {
         ToDo,
         InProgress,
-        SentForReview,
+        InReview,
         Completed
     }
 

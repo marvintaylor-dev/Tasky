@@ -5,15 +5,15 @@
 @inject ITaskService taskService;
 
 
-<div class="d-flex">
+<div class="d-flex align-items-center justify-content-center">
 
     @if (Task.TaskId > 0)
     {
-        <button id="editButton" @onclick="(()=> EditTask(Task))">Edit</button>
+        <MudFab Color="Color.Info" id="editButton" Size="Size.Small" StartIcon="@Icons.Material.Filled.Create" DisableElevation="true" @onclick="(()=> EditTask(Task))" />
     }
     else
     {
-        <button id="saveButton" @onclick="(() => SaveTask(Task))">Save</button>
+        <MudFab Color="Color.Tertiary" id="saveButton" Size="Size.Small" StartIcon="@Icons.Material.Filled.Save" DisableElevation="true" @onclick="(() => SaveTask(Task))" />
     }
 </div>
 

@@ -8,7 +8,7 @@
     <select @bind-value="Task.Assignee" @bind-value:event="onchange" @onfocus="@ChildClicked">
         @foreach (var member in members)
         {
-            <option @onkeydown="@Enter" value="@member.MemberId">@member.Name</option>
+            <option value="@member.MemberId">@member.Name</option>
         }
     </select>
 }
@@ -45,31 +45,6 @@ else
     public async Task GetMembers()
     {
         members = await memberService.GetMembers();
-    }
-
-    public void Enter(KeyboardEventArgs e)
-    {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            ClickSaveBtn();
-        }
-    }
-
-    public void EnterOnSelect(EventArgs e)
-    {
-        ClickSaveBtn();
-    }
-
-    public async void ClickSaveBtn()
-    {
-        try
-        {
-            await JS.InvokeVoidAsync("saveOnEnter");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
     }
 
 }

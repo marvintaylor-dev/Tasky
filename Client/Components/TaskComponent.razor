@@ -3,12 +3,12 @@
 @inject ITaskService taskService;
 
 
-<div class="taskContainer">
+<div class="taskContainer mud-elevation-1 py-4 px-5 rounded white">
     <div class="d-flex gap-5">
         <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></TaskInputComponent>
         @if (Task.isSubTask == false && Task.TaskId > 0)
         {
-            <button class="addSubtaskButton" @onclick="AddNewSubTask">&#167;</button>
+            <MudFab Color="Color.Transparent" Size="Size.Small" StartIcon="@Icons.Material.Filled.Link" DisableElevation="true" @onclick="AddNewSubTask" />
         }
     </div>
 

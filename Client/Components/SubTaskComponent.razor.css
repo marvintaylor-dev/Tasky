@@ -7,3 +7,7 @@
 .taskFont {
     font-size: 12px;
 }
+
+.taskContainer {
+    border-left: 10px solid #FF4081;
+}
