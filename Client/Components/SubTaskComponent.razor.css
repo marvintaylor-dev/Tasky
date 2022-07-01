@@ -1,7 +1,6 @@
 ﻿
 .subtaskContainer {
-    width: 95%;
-    transform: translateX(5%);
+    margin-left: 3rem;
 }
 
 .taskFont {

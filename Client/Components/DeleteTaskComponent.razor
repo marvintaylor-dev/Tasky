@@ -3,11 +3,11 @@
 
 @if (Task.TaskId > 0)
 {
-    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" @onclick="(()=> DeleteTask(Task.TaskId))"></MudIconButton> 
+    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" @onclick="(()=> DeleteTask(Task.TaskId))" />
 }
 else
 {
-    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" @onclick="(()=> DeleteUnsavedTask())"></MudIconButton>
+     <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" @onclick="(()=> DeleteTask(Task.TaskId))" />
 }
 
 @code {

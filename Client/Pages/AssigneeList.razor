@@ -5,12 +5,14 @@
 @inject ITaskService taskService
 @inject IMemberService memberService
 
-<h3>Assignee List</h3>
+<div class="titleContainer d-flex justify-content-center align-items-center">
+    <h3>Assignee List</h3>
+</div>
 
-<div>
+<div class="centerTask">
     @foreach (Member member in members)
     {
-        <h3 class="mt-3">@member.Name</h3>
+        <h4 class="mt-3">@member.Name</h4>
         @foreach (NoteModel task in tasks)
         {
             if (task.Assignee == member.MemberId)
@@ -23,12 +25,14 @@
             }
         }
 
-        <MudFab Color="Color.Transparent" Style="margin-top: 1rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" @onclick="(() => AddNewTask(member.MemberId))" />
-      
+        
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Style="margin-top: 1rem;" Variant="Variant.Outlined" Color="Color.Transparent" Size="Size.Small" @onclick="(() => AddNewTask(member.MemberId))" />
+       
+
     }
 </div>
 
-<div>
+<div class="centerTask">
     <h3>Unassigned Tasks</h3>
     @foreach (NoteModel task in tasks)
     {
@@ -36,7 +40,7 @@
         {
             <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
         }
-        if(task.isSubTask==true && task.Assignee == 0)
+        if (task.isSubTask == true && task.Assignee == 0)
         {
             NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
             if (isTaskAvailable == null)
@@ -49,13 +53,10 @@
             }
         }
     }
-        <button class="addTaskBtn" @onclick="AddNewTask">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-            </svg>
-        </button>
+    <MudFab Color="Color.Info" Style="margin-top: 2rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
 </div>
+
+
 @code {
     NoteModel newTask = new NoteModel();
     List<NoteModel> tasks = new List<NoteModel>();
@@ -94,7 +95,7 @@
         Console.WriteLine("RefreshList Has Been Called");
     }
 
-     public async void RefreshSubTasks()
+    public async void RefreshSubTasks()
     {
         tasks = await taskService.GetTasks();
         StateHasChanged();

@@ -6,13 +6,15 @@
 
 
 <div class="titleContainer d-flex justify-content-center align-items-center">
-    <h1 class="title">Welcome to <span class="titleName">T</span><MudFab Color="Color.Secondary"  Size="Size.Small" StartIcon="@Icons.TwoTone.AlternateEmail" /><span class="titleName">sky</span></h1>
+    <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>
 </div>
 
 <p></p>
 @if (tasks.Count == 0)
 {
     <h2>Click the "+" to add your first task!</h2>
+
+    <MudFab Color="Color.Info" Style="margin-top: 2rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
 }
 else
 {
@@ -20,7 +22,9 @@ else
     {
         if (task.isSubTask == false)
         {
+            <div class="centerTask">
             <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="AddNewSubTask"></TaskComponent>
+            </div>
         }
         if (task.isSubTask == true && task.Assignee == 0)
         {
@@ -36,9 +40,13 @@ else
         }
 
     }
+
+    
 }
 
-<MudFab Color="Color.Info" Style="margin-top: 2rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
+<div class="centerTask">
+    <MudFab Color="Color.Info" Style="margin-top: 2rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
+</div>
 
 
 

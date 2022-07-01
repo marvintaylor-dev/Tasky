@@ -7,8 +7,12 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
 }
 
+article {
+    padding-bottom: 10rem;
+}
 .addTaskBtn {
     background-color: transparent;
     border: none;
@@ -27,6 +31,7 @@ html, body {
 }
 
 .title {
+    font-size: 2rem;
     color: black;
 }
 
@@ -38,6 +43,8 @@ html, body {
     padding: .5rem;
     margin-bottom: .5rem;
     position: relative;
+    min-width: fit-content;
+    font-size: .8rem;
 }
 
 .taskContainerRight {
@@ -59,4 +66,9 @@ html, body {
     gap: 1rem;
     position: absolute;
     right: .5rem;
+}
+
+.centerTask {
+    margin: auto;
+    max-width: 70%;
 }

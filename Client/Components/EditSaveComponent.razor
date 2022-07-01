@@ -9,11 +9,12 @@
 
     @if (Task.TaskId > 0)
     {
-        <MudFab Color="Color.Info" id="editButton" Size="Size.Small" StartIcon="@Icons.Material.Filled.Create" DisableElevation="true" @onclick="(()=> EditTask(Task))" />
+        <MudIconButton Color="Color.Info" id="editButton" Icon="@Icons.Material.Filled.Create" Size="Size.Small" @onclick="(()=> EditTask(Task))" />
+        
     }
     else
     {
-        <MudFab Color="Color.Tertiary" id="saveButton" Size="Size.Small" StartIcon="@Icons.Material.Filled.Save" DisableElevation="true" @onclick="(() => SaveTask(Task))" />
+        <MudIconButton Color="Color.Tertiary" id="saveButton" Icon="@Icons.Material.Filled.Save" Size="Size.Small" @onclick="(() => SaveTask(Task))" />
     }
 </div>
 
