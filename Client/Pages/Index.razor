@@ -5,10 +5,11 @@
 @inject IMemberService memberService
 
 
-<h1 class="title">Welcome to Tasky!</h1>
+<div class="titleContainer d-flex justify-content-center align-items-center">
+    <h1 class="title">Welcome to <span class="titleName">T</span><MudFab Color="Color.Secondary"  Size="Size.Small" StartIcon="@Icons.TwoTone.AlternateEmail" /><span class="titleName">sky</span></h1>
+</div>
 
-<p>Keep Track of your important day to day items here.</p>
-
+<p></p>
 @if (tasks.Count == 0)
 {
     <h2>Click the "+" to add your first task!</h2>
@@ -21,7 +22,7 @@ else
         {
             <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="AddNewSubTask"></TaskComponent>
         }
-         if(task.isSubTask==true && task.Assignee == 0)
+        if (task.isSubTask == true && task.Assignee == 0)
         {
             NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
             if (isTaskAvailable == null)
@@ -67,7 +68,7 @@ else
     //    {
     //        if (IsActive)
     //        {
-    //        Console.WriteLine($"{task.Name} is Active");           
+    //        Console.WriteLine($"{task.Name} is Active");
     //        }
     //    }
     //}
@@ -95,7 +96,7 @@ else
         Console.WriteLine("RefreshList Has Been Called");
     }
 
-     public async void RefreshSubTasks()
+    public async void RefreshSubTasks()
     {
         tasks = await taskService.GetTasks();
         StateHasChanged();

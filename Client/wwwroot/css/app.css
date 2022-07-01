@@ -17,6 +17,19 @@ html, body {
     cursor: pointer;
 }
 
+.titleContainer{
+    margin: 2rem 0rem 2rem 0rem;
+}
+
+.titleName {
+    color: rgb(33, 150, 243);
+   
+}
+
+.title {
+    color: black;
+}
+
 .taskContainer {
     display: flex;
     align-items: center;
