@@ -1,162 +1,184 @@
 ﻿@page "/board"
 
+@using Tasky.Client.Services
+@inject ITaskService taskService;
+
 <div class="titleContainer d-flex justify-content-center align-items-center">
-    <h3>BoardView</h3>
+    <h3>Board View</h3>
 </div>
 
 @using Microsoft.AspNetCore.Components
 @using System.ComponentModel.DataAnnotations
 
-<MudDropContainer T="KanbanTaskItem" @ref="_dropContainer" Items="@_tasks" ItemsSelector="@((item,column) => item.Status == column)" ItemDropped="TaskUpdated" Class="d-flex flex-row">
-	<ChildContent>
-		@foreach (var item in _sections)
-		{
-			<MudPaper Elevation="0" Width="224px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
-				<MudToolBar DisableGutters="true">
-					<MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
-					<MudSpacer />
-					<MudMenu Icon="@Icons.Material.Rounded.MoreHoriz" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" ListClass="pa-2 d-flex flex-column" PopoverClass="mud-elevation-25">
-						<MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Outlined.Delete" OnClick="@( () => DeleteSection(item))">Delete Section</MudButton>
-						<MudButton Size="Size.Small" Color="Color.Default" StartIcon="@Icons.Rounded.Edit">Rename Section</MudButton>
-					</MudMenu>
-				</MudToolBar>
-				<MudDropZone T="KanbanTaskItem" Identifier="@item.Name" Class="mud-height-full" />
-				@if (item.NewTaskOpen)
-				{
-					<MudPaper Elevation="25" Class="pa-2 rounded-lg">
-						<MudTextField @bind-Value="item.NewTaskName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-						<MudButton OnClick="@(() => AddTask(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Task</MudButton>
-					</MudPaper>
-				}
-				else
-				{
-					<MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add Task</MudButton>
-				}
-			</MudPaper>
-		}
-		<MudPaper Class="pa-4" Elevation="0" Width="224px">
-			@if (_addSectionOpen)
-			{
-				<MudPaper Elevation="0" Width="224px" Class="pa-4 d-flex flex-column mud-background-gray rounded-lg">
-					<EditForm Model="@newSectionModel" OnValidSubmit="OnValidSectionSubmit">
-						<DataAnnotationsValidator />
-						<MudTextField @bind-Value="newSectionModel.Name" For="@(() => newSectionModel.Name)" Placeholder="New Section" DisableUnderLine="true"></MudTextField>
-						<MudButton ButtonType="ButtonType.Submit" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Section</MudButton>
-					</EditForm>
-				</MudPaper>
-			}
-			else
-			{
-				<MudButton OnClick="OpenAddNewSection" Variant="Variant.Outlined" StartIcon="@Icons.Filled.Add" Color="Color.Primary" Class="rounded-lg py-2" FullWidth="true">Add Section</MudButton>
-			}
-		</MudPaper>
-	</ChildContent>
-	<ItemRenderer>
-		<MudPaper Elevation="25" Class="pa-4 rounded-lg my-3">@context.Name</MudPaper>
-	</ItemRenderer>
+<MudDropContainer T="KanbanTaskItem" @ref="_dropContainer" Items="@_tasks" ItemsSelector="@((item,column) => @item.Status.ToString() == column)" ItemDropped="TaskUpdated" Class="d-flex flex-row centerTask">
+    <ChildContent>
+        @foreach (var item in _sections)
+        {
+            <MudPaper Elevation="0" Width="224px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
+                <MudToolBar DisableGutters="true">
+                    <MudText Typo="Typo.subtitle1"><b>@SplitCamelCase(@item.Name.ToString())</b></MudText>
+                    <MudSpacer />
+
+                </MudToolBar>
+                <MudDropZone T="KanbanTaskItem" Identifier="@item.Name.ToString()" Class="mud-height-full" />
+                @*@if (item.NewTaskOpen)
+                    {
+                    <MudPaper Elevation="25" Class="pa-2 rounded-lg">
+                    <MudTextField @bind-Value="item.NewTaskName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                    <MudButton OnClick="@(() => AddTask(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Task</MudButton>
+                    </MudPaper>
+                    }
+                    else
+                    {
+                    <MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add Task</MudButton>
+                    }*@
+            </MudPaper>
+        }
+    </ChildContent>
+    <ItemRenderer>
+        @if (context.isSubTask)
+        {
+            <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3 subTaskBorder">
+                @context.Name                
+            </MudPaper>
+        }
+        else
+        {
+            <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3 taskBorder">
+                @context.Name
+            </MudPaper>
+        }
+
+    </ItemRenderer>
 </MudDropContainer>
 
 @code {
-	private MudDropContainer<KanbanTaskItem> _dropContainer;
+    private bool _addSectionOpen;
 
-	private bool _addSectionOpen;
-	/* handling board events */
-	private void TaskUpdated(MudItemDropInfo<KanbanTaskItem> info)
-	{
-		info.Item.Status = info.DropzoneIdentifier;
-	}
+    private MudDropContainer<KanbanTaskItem> _dropContainer;
 
-	/* Setup for board  */
-	private List<KanBanSections> _sections = new()
-		{
-			new KanBanSections("To Do", false, String.Empty),
-			new KanBanSections("In Process", false, String.Empty),
-			new KanBanSections("Done", false, String.Empty),
-		};
+    public bool NewTaskOpen;
 
-	public class KanBanSections
-	{
-		public string Name { get; init; }
-		public bool NewTaskOpen { get; set; }
-		public string NewTaskName { get; set; }
+    /* handling board events */
+    private async void TaskUpdated(MudItemDropInfo<KanbanTaskItem> info)
+    {
+        var statusForDropZoneToRead = info.Item.Status.ToString();
+        statusForDropZoneToRead = info.DropzoneIdentifier;
 
-		public KanBanSections(string name, bool newTaskOpen, string newTaskName)
-		{
-			Name = name;
-			NewTaskOpen = newTaskOpen;
-			NewTaskName = newTaskName;
-		}
-	}
-	public class KanbanTaskItem
-	{
-		public string Name { get; init; }
-		public string Status { get; set; }
+        NoteModel taskToUpdate = tasks.FirstOrDefault(x => x.TaskId == info.Item.ItemId);
+        if (taskToUpdate == null)
+        {
+            Console.WriteLine("No Task to Update");
+        }
+        else
+        {
+            foreach (Status status in Enum.GetValues(typeof(Status)))
+            {
+                if (statusForDropZoneToRead == status.ToString())
+                {
+                    taskToUpdate.status = status;
+                    taskService.UpdateTask(taskToUpdate);
+                    info.Item.Status = status;
+                }
+            }
+        }
 
-		public KanbanTaskItem(string name, string status)
-		{
-			Name = name;
-			Status = status;
-		}
-	}
+    }
 
-	private List<KanbanTaskItem> _tasks = new()
-		{
-			new KanbanTaskItem("Write unit test", "To Do"),
-			new KanbanTaskItem("Some docu stuff", "To Do"),
-			new KanbanTaskItem("Walking the dog", "To Do"),
-		};
+    public List<NoteModel> tasks = new List<NoteModel>();
+    public List<Member> members = new List<Member>();
 
-	KanBanNewForm newSectionModel = new KanBanNewForm();
+    /* Setup for board  */
+    private List<KanBanSections> _sections = new List<KanBanSections>();
 
-	public class KanBanNewForm
-	{
-		[Required]
-		[StringLength(10, ErrorMessage = "Name length can't be more than 8.")]
-		public string Name { get; set; }
-	}
+    private List<KanbanTaskItem> _tasks = new List<KanbanTaskItem>();
 
-	private void OnValidSectionSubmit(EditContext context)
-	{
-		_sections.Add(new KanBanSections(newSectionModel.Name, false, String.Empty));
-		newSectionModel.Name = string.Empty;
-		_addSectionOpen = false;
-	}
 
-	private void OpenAddNewSection()
-	{
-		_addSectionOpen = true;
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await taskService.GetTasks();
 
-	private void AddTask(KanBanSections section)
-	{
-		_tasks.Add(new KanbanTaskItem(section.NewTaskName, section.Name));
-		section.NewTaskName = string.Empty;
-		section.NewTaskOpen = false;
-		_dropContainer.Refresh();
-	}
+        foreach (Status status in Enum.GetValues(typeof(Status)))
+        {
+            _sections.Add(new KanBanSections(status, false, String.Empty));
+        }
 
-	private void DeleteSection(KanBanSections section)
-	{
-		if (_sections.Count == 1)
-		{
-			_tasks.Clear();
-			_sections.Clear();
-		}
-		else
-		{
-			int newIndex = _sections.IndexOf(section) - 1;
-			if (newIndex < 0)
-			{
-				newIndex = 0;
-			}
+        foreach (var task in tasks)
+        {
+            _tasks.Add(new KanbanTaskItem(task.TaskId, task.Name, task.status, (bool)task.isSubTask, task.Assignee));
+        }
 
-			_sections.Remove(section);
+        await base.OnInitializedAsync();
+    }
 
-			var tasks = _tasks.Where(x => x.Status == section.Name);
-			foreach (var item in tasks)
-			{
-				item.Status = _sections[newIndex].Name;
-			}
-		}
-	}
-}
+
+    public static string SplitCamelCase(string input)
+    {
+        return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
+    }
+
+    public class KanBanSections
+    {
+        public Status Name { get; init; }
+        public bool NewTaskOpen { get; set; }
+        public string NewTaskName { get; set; }
+
+        public KanBanSections(Status name, bool newTaskOpen, string newTaskName)
+        {
+            Name = name;
+            NewTaskOpen = newTaskOpen;
+            NewTaskName = newTaskName;
+        }
+    }
+
+
+    public class KanbanTaskItem
+    {
+        public int ItemId { get; set; }
+        public string Name { get; init; }
+        public Status Status { get; set; }
+        public bool isSubTask { get; set; }
+        public int Assignee { get; set; }
+
+        public KanbanTaskItem(int id, string name, Status status, bool isSub, int assignee)
+        {
+            ItemId = id;
+            Name = name;
+            Status = status;
+            isSubTask = isSub;
+            Assignee = assignee;
+        }
+    }
+
+
+    KanBanNewForm newSectionModel = new KanBanNewForm();
+
+    public class KanBanNewForm
+    {
+        [Required]
+        [StringLength(10, ErrorMessage = "Name length can't be more than 10.")]
+        public string Name { get; set; }
+    }
+
+    //private void OnValidSectionSubmit(EditContext context)
+    //{
+    //    foreach (Status status in Enum.GetValues(typeof(Status)))
+    //    {
+    //        if (newSectionModel.Name == status.ToString())
+    //        {
+    //            _sections.Add(new KanBanSections(status, false, String.Empty));
+    //        }
+    //    }
+    //    newSectionModel.Name = string.Empty;
+    //    _addSectionOpen = false;
+    //}
+
+    //private void AddTask(KanBanSections section)
+    //{
+    //    _tasks.Add(new KanbanTaskItem(section.NewTaskName, section.Name));
+    //    section.NewTaskName = string.Empty;
+    //    section.NewTaskOpen = false;
+    //    _dropContainer.Refresh();
+    //}
+
+    }

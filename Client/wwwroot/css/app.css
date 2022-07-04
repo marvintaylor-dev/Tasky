@@ -72,3 +72,15 @@ article {
     margin: auto;
     max-width: 70%;
 }
+
+.wideCenter{
+    max-width: 90%;
+}
+
+.taskBorder {
+    border-left: 10px solid rgb(33, 150, 243);
+}
+
+.subTaskBorder {
+    border-left: 10px solid #FF4081;
+}
