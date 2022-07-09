@@ -2,6 +2,10 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+.iconLink{
+    margin-left: .5rem;
+}
+
 .titleCorner {
     font-size: 24px;
     font-weight: bold;
@@ -23,11 +27,12 @@
     top: -2px;
 }
 
+
 .nav-item {
     font-size: 1.1rem;
     padding-bottom: 0.5rem;
+    margin: .5rem 0rem .5rem 0rem;
 }
-
 
     .nav-item:first-of-type {
         padding-top: 1rem;
@@ -55,6 +60,12 @@
             background-color: rgb(33, 150, 243);
             color: white;
         }
+
+@media(max-width: 1600px){
+    .iconLink{
+        display: none;
+    }
+}
 
 @media (min-width: 641px) {
     .navbar-toggler {

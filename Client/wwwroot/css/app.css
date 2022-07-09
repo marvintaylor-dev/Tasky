@@ -44,7 +44,9 @@ article {
     margin-bottom: .5rem;
     position: relative;
     min-width: fit-content;
+    max-width: 100%;
     font-size: .8rem;
+    margin: 0rem 10rem .5rem 10rem;
 }
 
 .taskContainerRight {
@@ -70,7 +72,7 @@ article {
 
 .centerTask {
     margin: auto;
-    max-width: 70%;
+    width: contain;
 }
 
 .wideCenter{

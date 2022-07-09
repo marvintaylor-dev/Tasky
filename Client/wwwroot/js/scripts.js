@@ -16,4 +16,7 @@ function saveOnEnter() {
             });
 }
 
+function FocusAsync() {
+    document.querySelector(inputRef).focus();
+}
 

@@ -1,4 +1,5 @@
 ﻿@inject ITagService tagService;
+@inject ITaskService taskService;
 
 
 @if (Tag.TagId > 0)
@@ -22,9 +23,11 @@ else
     public EventCallback RefreshTags { get; set; }
 
     public List<Tag> tags = new List<Tag>();
+    public List<NoteModel> tasks = new List<NoteModel>();
 
     protected override async Task OnInitializedAsync()
     {
+        tasks = await taskService.GetTasks();
         tags = await tagService.GetAllTags();
         await base.OnInitializedAsync();
     }
@@ -35,6 +38,15 @@ else
         {
             Task.Tag = null;
         }
+        foreach(NoteModel task in tasks)
+        {
+            if(task.Tag == id)
+            {
+                task.Tag = null;
+                await taskService.UpdateTask(task);
+            }
+        }
+
         await tagService.DeleteTag(id);
         await RefreshTags.InvokeAsync();
     }
