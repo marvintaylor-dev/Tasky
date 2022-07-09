@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddTransient<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
+builder.Services.AddTransient<ITagRepository, TagRepository>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 

@@ -1,0 +1,47 @@
+﻿@inject ITagService tagService;
+
+
+@if (Tag.TagId > 0)
+{
+    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" @onclick="(()=> DeleteTag(Tag.TagId))" />
+}
+else
+{
+     <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" @onclick="(()=> DeleteUnsavedTag())" />
+}
+
+@code {
+
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public Tag Tag { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshTags { get; set; }
+
+    public List<Tag> tags = new List<Tag>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tags = await tagService.GetAllTags();
+        await base.OnInitializedAsync();
+    }
+
+    async void DeleteTag(int id)
+    {
+        if(Task.Tag == id)
+        {
+            Task.Tag = null;
+        }
+        await tagService.DeleteTag(id);
+        await RefreshTags.InvokeAsync();
+    }
+
+    async void DeleteUnsavedTag()
+    {
+        tags.Remove(Tag);
+        await RefreshTags.InvokeAsync();
+    }
+}

@@ -18,10 +18,9 @@ namespace Tasky.Server.Data
         }
 
         public DbSet<NoteModel> Tasks { get; set; }
-        public DbSet<SubTask> SubTasks { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Guest> Guests { get; set; }
         public DbSet<Note> Notes { get; set; }
-
+        public DbSet<Tag> Tags { get; set; }
     }
 }

@@ -18,5 +18,9 @@ builder.Services.AddHttpClient<ITaskService, TaskService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7242/");
 });
+builder.Services.AddHttpClient<ITagService, TagService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7242/");
+});
 
 await builder.Build().RunAsync();

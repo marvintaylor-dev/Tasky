@@ -1,0 +1,67 @@
+﻿.tagContainer{
+    position: relative;
+}
+.tagInput{
+    border: 1px solid black;
+    width: 5rem;
+}
+
+.colorDropdown {
+    position: absolute;
+    left: 100%;
+    top: 0rem;
+    z-index: 1;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    border: 1px solid lightgray;
+    box-shadow: 6px 9px 39px -5px rgba(0,0,0,0.46);
+}
+
+.tagDropdown{
+    margin: 1rem .5rem 1rem .5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    
+}
+
+.tagAndTrashBtns{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.tagSaveBtn {
+    margin-top: .5rem;
+    font: 1rem;
+    font-weight: bold;
+    padding: .5rem;
+    background: lightgray;
+    width: 100%;
+    text-align: center;
+}
+
+.tagSaveBtn:hover{
+    cursor: pointer;
+    filter: brightness(1.1);
+}
+
+
+.colorContainer {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.colorDropdownHeading {
+    margin-bottom: .5rem;
+    background: gray;
+    padding: .5rem;
+    color: white;
+    width: 100%;
+    text-align: center;
+}

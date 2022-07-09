@@ -20,6 +20,9 @@ namespace Tasky.Shared
         [ForeignKey("MemberId")]
         public int Assignee { get; set; }
 
+        [ForeignKey("TagId")]
+        public int? Tag { get; set; }  
+
         public Priority PriorityLevel { get; set; } = Priority.MustHave;
         public DateTime DueDate {get; set;} = DateTime.Now;
         

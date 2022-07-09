@@ -11,17 +11,22 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <MudIcon Icon="@Icons.Outlined.Home"  Style="font-size: 1.5rem;" /> <span class="ml-3">Home</span>
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/list" Match="NavLinkMatch.All">
-                <span class="oi oi-list" aria-hidden="true"></span> Assignee List
+                <MudIcon Icon="@Icons.Outlined.FormatListBulleted"  Style="font-size: 1.5rem;" /> <span class="ml-3">List View</span>
             </NavLink>
         </div>
          <div class="nav-item px-3">
             <NavLink class="nav-link" href="/board" Match="NavLinkMatch.All">
-                <MudIcon Icon="@Icons.Outlined.ViewKanban"  Style="font-size: 1.5rem;" /> Board View
+                <MudIcon Icon="@Icons.Outlined.ViewKanban"  Style="font-size: 1.5rem;" /> <span class="ml-3">Board View</span>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/table" Match="NavLinkMatch.All">
+                <MudIcon Icon="@Icons.Outlined.TableRows"  Style="font-size: 1.5rem;" /> <span class="ml-3">Table View</span>
             </NavLink>
         </div>
     </nav>

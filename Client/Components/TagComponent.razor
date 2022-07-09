@@ -1,0 +1,150 @@
+﻿@inject ITagService tagService;
+
+
+<div class="tagContainer">
+    @if (Task.Tag == null && !OnOpenDropdown)
+    {
+        <MudIcon Icon="@Icons.Outlined.Label" Color="Color.Info" @onclick="ToggleDropdown" />
+    }
+    @if (OnOpenDropdown)
+    {
+        <div>
+            <div class="tagContainer">
+                <input class="tagInput"
+                   type="text"
+                   placeholder="Assign a Tag Name"
+                   @bind-value="newTag.TagName"
+                   @bind-value:event="oninput"
+                   @onfocus="ChildClicked"
+                   @onfocusout="CloseDropdown" />
+            </div>
+            @if (OnOpenDropdown && newTag.TagName != String.Empty)
+            {
+                <div class="colorDropdown">
+                    <div class="colorDropdownHeading">Choose a Color:</div>
+                    <div class="colorContainer">
+                        @foreach (MudBlazor.Color color in Enum.GetValues(typeof(TagColor)))
+                        {
+                            <MudIcon Class="colorIcon" Icon="@Icons.Filled.Circle" Color="color" @onclick="(() => UseThisColor(color))" />
+                        }
+                    </div>
+                    @if(newTag.Color != null || Task.Tag != null)
+                    {
+                    <div class="tagSaveBtn" @onclick="(() => SaveTag(newTag))">Save Tag</div>
+                    }
+                    <div class="tagDropdown">
+                        <div class="mb-3">Or use existing Tags:</div>
+                        @foreach (Tag tag in tags)
+                        {
+                            <div class="tagAndTrashBtns">
+                                <MudChip Variant="Variant.Outlined" Color="(MudBlazor.Color)tag.Color" @onclick="(()=>BindTagId(tag))">@tag.TagName</MudChip>
+                                <DeleteTagComponent Task="Task" Tag="tag" RefreshTags="GetTags"></DeleteTagComponent>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            }
+        </div>
+    }
+    @if (newTag.Color != null && newTag.TagId == 0 && newTag.TagName != String.Empty)
+    {
+        <MudChip Variant="Variant.Outlined" Color="ColorIs" @onclick="OpenDropdown" @onfocus="ChildClicked">@newTag.TagName</MudChip>
+    }
+</div>
+
+@foreach (var tag in tags)
+{
+    @if (tag.TagId == Task.Tag && !OnOpenDropdown)
+    {         <div class="tagContainer">
+            @if (tag.Color == null)
+            {
+                <MudChip Variant="Variant.Outlined" Color="Color.Dark" @onclick="OpenDropdown">@tag.TagName</MudChip>
+            }
+            else
+            {
+                <MudChip Variant="Variant.Outlined" Color="(MudBlazor.Color)tag.Color" @onclick="OpenDropdown">@tag.TagName</MudChip>
+            }         </div>
+    }
+}
+
+
+
+
+
+
+@code {
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    public Tag newTag = new Tag();
+
+
+    public List<Tag> tags = new List<Tag>();
+
+    public MudBlazor.Color ColorIs { get; set; }
+
+    public bool IsClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetTags();
+        newTag.TagName = String.Empty;
+        await base.OnParametersSetAsync();
+    }
+
+    public async Task GetTags()
+    {
+        tags = await tagService.GetAllTags();
+    }
+
+    async void ChildClicked()
+    {
+        IsClicked = true;
+        await OnClick.InvokeAsync(IsClicked);
+    }
+
+    public bool OnOpenDropdown { get; set; }
+
+
+    public void OpenDropdown()
+    {
+        OnOpenDropdown = true;
+        ChildClicked();
+    }
+
+    public async void CloseDropdown()
+    {
+        OnOpenDropdown = false;
+    }
+
+    public void ToggleDropdown()
+    {
+        OnOpenDropdown = !OnOpenDropdown;
+    }
+
+    public async void UseThisColor(MudBlazor.Color color)
+    {
+
+        ColorIs = color;
+        newTag.Color = (TagColor)color;
+    }
+
+    public async Task BindTagId(Tag savedTag)
+    {
+        Task.Tag = savedTag.TagId;
+        CloseDropdown();
+    }
+
+    public async void SaveTag(Tag saveTag)
+    {
+        var savedTag = await tagService.AddTag(saveTag);
+        await BindTagId(savedTag);
+        StateHasChanged();
+        CloseDropdown();
+    }
+
+}

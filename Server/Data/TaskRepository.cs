@@ -74,6 +74,7 @@ namespace Tasky.Server.Services
             result.LinkTo = model.LinkTo;
             result.status = model.status;
             result.isSubTask = model.isSubTask;
+            result.Tag = model.Tag;
           
             await _context.SaveChangesAsync();
             return result;

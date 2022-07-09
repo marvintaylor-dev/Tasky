@@ -1,0 +1,32 @@
+﻿@page "/table"
+
+<div class="titleContainer d-flex justify-content-center align-items-center flex-column">
+    <h3>Table View</h3>
+</div>
+
+@*foreach (var task in tasks)
+    {
+        if (task.isSubTask == false)
+        {
+            <div class="centerTask">
+            <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="AddNewSubTask"></TaskComponent>
+            </div>
+        }
+        if (task.isSubTask == true && task.Assignee == 0)
+        {
+            NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
+            if (isTaskAvailable == null)
+            {
+                <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks"></SubTaskComponent>
+            }
+            else
+            {
+                Console.WriteLine(isTaskAvailable);
+            }
+        }
+
+    }*@
+
+@code {
+
+}
