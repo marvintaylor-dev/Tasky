@@ -9,7 +9,16 @@
     <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>
 </div>
 
-<p></p>
+@*
+   Beginning of adding a section
+   
+<button class="btn btn-primary" @onclick="ToggleInput">Add a Section +</button>
+@if (ShowInput)
+{
+    <input type="text" placeholder="Enter Section" />
+    <button>Save</button>
+}*@
+
 @if (tasks.Count == 0)
 {
     <h2>Click the "+" to add your first task!</h2>
@@ -51,6 +60,12 @@ else
 
 
 @code {
+    public bool ShowInput = false;
+
+    public void ToggleInput()
+    {
+        ShowInput = !ShowInput;
+    }
 
     NoteModel newTask = new NoteModel();
     List<NoteModel> tasks = new List<NoteModel>();

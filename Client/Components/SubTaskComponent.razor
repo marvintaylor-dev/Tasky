@@ -11,24 +11,7 @@
     <TagComponent Task="SubTask" OnClick="Activate"></TagComponent>
     <div class="taskContainerRight">
         <div class="taskComponentsContainer">
-            <div>
-                <div class="taskFont">Reassign to:</div>
-                <select @bind-value="SubTask.LinkTo" @bind-value:event="onchange" @onfocus="@Clicked">
-                    @foreach (var task in tasks)
-                    {
-                        if (task.isSubTask == false)
-                        {
-                            <option @onkeydown="@Enter" value="@task.TaskId">@task.Name</option>
-                        }
-                        else
-                        {
-                            <select>
-                                <option>No Options</option>
-                            </select>
-                        }
-                    }
-                </select>
-            </div>
+           <ReassignSubtaskComponent OnClick="Activate" Task="SubTask"></ReassignSubtaskComponent>
             <MemberComponent OnClick="Activate" Task="SubTask"></MemberComponent>
             <PriorityComponent OnClick="Activate" Task="SubTask"></PriorityComponent>
             <StatusComponent OnClick="Activate" Task="SubTask"></StatusComponent>

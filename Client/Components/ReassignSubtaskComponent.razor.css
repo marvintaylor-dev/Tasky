@@ -1,0 +1,24 @@
+﻿.reassignmentDropdown{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    border: 1px solid black;
+    background-color: white;
+    flex-direction: column;
+    padding: .5rem;
+    max-width: 300px;
+}
+
+.taskFont{
+    font-weight: bold;
+    margin-bottom: .5rem;
+}
+
+.reassignmentDropdownContainer{
+    position: relative;
+}
+
+

@@ -8,6 +8,7 @@
             id="taskInput" 
             placeholder="Enter Task Name" 
             autofocus=true
+           
            @onfocus="@ChildClicked"
            @onfocusout="UnClicked"
            @onkeydown="@Enter"
@@ -43,7 +44,6 @@
         IsClicked = false;
         await OnClick.InvokeAsync(IsClicked);
     }
-
 
     async void Clicked()
     {

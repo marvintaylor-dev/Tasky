@@ -5,6 +5,7 @@ using Tasky.Client.Services;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.Logging.SetMinimumLevel(LogLevel.Warning);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddMudServices();

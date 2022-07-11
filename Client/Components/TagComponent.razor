@@ -5,7 +5,7 @@
 <div class="tagContainer">
     @if (Task.Tag == null && !OnOpenDropdown)
     {
-        <MudIcon Icon="@Icons.Outlined.Label" Color="Color.Info" @onclick="ToggleDropdown" />
+        <MudIcon Icon="@Icons.Outlined.Label" Size="Size.Small" Color="Color.Info" @onclick="ToggleDropdown" />
     }
     @if (OnOpenDropdown)
     {
@@ -39,7 +39,7 @@
                         @foreach (Tag tag in tags)
                         {
                             <div class="tagAndTrashBtns">
-                                <MudChip Variant="Variant.Outlined" Color="(MudBlazor.Color)tag.Color" @onclick="(()=>BindTagId(tag))">@tag.TagName</MudChip>
+                                <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="(MudBlazor.Color)tag.Color" @onclick="(()=>BindTagId(tag))">@tag.TagName</MudChip>
                                 <DeleteTagComponent Task="Task" Tag="tag" RefreshTags="GetTags"></DeleteTagComponent>
                             </div>
                         }
@@ -51,7 +51,7 @@
     }
     @if (newTag.Color != null && newTag.TagId == 0 && newTag.TagName != String.Empty)
     {
-        <MudChip Variant="Variant.Outlined" Color="ColorIs" @onclick="OpenDropdown" @onfocus="ChildClicked">@newTag.TagName</MudChip>
+        <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="ColorIs" @onclick="OpenDropdown" @onfocus="ChildClicked">@newTag.TagName</MudChip>
     }
 </div>
 
@@ -61,11 +61,11 @@
     {         <div class="tagContainer">
             @if (tag.Color == null)
             {
-                <MudChip Variant="Variant.Outlined" Color="Color.Dark" @onclick="OpenDropdown">@tag.TagName</MudChip>
+                <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="Color.Dark" @onclick="OpenDropdown">@tag.TagName</MudChip>
             }
             else
             {
-                <MudChip Variant="Variant.Outlined" Color="(MudBlazor.Color)tag.Color" @onclick="OpenDropdown">@tag.TagName</MudChip>
+                <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="(MudBlazor.Color)tag.Color" @onclick="OpenDropdown">@tag.TagName</MudChip>
             }         </div>
     }
 }
