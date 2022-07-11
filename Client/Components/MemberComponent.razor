@@ -6,6 +6,7 @@
 @if (members.Count > 0)
 {
     <select @bind-value="Task.Assignee" @bind-value:event="onchange" @onfocus="@ChildClicked">
+        <option selected value="0">Select One</option>
         @foreach (var member in members)
         {
             <option value="@member.MemberId">@member.Name</option>

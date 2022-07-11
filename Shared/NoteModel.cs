@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Tasky.Shared
 {
-    public class NoteModel
+    public class NoteModel 
     {
         [Key]
         public int TaskId { get; set; }
@@ -33,6 +33,9 @@ namespace Tasky.Shared
         public bool? isSubTask { get; set; } = false;
 
         public int? LinkTo { get; set; }
+
+
+     
 
 
     }

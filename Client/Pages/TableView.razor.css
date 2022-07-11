@@ -1,0 +1,20 @@
+﻿.tableViewRow{
+    margin-bottom: 0rem;
+    border: 1px solid lightgray;
+}
+
+.tableViewItem{
+    
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.tableViewHeader {
+    background: rgb(33, 150, 243);
+    color: aliceblue;
+}
+
+.tableViewHeaderItem:hover{
+    cursor: pointer;
+    filter: brightness(1.1);
+}

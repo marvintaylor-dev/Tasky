@@ -73,29 +73,29 @@
     </div>
 }
 
- <div class="centerTask mt-5">
-        <h3>Unassigned Tasks</h3>
-        @foreach (NoteModel task in tasks)
+<div class="centerTask mt-5">
+    <h3>Unassigned Tasks</h3>
+    @foreach (NoteModel task in tasks)
+    {
+        if (task.Assignee == 0 && task.isSubTask == false)
         {
-            if (task.Assignee == 0 && task.isSubTask == false)
+            <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+        }
+        if (task.isSubTask == true && task.Assignee == 0)
+        {
+            NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
+            if (isTaskAvailable == null)
             {
-                <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+                <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks"></SubTaskComponent>
             }
-            if (task.isSubTask == true && task.Assignee == 0)
+            else
             {
-                NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
-                if (isTaskAvailable == null)
-                {
-                    <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks"></SubTaskComponent>
-                }
-                else
-                {
-                    Console.WriteLine(isTaskAvailable);
-                }
+                Console.WriteLine(isTaskAvailable);
             }
         }
-        <MudFab Color="Color.Info" Style="margin-top: 2rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
-    </div>
+    }
+    <MudFab Color="Color.Info" Style="margin-top: 2rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
+</div>
 
 
 

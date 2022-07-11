@@ -1,32 +1,152 @@
 ﻿@page "/table"
+@inject ITaskService taskService;
+@inject ITagService tagService;
+@inject IMemberService memberService;
+@using System.Reflection
 
 <div class="titleContainer d-flex justify-content-center align-items-center flex-column">
     <h3>Table View</h3>
 </div>
 
-@*foreach (var task in tasks)
-    {
-        if (task.isSubTask == false)
-        {
-            <div class="centerTask">
-            <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="AddNewSubTask"></TaskComponent>
-            </div>
-        }
-        if (task.isSubTask == true && task.Assignee == 0)
-        {
-            NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
-            if (isTaskAvailable == null)
-            {
-                <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks"></SubTaskComponent>
-            }
-            else
-            {
-                Console.WriteLine(isTaskAvailable);
-            }
-        }
 
-    }*@
+<table class="tableView">
+    <thead>
+        <tr class="tableViewHeader">
+            @foreach (PropertyInfo property in properties)
+            {
+                @if(property.Name == "Name" || property.Name == "Assignee" || property.Name == "Tag" || property.Name == "PriorityLevel" || property.Name == "DueDate" || property.Name == "status")
+                {
+                <th class="tableViewItem tableViewHeaderItem tableViewHeader" @onclick="() => SortNames(tasks, property.Name)">@SplitCamelCase(@property.Name)</th>                    
+                }
+            }
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (NoteModel task in tasks)
+        {
+            <tr class="tableViewRow mud-elevation-1 py-2 px-5 rounded white">
+                <td class="tableViewItem"><TaskInputComponent Task="task" OnClick="Activate"></TaskInputComponent></td>
+                <td class="tableViewItem"><MemberComponent Task="task" OnClick="Activate"></MemberComponent></td>
+                <td class="tableViewItem"><TagComponent Task="task" OnClick="Activate"></TagComponent></td>
+                <td class="tableViewItem"><PriorityComponent Task="task" OnClick="Activate"></PriorityComponent></td>
+                <td class="tableViewItem"><DateComponent Task="task" OnClick="Activate"></DateComponent></td>
+                <td class="tableViewItem"><StatusComponent Task="task" OnClick="Activate"></StatusComponent></td>
+                <td class="tableViewItem"><EditSaveComponent Task="task" RefreshList="RefreshList" OnClick="Activate"></EditSaveComponent></td>
+                <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+<div class="centerTask">
+    <MudFab Color="Color.Info" Style="margin-top: 2rem; margin-left: 10rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
+</div>
+
 
 @code {
+    public PropertyInfo[] properties;
+
+    NoteModel newTask = new NoteModel();
+    public IEnumerable<NoteModel> tasks = new List<NoteModel>();
+    public List<Tag> tags = new List<Tag>();
+    public List<Member> members = new List<Member>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        properties = typeof(NoteModel).GetProperties();
+        tasks = await taskService.GetTasks();
+        tags = await tagService.GetAllTags();
+        members = await memberService.GetMembers();
+
+        await base.OnInitializedAsync();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+    }
+
+    public static string SplitCamelCase(string input)
+    {
+        return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
+    }
+
+    public bool IsClicked { get; set; }
+
+    void Activate(bool isClicked)
+    {
+        IsClicked = isClicked;
+    }
+
+    void AddNewTask()
+    {
+        var newList = tasks.ToList<NoteModel>();
+        newList.Add(newTask);
+        newTask.Name = String.Empty;
+        tasks = newList;
+        StateHasChanged();
+    }
+
+    public async Task RefreshList()
+    {
+        tasks = await taskService.GetTasks();
+        StateHasChanged();
+        Console.WriteLine("RefreshList Has Been Called");
+    }
+
+    public void SortMems(int assigneeId)
+    {
+        Member foundMember;
+        foreach(Member member in members)
+        {
+            if(member.MemberId == assigneeId)
+            {
+                foundMember = member;
+            }
+        }
+
+    }
+
+    public void SortNames(IEnumerable<NoteModel> listToSort, string propName)
+    {
+
+        switch (propName)
+        {
+            case "Name":
+                tasks = listToSort.OrderBy(x => x.Name);
+                StateHasChanged();
+                break;
+            case "Assignee":
+                tasks = listToSort.OrderBy(x => x.Assignee);
+                StateHasChanged();
+                break;
+            case "Tag":
+                tasks = listToSort.OrderBy(x => x.Tag);
+                StateHasChanged();
+                break;
+            case "PriorityLevel":
+                tasks = listToSort.OrderBy(x => x.PriorityLevel);
+                StateHasChanged();
+                break;
+            case "DueDate":
+                tasks = listToSort.OrderBy(x => x.DueDate);
+                StateHasChanged();
+                break;
+            case "status":
+                tasks = listToSort.OrderBy(x => x.status);
+                StateHasChanged();
+                break;
+            default:
+                Console.WriteLine("Did not match");
+                break;
+        }
+
+   
+    }
+
+    
 
 }
