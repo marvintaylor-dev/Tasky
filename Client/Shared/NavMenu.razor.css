@@ -45,10 +45,8 @@
     .nav-item ::deep a {
         color: rgb(33, 150, 243);
         border-radius: 4px;
-        height: 3rem;
         display: flex;
         align-items: center;
-        line-height: 3rem;
     }
 
         .nav-item ::deep a.active {
@@ -61,7 +59,7 @@
             color: white;
         }
 
-@media(max-width: 1600px){
+@media(max-width: 1200px){
     .iconLink{
         display: none;
     }

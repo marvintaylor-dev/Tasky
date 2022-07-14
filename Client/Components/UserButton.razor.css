@@ -1,0 +1,15 @@
+﻿.dropdownMenu{
+    border: 1px solid lightgray;
+    display: none;
+    position: absolute;
+    top: 2.5rem;
+}
+
+.show-menu{
+    display: block;
+}
+
+
+.userIcon{
+    position: relative;
+}

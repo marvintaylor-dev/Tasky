@@ -1,0 +1,29 @@
+﻿@page "/registration"
+
+<h3>Registration</h3>
+
+<EditForm Model="user" OnValidSubmit="HandleRegistration">
+    <div>
+        <label for="email">Email</label>
+        <input type="text" id="email" @bind-value="user.Email" @bind-value:event="oninput" />
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" @bind-value="user.Password" @bind-value:event="oninput" />
+    </div>
+    <div>
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" @bind-value="user.ConfirmPassword" @bind-value:event="oninput" />
+    </div>
+    <button type="submit">Submit</button>
+
+</EditForm>
+
+@code {
+    UserRegister user = new UserRegister();
+
+    void HandleRegistration()
+    {
+        Console.WriteLine($"Register User with the Email {user.Email}.");
+    }
+}

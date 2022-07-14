@@ -1,7 +1,17 @@
 ﻿@page "/board"
-
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
 @using Tasky.Client.Services
 @inject ITaskService taskService;
+
+<AuthorizeView>
+    <Authorized>
+        <div>You're authorized as @context.User.Identity.Name</div>
+    </Authorized>
+    <NotAuthorized>
+    <div>Do you see this?</div>
+    </NotAuthorized>
+</AuthorizeView>
 
 <div class="titleContainer d-flex justify-content-center align-items-center">
     <h3>Board View</h3>

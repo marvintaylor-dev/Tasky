@@ -51,6 +51,11 @@
         IsClicked = isClicked;
     }
 
+    private async Task DeActivate()
+    {
+        await System.Threading.Tasks.Task.Delay(200);
+        IsClicked = false;
+    }
 
     protected override async Task OnParametersSetAsync()
     {

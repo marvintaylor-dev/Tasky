@@ -7,18 +7,17 @@
     {
         <MudIcon Icon="@Icons.Outlined.Label" Size="Size.Small" Color="Color.Info" @onclick="ToggleDropdown" />
     }
+
     @if (OnOpenDropdown)
     {
         <div>
             <div class="tagContainer">
-                
                 <input class="tagInput"
                    type="text"
                    placeholder="Assign a Tag Name"
                    @bind-value="newTag.TagName"
                    @bind-value:event="oninput"
-                   @onfocus="ChildClicked"
-                    />
+                   @onfocus="ChildClicked" />
             </div>
             @if (OnOpenDropdown && newTag.TagName != String.Empty)
             {
@@ -30,9 +29,9 @@
                             <MudIcon Class="colorIcon" Icon="@Icons.Filled.Circle" Color="color" @onclick="(() => UseThisColor(color))" />
                         }
                     </div>
-                    @if(newTag.Color != null || Task.Tag != null)
+                    @if (newTag.Color != null || Task.Tag != null)
                     {
-                    <div class="tagSaveBtn" @onclick="(() => SaveTag(newTag))">Save Tag</div>
+                        <div class="tagSaveBtn" @onclick="(() => SaveTag(newTag))">Save Tag</div>
                     }
                     <div class="tagDropdown">
                         <div class="mb-3">Or use existing Tags:</div>
@@ -58,7 +57,8 @@
 @foreach (var tag in tags)
 {
     @if (tag.TagId == Task.Tag && !OnOpenDropdown)
-    {         <div class="tagContainer">
+    {
+        <div class="tagContainer">
             @if (tag.Color == null)
             {
                 <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="Color.Dark" @onclick="OpenDropdown">@tag.TagName</MudChip>
@@ -66,7 +66,8 @@
             else
             {
                 <MudChip Variant="Variant.Outlined" Size="Size.Small" Color="(MudBlazor.Color)tag.Color" @onclick="OpenDropdown">@tag.TagName</MudChip>
-            }         </div>
+            }
+        </div>
     }
 }
 
@@ -86,7 +87,14 @@
 
     public MudBlazor.Color ColorIs { get; set; }
 
-    public bool IsClicked { get; set; }
+    private bool IsClicked { get; set; }
+
+    private async Task DeActivate()
+    {
+        await System.Threading.Tasks.Task.Delay(200);
+        IsClicked = false;
+    }
+
 
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
@@ -130,7 +138,6 @@
 
     public async void UseThisColor(MudBlazor.Color color)
     {
-
         ColorIs = color;
         newTag.Color = (TagColor)color;
     }
