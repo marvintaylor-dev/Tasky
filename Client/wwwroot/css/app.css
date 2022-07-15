@@ -48,17 +48,27 @@ article {
     font-size: .8rem;
     margin: 0rem 10rem .5rem 10rem;
 }
+.taskContainerLeft {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
 
+.containerLeftComponents{
+    display:flex;
+    align-items: center;
+    gap: .2rem;
+}
 .taskContainerRight {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 .taskComponentsContainer {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 1.5rem;
     margin-right: 5rem;
 }

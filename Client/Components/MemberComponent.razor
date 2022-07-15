@@ -28,6 +28,7 @@
         @if (memberService.Members.Count > 0)
         {
             <select size="10" @bind-value="Task.Assignee" @bind-value:event="onchange">
+                <option selected value="0">Select One</option>
                 @foreach (var member in memberService.Members)
                 {
                     <option 

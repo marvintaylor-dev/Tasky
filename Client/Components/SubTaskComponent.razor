@@ -6,21 +6,26 @@
 
 
 <div class="taskContainer subtaskContainer mud-elevation-1 py-2 px-5 rounded white">
-    <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="SubTask"></TaskInputComponent>
-    <TagComponent Task="SubTask" OnClick="Activate"></TagComponent>
+    <div class="taskContainerLeft">
+        <div class="subtaskSpacer"></div>
+        <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="SubTask" />
+        <div class="containerLeftComponents">
+        <ReassignSubtaskComponent OnClick="Activate" Task="SubTask" />
+        <TagComponent Task="SubTask" OnClick="Activate"></TagComponent>
+        </div>
+    </div>
     <div class="taskContainerRight">
         <div class="taskComponentsContainer">
-           <ReassignSubtaskComponent OnClick="Activate" Task="SubTask"></ReassignSubtaskComponent>
-            <MemberComponent OnClick="Activate" Task="SubTask"></MemberComponent>
-            <PriorityComponent OnClick="Activate" Task="SubTask"></PriorityComponent>
-            <StatusComponent OnClick="Activate" Task="SubTask"></StatusComponent>
-            <DateComponent OnClick="Activate" Task="SubTask"></DateComponent>
+            <MemberComponent OnClick="Activate" Task="SubTask" />
+            <PriorityComponent OnClick="Activate" Task="SubTask" />
+            <StatusComponent OnClick="Activate" Task="SubTask" />
+            <DateComponent OnClick="Activate" Task="SubTask" />
         </div>
         <div class="taskButtonsContainer">
-            <DeleteTaskComponent Task="SubTask" RefreshList="RefreshSubTasks"></DeleteTaskComponent>
+            <DeleteTaskComponent Task="SubTask" RefreshList="RefreshSubTasks" />
             @if (IsClicked)
             {
-                <EditSaveComponent OnClick="Activate" Task="SubTask" RefreshList="RefreshSubTasks"></EditSaveComponent>
+                <EditSaveComponent OnClick="Activate" Task="SubTask" RefreshList="RefreshSubTasks" />
             }
         </div>
     </div>

@@ -1,3 +1,17 @@
 ﻿.taskContainer {
     border-left: 10px solid rgb(33, 150, 243);
 }
+
+.taskDropdown{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.showMenu{
+    display: flex;
+}
+
+.triggerDropdown:hover{
+    display: flex;
+}

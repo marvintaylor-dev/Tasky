@@ -2,22 +2,28 @@
 @inject ITaskService taskService;
 
 
-<div class="taskContainer mud-elevation-1 py-2 px-5 rounded white" >
-    <div class="d-flex gap-5">
+<div class="taskContainer mud-elevation-1 py-2 px-5 rounded white">
+    <div class="d-flex gap-3">
         <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></TaskInputComponent>
-        <TagComponent Task="Task" OnClick="Activate"></TagComponent>
-        @if (Task.isSubTask == false && Task.TaskId > 0)
-        {
-            <MudIconButton Icon="@Icons.Material.Filled.Link" Variant="Variant.Outlined" Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}")" Size="Size.Small" @onclick="AddNewSubTask" />
-
-        }
+        <div class="containerLeftComponents @ShowComponentMenu">
+            @if (Task.isSubTask == false && Task.TaskId > 0)
+            {
+                <MudIconButton 
+                    Icon="@Icons.Material.Filled.Link" 
+                    Variant="Variant.Outlined" 
+                    Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}; padding: 2px;")" 
+                    Size="Size.Small" @onclick="AddNewSubTask" 
+                />
+            }
+            <TagComponent Task="Task" OnClick="Activate"></TagComponent>
+        </div>
     </div>
 
     <div class="taskContainerRight">
         <div class="taskComponentsContainer">
             <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></MemberComponent>
             <PriorityComponent OnClick="Activate" Task="Task"></PriorityComponent>
-            <StatusComponent OnClick="Activate" Task="Task" ></StatusComponent>
+            <StatusComponent OnClick="Activate" Task="Task"></StatusComponent>
             <DateComponent OnClick="Activate" Task="Task"></DateComponent>
         </div>
         <div class="taskButtonsContainer">
@@ -60,7 +66,17 @@
         await System.Threading.Tasks.Task.Delay(1000);
         IsClicked = false;
     }
+    public bool showMenu = false;
+    public string ShowComponentMenu => showMenu ? "showMenu" : null;
 
+    void ShowMenu()
+    {
+        showMenu = true;
+    }
+     void HideMenu()
+    {
+        showMenu = false;
+    }
 
     [Parameter]
     public NoteModel Task { get; set; }
