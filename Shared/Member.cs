@@ -17,6 +17,5 @@ namespace Tasky.Shared
         public string? Name { get; set; }
 
         
-
     }
 }

@@ -1,51 +1,83 @@
-﻿@using Tasky.Client.Services
-@inject IJSRuntime JS
+﻿@inject IJSRuntime JS
 @inject IMemberService memberService;
 
+<div class="memberContainer" @onfocusout="UnClick">
 
-@if (members.Count > 0)
-{
-    <select @bind-value="Task.Assignee" @bind-value:event="onchange" @onfocus="@ChildClicked">
-        <option selected value="0">Select One</option>
-        @foreach (var member in members)
+    @if(Task.Assignee == 0)
+    {
+        
+    <div>
+        <MudIcon Icon="@Icons.Outlined.SupervisedUserCircle" Size="Size.Small" Color="Color.Default" @onclick="ToggleClicked" />
+    </div>
+    }
+
+    @if(Task.Assignee > 0)
+    {
+         @foreach(var member in memberService.Members)
+            {
+                @if(member.MemberId == Task.Assignee)
+                {
+                    <div class="memberIcon" @onclick="ToggleClicked">
+                            <div>@member.Name[0]</div>
+                    </div>
+                }
+            }
+    }
+
+    <div class="memberDropdown @UserMenuCssClass">
+        @if (memberService.Members.Count > 0)
         {
-            <option value="@member.MemberId">@member.Name</option>
+            <select size="10" @bind-value="Task.Assignee" @bind-value:event="onchange">
+                @foreach (var member in memberService.Members)
+                {
+                    <option 
+                        class="memberOption" 
+                        value="@member.MemberId" 
+                        @onclick="UnClick"
+                    >
+                        @member.Name
+                    </option>
+                }
+            </select>
         }
-    </select>
-}
-else
-{
-    <select>
-        <option>No Options</option>
-    </select>
-}
+    </div>
+</div>
 
 @code {
     [Parameter]
     public NoteModel? Task { get; set; }
 
-    public List<Member> members = new List<Member>();
+    [Parameter]
+    public bool ReadClicked { get; set; }
 
     public bool IsClicked { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
 
-    async void ChildClicked()
+    
+    async Task UnClick()
     {
-        IsClicked = true;
+        await System.Threading.Tasks.Task.Delay(200);
+        showMenu = false;
+        IsClicked = false;
+    }
+
+    private bool showMenu = false;
+
+    private string UserMenuCssClass => showMenu ? "showMenu" : null;
+
+    async void ToggleClicked()
+    {
+        showMenu = !showMenu;
+        IsClicked = !IsClicked;
         await OnClick.InvokeAsync(IsClicked);
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        await GetMembers();
+        await memberService.GetMembers();
         await base.OnParametersSetAsync();
-    }
-
-    public async Task GetMembers()
-    {
-        members = await memberService.GetMembers();
     }
 
 }

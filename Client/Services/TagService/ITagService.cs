@@ -1,6 +1,6 @@
 ﻿using Tasky.Shared;
 
-namespace Tasky.Client.Services
+namespace Tasky.Client.Services.TagService
 {
     public interface ITagService
     {

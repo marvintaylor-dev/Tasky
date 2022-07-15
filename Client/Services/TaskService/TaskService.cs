@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using Tasky.Shared;
 
-namespace Tasky.Client.Services
+namespace Tasky.Client.Services.TaskService
 {
     public class TaskService : ITaskService
     {
@@ -15,14 +15,14 @@ namespace Tasky.Client.Services
 
         public async Task<NoteModel> AddTask(NoteModel addTask)
         {
-            var result = await _httpClient.PostAsJsonAsync<NoteModel>("api/notemodels", addTask);
+            var result = await _httpClient.PostAsJsonAsync("api/notemodels", addTask);
             var tasks = await result.Content.ReadFromJsonAsync<NoteModel>();
             return tasks;
         }
 
         public async Task<NoteModel> DeleteTask(int taskId)
         {
-           var result = await _httpClient.DeleteAsync($"api/notemodels/{taskId}");
+            var result = await _httpClient.DeleteAsync($"api/notemodels/{taskId}");
             var deletedTask = await result.Content.ReadFromJsonAsync<NoteModel>();
             return deletedTask;
         }

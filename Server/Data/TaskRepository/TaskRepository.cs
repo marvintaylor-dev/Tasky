@@ -2,7 +2,7 @@
 using Tasky.Server.Data;
 using Tasky.Shared;
 
-namespace Tasky.Server.Services
+namespace Tasky.Server.Data.TaskRepository
 {
     public class TaskRepository : ITaskRepository
     {
@@ -40,13 +40,13 @@ namespace Tasky.Server.Services
         {
             var result = await _context.Tasks.ToListAsync();
 
-            if(result == null)
+            if (result == null)
             {
                 throw new Exception("No Tasks were found");
             }
             else
             {
-            return result;
+                return result;
             }
         }
 
@@ -75,7 +75,7 @@ namespace Tasky.Server.Services
             result.status = model.status;
             result.isSubTask = model.isSubTask;
             result.Tag = model.Tag;
-          
+
             await _context.SaveChangesAsync();
             return result;
 

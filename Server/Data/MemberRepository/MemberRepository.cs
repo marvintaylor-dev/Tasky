@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tasky.Shared;
 
-namespace Tasky.Server.Data
+namespace Tasky.Server.Data.MemberRepository
 {
     public class MemberRepository : IMemberRepository
     {
@@ -12,9 +12,13 @@ namespace Tasky.Server.Data
             _context = context;
         }
 
-        public async Task<List<Member>> GetMembers()
+        public async Task<ServiceResponse<List<Member>>> GetMembers()
         {
-            return await _context.Members.ToListAsync();
+            var response = new ServiceResponse<List<Member>>
+            {
+                Data = await _context.Members.ToListAsync()
+            };
+            return response;
         }
     }
 }

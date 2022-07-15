@@ -52,14 +52,13 @@
     NoteModel newTask = new NoteModel();
     public IEnumerable<NoteModel> tasks = new List<NoteModel>();
     public List<Tag> tags = new List<Tag>();
-    public List<Member> members = new List<Member>();
 
     protected override async Task OnInitializedAsync()
     {
         properties = typeof(NoteModel).GetProperties();
         tasks = await taskService.GetTasks();
         tags = await tagService.GetAllTags();
-        members = await memberService.GetMembers();
+        await memberService.GetMembers();
 
         await base.OnInitializedAsync();
     }
@@ -100,7 +99,7 @@
     public void SortMems(int assigneeId)
     {
         Member foundMember;
-        foreach(Member member in members)
+        foreach(Member member in memberService.Members)
         {
             if(member.MemberId == assigneeId)
             {

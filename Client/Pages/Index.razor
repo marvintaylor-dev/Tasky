@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using Tasky.Client.Services
 @inject IJSRuntime JS
 @inject ITaskService taskService
 @inject IMemberService memberService
@@ -69,12 +68,11 @@ else
 
     NoteModel newTask = new NoteModel();
     List<NoteModel> tasks = new List<NoteModel>();
-    List<Member> members = new List<Member>();
 
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasks();
-        members = await memberService.GetMembers();
+        await memberService.GetMembers();
 
         await base.OnInitializedAsync();
     }

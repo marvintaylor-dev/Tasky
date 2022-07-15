@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using Tasky.Shared;
 
-namespace Tasky.Client.Services
+namespace Tasky.Client.Services.TagService
 {
     public class TagService : ITagService
     {
@@ -15,7 +15,7 @@ namespace Tasky.Client.Services
 
         public async Task<Tag> AddTag(Tag addTag)
         {
-            var result = await _httpClient.PostAsJsonAsync<Tag>("api/tags", addTag);
+            var result = await _httpClient.PostAsJsonAsync("api/tags", addTag);
             var tags = await result.Content.ReadFromJsonAsync<Tag>();
             return tags;
         }
@@ -40,7 +40,7 @@ namespace Tasky.Client.Services
         public async Task<Tag> GetTagById(int tagId)
         {
             var result = await _httpClient.GetFromJsonAsync<Tag>($"api/tags/{tagId}");
-            if(result == null)
+            if (result == null)
             {
                 return null;
             }

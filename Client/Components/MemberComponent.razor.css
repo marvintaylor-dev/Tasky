@@ -1,0 +1,46 @@
+﻿.memberContainer{
+    position: relative;
+    margin: 0rem 1rem;
+}
+
+.memberContainer:hover{
+    cursor:pointer;
+}
+
+.memberDropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    z-index: 1;
+    background: white;
+    padding: 1rem;
+    border: 1px solid lightgray;
+    box-shadow: 6px 9px 39px -5px rgba(0,0,0,0.46);
+}
+
+.showMenu{
+    display: block;
+}
+
+.memberOption{
+margin: .5rem 0rem;
+padding: .3rem;
+max-width: 100px;
+}
+
+.memberOption:hover{
+    background: lightgray;
+    cursor: pointer;
+}
+
+.memberIcon{
+    border: 1px solid black;
+    width: 1.4rem;
+    height: 1.4rem;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: 
+}

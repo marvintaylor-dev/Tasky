@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tasky.Server.Data;
-using Tasky.Server.Services;
+using Tasky.Server.Data.TaskRepository;
 using Tasky.Shared;
 
 namespace Tasky.Server.Controllers

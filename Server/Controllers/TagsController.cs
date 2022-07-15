@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Tasky.Server.Data;
+using Tasky.Server.Data.TagRepository;
 using Tasky.Shared;
 
 namespace Tasky.Server.Controllers

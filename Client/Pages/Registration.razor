@@ -1,29 +1,44 @@
 ﻿@page "/registration"
+@inject IAuthService authService;
 
 <h3>Registration</h3>
 
 <EditForm Model="user" OnValidSubmit="HandleRegistration">
-    <div>
+    <DataAnnotationsValidator />
+    <div class="mb-3 col-3">
         <label for="email">Email</label>
-        <input type="text" id="email" @bind-value="user.Email" @bind-value:event="oninput" />
+        <input type="text" id="email" @bind-value="user.Email" @bind-value:event="oninput" class="form-control " />
+        <ValidationMessage For="@(() => user.Email)" />
     </div>
-    <div>
+    <div class="mb-3 col-3">
         <label for="password">Password</label>
-        <input type="password" id="password" @bind-value="user.Password" @bind-value:event="oninput" />
+        <input type="password" id="password" @bind-value="user.Password" @bind-value:event="oninput" class="form-control" />
+        <ValidationMessage For="@(() => user.Password)" />
     </div>
-    <div>
+    <div class="mb-3 col-3">
         <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" @bind-value="user.ConfirmPassword" @bind-value:event="oninput" />
+        <input type="password" id="confirmPassword" @bind-value="user.ConfirmPassword" @bind-value:event="oninput" class="form-control" />
+        <ValidationMessage For="@(() => user.ConfirmPassword)" />
     </div>
-    <button type="submit">Submit</button>
-
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <div>@ErrorMessage</div>
 </EditForm>
 
 @code {
     UserRegister user = new UserRegister();
 
-    void HandleRegistration()
+    string ErrorMessage = string.Empty;
+
+    async Task HandleRegistration()
     {
-        Console.WriteLine($"Register User with the Email {user.Email}.");
+        var result = await authService.Register(user);
+        if (!result.Success)
+        {
+            ErrorMessage = result.Message;
+        }
+        else
+        {
+            ErrorMessage = string.Empty;
+        }
     }
 }

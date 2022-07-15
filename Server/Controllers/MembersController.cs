@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tasky.Server.Data;
-using Tasky.Server.Services;
+using Tasky.Server.Data.MemberRepository;
 using Tasky.Shared;
 
 namespace Tasky.Server.Controllers
 {
-    
-        [Route("api/[controller]")]
+
+    [Route("api/[controller]")]
         [ApiController]
         public class MembersController : ControllerBase
         {
@@ -18,16 +17,10 @@ namespace Tasky.Server.Controllers
             }
 
             [HttpGet]
-            public async Task<ActionResult<Member>> GetMembers()
+            public async Task<ActionResult<ServiceResponse<List<Member>>>> GetMembers()
             {
-                try
-                {
-                    return Ok(await _repository.GetMembers());
-                }
-                catch (Exception)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving data from the database.");
-                }
+               var result = await _repository.GetMembers();
+                return Ok(result);
             }
         }
     

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tasky.Shared;
 
-namespace Tasky.Server.Data
+namespace Tasky.Server.Data.TagRepository
 {
     public class TagRepository : ITagRepository
     {
@@ -52,7 +52,7 @@ namespace Tasky.Server.Data
 
         public async Task<Tag> GetTagById(int tagId)
         {
-            Tag singleTag= await _context.Tags.FirstOrDefaultAsync(t => t.TagId == tagId) ?? throw new Exception("Could not find id");
+            Tag singleTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagId == tagId) ?? throw new Exception("Could not find id");
             if (singleTag != null)
             {
                 return singleTag;

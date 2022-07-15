@@ -2,13 +2,13 @@
 
 
 <div class="reassignmentDropdownContainer">
-    <MudIcon Icon="@Icons.Filled.MoveUp" Size="Size.Small" Color="Color.Dark" @onclick="ChildClicked" />
+    <MudIcon Icon="@Icons.Filled.MoveUp" Size="Size.Small" Color="Color.Default" @onclick="ToggleClicked" />
     @if (IsClicked)
     {
 
         <div class="reassignmentDropdown" @onfocusout="UnClick">
             <div class="taskFont">Reassign to:</div>
-            <select @bind-value="Task.LinkTo" @bind-value:event="onchange"  @onfocusout="UnClick">
+            <select size="5" @bind-value="Task.LinkTo" @bind-value:event="onchange"  @onfocusout="UnClick">
                 @foreach (var task in tasks)
                 {
                     if (task.isSubTask == false)
@@ -38,9 +38,9 @@
 
     public bool IsClicked { get; set; }
 
-    async void ChildClicked()
+    async void ToggleClicked()
     {
-        IsClicked = true;
+        IsClicked = !IsClicked;
         await OnClick.InvokeAsync(IsClicked);
     }
 

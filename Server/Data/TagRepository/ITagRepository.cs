@@ -1,6 +1,6 @@
 ﻿using Tasky.Shared;
 
-namespace Tasky.Server.Data
+namespace Tasky.Server.Data.TagRepository
 {
     public interface ITagRepository
     {

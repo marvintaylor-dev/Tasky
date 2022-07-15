@@ -1,5 +1,4 @@
-﻿@using Tasky.Client.Services
-@inject IJSRuntime JS
+﻿@inject IJSRuntime JS
 @inject ITaskService taskService;
 
 
@@ -16,7 +15,7 @@
 
     <div class="taskContainerRight">
         <div class="taskComponentsContainer">
-            <MemberComponent OnClick="Activate" Task="Task"></MemberComponent>
+            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></MemberComponent>
             <PriorityComponent OnClick="Activate" Task="Task"></PriorityComponent>
             <StatusComponent OnClick="Activate" Task="Task" ></StatusComponent>
             <DateComponent OnClick="Activate" Task="Task"></DateComponent>
@@ -71,21 +70,6 @@
 
     [Parameter]
     public EventCallback CallSubTask { get; set; }
-
-    //Code to make index page register a click when a task component is clicked
-    //add @onclick="TaskClicked" to the taskContainer for this to work
-
-    //[Parameter]
-    //public EventCallback<bool> OnActive { get; set; }
-
-    //public bool IsActive { get; set; }
-
-    //async void TaskClicked()
-    //{
-    //    IsActive = true;
-    //    await OnActive.InvokeAsync(IsActive);
-    //}
-
 
     protected override async Task OnParametersSetAsync()
     {
