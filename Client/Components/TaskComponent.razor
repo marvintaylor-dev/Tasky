@@ -15,13 +15,13 @@
                     Size="Size.Small" @onclick="AddNewSubTask" 
                 />
             }
-            <TagComponent Task="Task" OnClick="Activate"></TagComponent>
+            <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList"></TagComponent>
         </div>
     </div>
 
     <div class="taskContainerRight">
         <div class="taskComponentsContainer">
-            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></MemberComponent>
+            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"  RefreshList="RefreshList"></MemberComponent>
             <PriorityComponent OnClick="Activate" Task="Task"></PriorityComponent>
             <StatusComponent OnClick="Activate" Task="Task"></StatusComponent>
             <DateComponent OnClick="Activate" Task="Task"></DateComponent>

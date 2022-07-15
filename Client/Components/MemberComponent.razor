@@ -1,5 +1,6 @@
 ﻿@inject IJSRuntime JS
 @inject IMemberService memberService;
+@inject ITaskService taskService;
 
 <div class="memberContainer" @onfocusout="UnClick">
 
@@ -27,14 +28,14 @@
     <div class="memberDropdown @UserMenuCssClass">
         @if (memberService.Members.Count > 0)
         {
-            <select size="10" @bind-value="Task.Assignee" @bind-value:event="onchange">
-                <option selected value="0">Select One</option>
+            <select class="memberSelect" size="10" @bind-value="Task.Assignee" @bind-value:event="onchange">
+                <option selected value="0" @onclick="AssignPerson">Select One</option>
                 @foreach (var member in memberService.Members)
                 {
                     <option 
                         class="memberOption" 
                         value="@member.MemberId" 
-                        @onclick="UnClick"
+                        @onclick="AssignPerson"
                     >
                         @member.Name
                     </option>
@@ -51,17 +52,26 @@
     [Parameter]
     public bool ReadClicked { get; set; }
 
+    [Parameter]
+    public EventCallback RefreshList { get; set; }
+
     public bool IsClicked { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
 
-    
     async Task UnClick()
     {
         await System.Threading.Tasks.Task.Delay(200);
         showMenu = false;
         IsClicked = false;
+    }
+
+    async Task AssignPerson()
+    {
+        await taskService.UpdateTask(Task);
+        await UnClick();
+        await RefreshList.InvokeAsync();
     }
 
     private bool showMenu = false;
@@ -72,7 +82,6 @@
     {
         showMenu = !showMenu;
         IsClicked = !IsClicked;
-        await OnClick.InvokeAsync(IsClicked);
     }
 
     protected override async Task OnParametersSetAsync()

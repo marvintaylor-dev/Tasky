@@ -49,7 +49,6 @@ else
                 await taskService.UpdateTask(task);
             }
         }
-
         await tagService.DeleteTag(id);
         await RefreshTags.InvokeAsync();
     }

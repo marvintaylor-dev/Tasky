@@ -19,6 +19,7 @@
 
 .reassignmentDropdownContainer{
     position: relative;
+    cursor: pointer;
 }
 
 .reassignmentOptions {
