@@ -3,21 +3,19 @@
 <div class="d-flex justify-content-left align-items-center">
     @if (IsClicked || !IsClicked && Task.TaskId == 0 && ReadClicked == false)
     {
-        <input 
-            type="text" 
+        <textarea
             id="taskInput" 
-            placeholder="Enter Task Name" 
-            autofocus=true
-           
-           @onfocus="@ChildClicked"
-           @onfocusout="UnClicked"
-           @onkeydown="@Enter"
+            placeholder="Enter Task Name"
+            rows="2" cols="30"
+            @onfocus="ChildClicked"
+           @onfocusout="ChildUnclicked"
+           @onkeydown="Enter"
            @bind-value="Task.Name"
            @bind-value:event="oninput" />
     }
     else if (!IsClicked)
     {
-        <div @onclick="Clicked" class="taskName">@Task.Name</div>
+        <div @onclick="ClickOnLoad" class="taskName">@Task.Name</div>
     }
 </div>
 
@@ -28,10 +26,12 @@
     [Parameter]
     public bool ReadClicked { get; set; }
 
-    public bool IsClicked { get; set; }
-
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
+
+
+    public bool IsClicked { get; set; }
+
 
     async void ChildClicked()
     {
@@ -41,6 +41,7 @@
 
     async void ChildUnclicked()
     {
+        await System.Threading.Tasks.Task.Delay(200);
         IsClicked = false;
         await OnClick.InvokeAsync(IsClicked);
     }
@@ -50,25 +51,28 @@
         IsClicked = true;
     }
 
-    async void UnClicked()
+    async void ClickOnLoad()
     {
-        IsClicked = false;
+        ChildClicked();
+        await JS.InvokeVoidAsync("FocusAsync");
     }
 
-    public void Enter(KeyboardEventArgs e)
+
+    public async void Enter(KeyboardEventArgs e)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            ClickSaveBtn();
+            await ClickSaveBtn();
+            IsClicked = false;
         }
     }
 
-    public void EnterOnSelect(EventArgs e)
+    public async void EnterOnSelect(EventArgs e)
     {
-        ClickSaveBtn();
+        await ClickSaveBtn();
     }
 
-    public async void ClickSaveBtn()
+    public async Task ClickSaveBtn()
     {
         try
         {
@@ -79,5 +83,6 @@
             Console.WriteLine(ex);
         }
     }
+
 
 }

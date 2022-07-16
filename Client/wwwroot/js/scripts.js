@@ -17,6 +17,9 @@ function saveOnEnter() {
 }
 
 function FocusAsync() {
-    document.querySelector(inputRef).focus();
-}
+    //give time for taskInput to load
+    setTimeout(function () {
+    document.querySelector("#taskInput").focus();
+    }, 50)
+};
 

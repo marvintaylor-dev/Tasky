@@ -2,18 +2,26 @@
 @inject ITaskService taskService;
 
 
-<div class="taskContainer mud-elevation-1 py-2 px-5 rounded white">
+<div class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
     <div class="d-flex gap-3">
+        @if (Task.isSubTask == true)
+        {
+        <div class="subtaskSpacer"></div>
+        }
         <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></TaskInputComponent>
-        <div class="containerLeftComponents @ShowComponentMenu">
+        <div class="containerLeftComponents">
             @if (Task.isSubTask == false && Task.TaskId > 0)
             {
                 <MudIconButton 
                     Icon="@Icons.Material.Filled.Link" 
                     Variant="Variant.Outlined" 
                     Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}; padding: 2px;")" 
-                    Size="Size.Small" @onclick="AddNewSubTask" 
+                    Size="Size.Small" @onclick="AddSubTask" 
                 />
+            }
+            else if(Task.isSubTask == true)
+            {
+                <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
             }
             <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList"></TagComponent>
         </div>
@@ -27,32 +35,33 @@
             <DateComponent OnClick="Activate" Task="Task"></DateComponent>
         </div>
         <div class="taskButtonsContainer">
-            <DeleteTaskComponent Task="Task" RefreshList="RefreshList"></DeleteTaskComponent>
+            <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks"></DeleteTaskComponent>
             @if (IsClicked)
             {
-                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshList"></EditSaveComponent>
+                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks"></EditSaveComponent>
             }
         </div>
     </div>
 </div>
 
 
-@foreach (var task in tasks)
-{
-    if (task.isSubTask == true)
-    {
-        if (task.LinkTo == Task.TaskId)
-        {
-            <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks" CallSubTask="AddSubTask"></SubTaskComponent>
-        }
-    }
-}
-
 
 
 @code {
     public List<NoteModel> tasks = new List<NoteModel>();
     public NoteModel newSubTask = new NoteModel();
+
+
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshList { get; set; }
+
+    [Parameter]
+    public EventCallback CallSubTask { get; set; }
+
+    public string TaskOrSubtask => Task.isSubTask == false ? "taskBorder" : "subtaskBorder";
 
     public bool IsClicked { get; set; }
 
@@ -66,26 +75,7 @@
         await System.Threading.Tasks.Task.Delay(1000);
         IsClicked = false;
     }
-    public bool showMenu = false;
-    public string ShowComponentMenu => showMenu ? "showMenu" : null;
 
-    void ShowMenu()
-    {
-        showMenu = true;
-    }
-     void HideMenu()
-    {
-        showMenu = false;
-    }
-
-    [Parameter]
-    public NoteModel Task { get; set; }
-
-    [Parameter]
-    public EventCallback RefreshList { get; set; }
-
-    [Parameter]
-    public EventCallback CallSubTask { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -107,12 +97,13 @@
         StateHasChanged();
     }
 
-    public async void RefreshSubTasks()
+    public async void RefreshTasks()
     {
-        tasks = await taskService.GetTasks();
+        
         StateHasChanged();
         await RefreshList.InvokeAsync();
         Console.WriteLine("Refresh SubTasks Has Been Called");
     }
 
+   
 }

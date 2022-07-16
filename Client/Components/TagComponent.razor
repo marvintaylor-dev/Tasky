@@ -125,7 +125,7 @@
 
     public async Task RefreshTagsAndTasks()
     {
-        GetTags();
+        await GetTags();
         await RefreshList.InvokeAsync();
     }
 
@@ -171,6 +171,7 @@
     {
         var savedTag = await tagService.AddTag(saveTag);
         await BindTagId(savedTag);
+        await RefreshTagsAndTasks();
         StateHasChanged();
         CloseDropdown();
     }

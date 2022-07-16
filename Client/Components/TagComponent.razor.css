@@ -1,16 +1,20 @@
 ﻿.tagContainer{
     position: relative;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .tagInput{
     border: 1px solid black;
-    width: 5rem;
+    max-width: 90%;
+    padding: .2rem;
 }
 
 .colorDropdown {
     position: absolute;
     left: 100%;
-    top: 0rem;
+    top: 1rem;
     z-index: 1;
     background-color: white;
     display: flex;

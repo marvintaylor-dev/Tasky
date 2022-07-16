@@ -34,7 +34,7 @@
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
 
-    async void ChildClicked()
+    async Task ChildClicked()
     {
         IsClicked = false;
         await OnClick.InvokeAsync(IsClicked);
@@ -43,14 +43,14 @@
     async void SaveTask(NoteModel task)
     {
         await taskService.AddTask(task);
-        ChildClicked();
+        await ChildClicked();
         await RefreshList.InvokeAsync();
     }
 
     async void EditTask(NoteModel task)
     {
         await taskService.UpdateTask(task);
-        ChildClicked();
+        await ChildClicked();
         await RefreshList.InvokeAsync();
     }
 

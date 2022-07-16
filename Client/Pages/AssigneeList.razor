@@ -85,7 +85,7 @@
             NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
             if (isTaskAvailable == null)
             {
-                <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks"></SubTaskComponent>
+                <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
             }
             else
             {

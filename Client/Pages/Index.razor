@@ -9,14 +9,14 @@
 </div>
 
 @*
-   Beginning of adding a section
-   
-<button class="btn btn-primary" @onclick="ToggleInput">Add a Section +</button>
-@if (ShowInput)
-{
+    Beginning of adding a section
+
+    <button class="btn btn-primary" @onclick="ToggleInput">Add a Section +</button>
+    @if (ShowInput)
+    {
     <input type="text" placeholder="Enter Section" />
     <button>Save</button>
-}*@
+    }*@
 
 @if (tasks.Count == 0)
 {
@@ -26,30 +26,22 @@
 }
 else
 {
-    foreach (var task in tasks)
+    @foreach (var task in tasks)
     {
         if (task.isSubTask == false)
         {
-            <div class="centerTask">
-            <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="AddNewSubTask"></TaskComponent>
-            </div>
-        }
-        if (task.isSubTask == true && task.Assignee == 0)
-        {
-            NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
-            if (isTaskAvailable == null)
+            <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
+            @foreach (var t in tasks)
             {
-                <SubTaskComponent SubTask="task" RefreshSubTasks="RefreshSubTasks"></SubTaskComponent>
+                if (t.LinkTo == task.TaskId)
+                {
+                    <TaskComponent Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
+                }
             }
-            else
-            {
-                Console.WriteLine(isTaskAvailable);
-            }
-        }
 
+        }
     }
 
-    
 }
 
 <div class="centerTask">
@@ -69,11 +61,11 @@ else
     NoteModel newTask = new NoteModel();
     List<NoteModel> tasks = new List<NoteModel>();
 
+
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasks();
         await memberService.GetMembers();
-
         await base.OnInitializedAsync();
     }
 
@@ -98,14 +90,16 @@ else
     {
         tasks.Add(newTask);
         newTask.Name = String.Empty;
+        newTask.isSubTask = false;
         StateHasChanged();
     }
 
-    void AddNewSubTask()
+    void AddNewSubTask(int taskId)
     {
         tasks.Add(newTask);
         newTask.Name = String.Empty;
         newTask.isSubTask = true;
+        newTask.LinkTo = taskId;
         StateHasChanged();
     }
 
@@ -115,12 +109,5 @@ else
         tasks = await taskService.GetTasks();
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
-    }
-
-    public async void RefreshSubTasks()
-    {
-        tasks = await taskService.GetTasks();
-        StateHasChanged();
-        Console.WriteLine("Refresh SubTasks Has Been Called");
     }
 }

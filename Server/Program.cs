@@ -2,6 +2,7 @@ global using Tasky.Server.Data.AuthService;
 global using Tasky.Server.Data.MemberRepository;
 global using Tasky.Server.Data.TagRepository;
 global using Tasky.Server.Data.TaskRepository;
+
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Tasky.Server.Data;
