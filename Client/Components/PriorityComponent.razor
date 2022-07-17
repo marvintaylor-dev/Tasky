@@ -1,7 +1,7 @@
-﻿<select class="priorityOption" @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="ChildClicked">
+﻿<select @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="ChildClicked">
     @foreach (var priority in priorities)
     {
-        <option class="priorityOption" value="@priority">@SplitCamelCase(priority.ToString())</option>
+        <option value="@priority">@SplitCamelCase(priority.ToString())</option>
     }
 </select>
 

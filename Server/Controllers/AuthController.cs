@@ -32,5 +32,19 @@ namespace Tasky.Server.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<ServiceResponse<int>>> Login(UserLogin request)
+        {
+            var response = await _authService.Login(request.Email, request.Password);
+
+
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
     }
 }

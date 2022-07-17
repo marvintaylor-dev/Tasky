@@ -20,25 +20,29 @@
         <input type="password" id="confirmPassword" @bind-value="user.ConfirmPassword" @bind-value:event="oninput" class="form-control" />
         <ValidationMessage For="@(() => user.ConfirmPassword)" />
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <div>@ErrorMessage</div>
+    <button type="submit" class="btn btn-primary">Register</button>
+    <div class="mt-5 @MessageCssClass">
+        <div>@Message</div>
+    </div>
 </EditForm>
 
 @code {
     UserRegister user = new UserRegister();
 
-    string ErrorMessage = string.Empty;
+    string Message = string.Empty;
+    string MessageCssClass = string.Empty;
 
     async Task HandleRegistration()
     {
         var result = await authService.Register(user);
+        Message = result.Message;
         if (!result.Success)
         {
-            ErrorMessage = result.Message;
+            MessageCssClass = "message-danger";
         }
         else
         {
-            ErrorMessage = string.Empty;
+            MessageCssClass = "message-success";
         }
     }
 }

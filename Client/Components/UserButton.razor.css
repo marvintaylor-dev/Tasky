@@ -13,3 +13,7 @@
 .userIcon{
     position: relative;
 }
+
+.nav-link:hover{
+    cursor: pointer;
+}
