@@ -70,6 +70,7 @@ namespace Tasky.Server.Data.TaskRepository
             result.Name = model.Name;
             result.Assignee = model.Assignee;
             result.PriorityLevel = model.PriorityLevel;
+            result.StartDate = model.StartDate;
             result.DueDate = model.DueDate;
             result.LinkTo = model.LinkTo;
             result.status = model.status;

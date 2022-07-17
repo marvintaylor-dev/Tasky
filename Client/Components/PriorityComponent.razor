@@ -1,9 +1,10 @@
-﻿<select @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="@ChildClicked">
+﻿<select class="priorityOption" @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="ChildClicked">
     @foreach (var priority in priorities)
     {
-        <option value="@priority">@SplitCamelCase(priority.ToString())</option>
+        <option class="priorityOption" value="@priority">@SplitCamelCase(priority.ToString())</option>
     }
 </select>
+
 
 @code {
 
@@ -11,6 +12,39 @@
     public NoteModel Task { get; set; }
 
     public bool IsClicked { get; set; }
+
+    //public int colorSelected = 0;
+
+    //public string ColorSelected = string.Empty;
+
+    //public void ChangeColor()
+    //{
+    //    Console.WriteLine("Hello");
+    //    ColorSelected = PriorityColor(Task.PriorityLevel);
+    //    StateHasChanged();
+    //}
+
+    //public string PriorityColor(Priority priorityLevel)
+    //{
+    //    switch (priorityLevel)
+    //    {
+    //        case Priority.WouldHave:
+    //            return "one";
+
+    //        case Priority.CouldHave:
+    //            return "two";
+
+    //        case Priority.ShouldHave:
+    //            return "three";
+
+    //        case Priority.MustHave:
+    //            return "four";
+
+    //        default:
+    //            return "five";
+
+    //    }
+    //}
 
     Array priorities;
 
@@ -23,10 +57,10 @@
         await OnClick.InvokeAsync(IsClicked);
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         priorities = Enum.GetValues(typeof(Priority));
-        await base.OnInitializedAsync();
+        await base.OnParametersSetAsync();
     }
 
      public static string SplitCamelCase(string input)

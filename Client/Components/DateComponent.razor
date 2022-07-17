@@ -1,11 +1,41 @@
-﻿<input type="date" placeholder="Due Date" @bind-value="Task.DueDate" @bind-value:event="onchange" @onfocus="@ChildClicked" />
+﻿@inject ITaskService taskService
+
+<div class="dateComponentContainer">
+
+    <div class="dateIcon">
+        <MudIcon Icon="@Icons.Filled.CalendarMonth" Size="Size.Small" Color="Color.Default" @onclick="ToggleClicked" />
+    </div>
+    <div class="dateDropdown @MenuVisible">
+        <div class="d-flex flex-row">
+            <div>
+                <div class="dateLabel start">Start Date</div>
+                <input class="dateInput" type="date" placeholder="Start Date" @bind-value="Task.StartDate" @bind-value:event="onchange" />
+            </div>
+            <div>
+                <div class="dateLabel end">End Date</div>
+                <input class="dateInput" type="date" placeholder="Due Date" @bind-value="Task.DueDate" @bind-value:event="onchange" />
+            </div>
+        </div>
+        <div class="dateSaveBtn" @onclick="SaveDate">
+            <EditSaveComponent Task="Task" OnClick="CloseDropdown" RefreshList="RefreshDates" />
+        </div>
+    </div>
+
+</div>
 
 
 @code {
     [Parameter]
     public NoteModel Task { get; set; }
 
-     public bool IsClicked { get; set; }
+    [Parameter]
+    public EventCallback RefreshList { get; set; }
+
+    public bool IsClicked { get; set; }
+
+    public bool showMenu = false;
+
+    public string MenuVisible => showMenu ? "show" : null;
 
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
@@ -16,9 +46,28 @@
         await OnClick.InvokeAsync(IsClicked);
     }
 
-
-    void Clicked()
+    async void ToggleClicked()
     {
-        IsClicked = true;
+        IsClicked = !IsClicked;
+        showMenu = !showMenu;
     }
+
+    async void SaveDate()
+    {
+        await taskService.UpdateTask(Task);
+        RefreshDates();
+        await CloseDropdown();
+    }
+
+    async void RefreshDates()
+    {
+        await RefreshList.InvokeAsync();
+    }
+
+    async Task CloseDropdown()
+    {
+        await System.Threading.Tasks.Task.Delay(100);
+        showMenu = false;
+    }
+
 }

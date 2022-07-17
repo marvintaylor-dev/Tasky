@@ -8,12 +8,12 @@
 
     @if (Task.TaskId > 0)
     {
-        <MudIconButton Color="Color.Info" id="editButton" Icon="@Icons.Material.Filled.Create" Size="Size.Small" @onclick="(()=> EditTask(Task))" />
+        <MudIconButton Color="EditColorIs" id="editButton" Icon="@Icons.Material.Filled.Create" Size="Size.Small" @onclick="(()=> EditTask(Task))" />
         
     }
     else
     {
-        <MudIconButton Color="Color.Tertiary" id="saveButton" Icon="@Icons.Material.Filled.Save" Size="Size.Small" @onclick="(() => SaveTask(Task))" />
+        <MudIconButton Color="SaveColorIs" id="saveButton" Icon="@Icons.Material.Filled.Save" Size="Size.Small" @onclick="(() => SaveTask(Task))" />
     }
 </div>
 
@@ -28,6 +28,11 @@
     [Parameter]
     public EventCallback RefreshList { get; set; }
 
+    [Parameter]
+    public MudBlazor.Color EditColorIs { get; set; } = Color.Info;
+
+    [Parameter]
+    public MudBlazor.Color SaveColorIs { get; set; } = Color.Tertiary;
 
     public bool IsClicked { get; set; }
 

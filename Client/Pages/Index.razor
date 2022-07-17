@@ -38,6 +38,13 @@ else
                     <TaskComponent Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
                 }
             }
+            @*@foreach (var pair in taskDictionary)
+                {
+                @if (pair.Value.isSubTask == true && pair.Value.LinkTo == task.TaskId)
+                {
+                <TaskComponent Task="pair.Value" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
+                }
+                }*@
 
         }
     }
@@ -58,13 +65,26 @@ else
         ShowInput = !ShowInput;
     }
 
+    //Dictionary<int, NoteModel> taskDictionary = new Dictionary<int, NoteModel>();
     NoteModel newTask = new NoteModel();
     List<NoteModel> tasks = new List<NoteModel>();
 
+    //public async Task DictionaryUpdate()
+    //{
+    //    @foreach (var task in tasks)
+    //    {
+    //        if (!taskDictionary.ContainsKey(task.TaskId))
+    //        {
+    //            taskDictionary.Add(task.TaskId, task);
+    //        }
+    //    }
+    //}
 
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasks();
+        //await DictionaryUpdate();
+
         await memberService.GetMembers();
         await base.OnInitializedAsync();
     }
@@ -100,6 +120,7 @@ else
         newTask.Name = String.Empty;
         newTask.isSubTask = true;
         newTask.LinkTo = taskId;
+        //await DictionaryUpdate();
         StateHasChanged();
     }
 

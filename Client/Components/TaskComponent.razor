@@ -4,10 +4,7 @@
 
 <div class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
     <div class="d-flex gap-3">
-        @if (Task.isSubTask == true)
-        {
-        <div class="subtaskSpacer"></div>
-        }
+        
         <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></TaskInputComponent>
         <div class="containerLeftComponents">
             @if (Task.isSubTask == false && Task.TaskId > 0)
@@ -32,7 +29,7 @@
             <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"  RefreshList="RefreshList"></MemberComponent>
             <PriorityComponent OnClick="Activate" Task="Task"></PriorityComponent>
             <StatusComponent OnClick="Activate" Task="Task"></StatusComponent>
-            <DateComponent OnClick="Activate" Task="Task"></DateComponent>
+            <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList"></DateComponent>
         </div>
         <div class="taskButtonsContainer">
             <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks"></DeleteTaskComponent>

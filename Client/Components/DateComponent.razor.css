@@ -1,0 +1,64 @@
+﻿.dateComponentContainer{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dateIcon:hover,
+.dateSaveBtn:hover,
+.dateInput:hover{
+    cursor: pointer;
+}
+
+.dateDropdown {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 2rem;
+    position: absolute;
+    top: 120%;
+    background: white;
+    z-index: 1;
+    box-shadow: 6px 9px 39px -5px rgba(0,0,0,0.46);
+    padding: 1rem .5rem;
+    border: 1px solid lightgray;
+}
+
+.dateLabel{
+    font-weight: bold;
+    font-size: 1rem;
+    width: 100%;
+    padding: .5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.dateInput {
+    margin: 0rem 1rem;
+}
+
+.show{
+    display: flex;
+}
+
+.dateSaveBtn{
+    background: lightgray;
+    width: 100%;
+    padding: .5rem;
+    text-align: center;
+}
+
+.dateSaveBtn:hover {
+    filter: brightness(1.1);
+}
+
+.start{
+    background: #2196F3;
+}
+
+.end {
+    background: #ff4081ff;
+}

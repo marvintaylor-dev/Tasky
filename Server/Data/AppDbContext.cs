@@ -24,5 +24,7 @@ namespace Tasky.Server.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Section> Sections { get; set; }
+
     }
 }

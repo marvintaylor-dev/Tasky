@@ -13,6 +13,6 @@ namespace Tasky.Shared
         public int SectionId { get; set; }
         public string SectionName { get; set; } = String.Empty;
 
-        public List<NoteModel> SectionTasks { get; set; }
+        //public List<int> SectionTasks { get; set; } = new List<int>();
     }
 }

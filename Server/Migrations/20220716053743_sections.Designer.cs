@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220716053743_sections")]
+    partial class sections
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,8 +115,8 @@ namespace Tasky.Server.Migrations
                     b.Property<int>("PriorityLevel")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int?>("SectionId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Tag")
                         .HasColumnType("int");
@@ -126,6 +128,8 @@ namespace Tasky.Server.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("TaskId");
+
+                    b.HasIndex("SectionId");
 
                     b.ToTable("Tasks");
                 });
@@ -203,7 +207,19 @@ namespace Tasky.Server.Migrations
 
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
                 {
+                    b.HasOne("Tasky.Shared.Section", null)
+                        .WithMany("SectionTasks")
+                        .HasForeignKey("SectionId");
+                });
+
+            modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
+                {
                     b.Navigation("Notes");
+                });
+
+            modelBuilder.Entity("Tasky.Shared.Section", b =>
+                {
+                    b.Navigation("SectionTasks");
                 });
 #pragma warning restore 612, 618
         }
