@@ -1,10 +1,22 @@
-﻿<div class="d-flex justify-content-start align-items-start flex-column userIcon">
-    <div class="nav-link" >
-        <MudIcon Icon="@Icons.Filled.PersonOutline" Style="font-size: 1.5rem; margin-right: 5rem;" @onclick="ToggleUserMenu" @onfocusout="HideUserMenu"  />
+﻿@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject NavigationManager navigationManager
+
+<div class="d-flex justify-content-start align-items-start flex-column userIcon">
+    <div class="nav-link">
+        <MudIcon Icon="@Icons.Filled.PersonOutline" Style="font-size: 1.5rem; margin-right: 5rem;" @onclick="ToggleUserMenu" @onfocusout="HideUserMenu" />
     </div>
     <div class="dropdownMenu mud-elevation-1 py-2 px-5 rounded white @UserMenuCssClass">
-        <NavLink class="nav-link" href="/registration" @onclick="HideUserMenu" Match="NavLinkMatch.All">Sign Up</NavLink>
-        <NavLink class="nav-link" href="/login" @onclick="HideUserMenu" Match="NavLinkMatch.All">Log In</NavLink>
+        <AuthorizeView>
+            <Authorized>
+                <button class="nav-link" Match="NavLinkMatch.All" @onclick="LogOut">Log Out</button>
+            </Authorized>
+            <NotAuthorized>
+                <a class="nav-link" href="/registration" @onclick="HideUserMenu" Match="NavLinkMatch.All">Sign Up</a>
+                <a class="nav-link" href="/login?returnUrl=@navigationManager.ToBaseRelativePath(navigationManager.Uri)" @onclick="HideUserMenu" Match="NavLinkMatch.All">Log In</a>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
 </div>
 
@@ -19,6 +31,12 @@
         showUserMenu = !showUserMenu;
     }
 
+    private async Task LogOut()
+    {
+        await localStorage.RemoveItemAsync("authToken");
+        await authenticationStateProvider.GetAuthenticationStateAsync();
+        navigationManager.NavigateTo("");
+    }
 
     private async Task HideUserMenu()
     {

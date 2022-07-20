@@ -1,23 +1,48 @@
-﻿using System.Security.Claims;
+﻿using Blazored.LocalStorage;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Tasky.Client
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
+        private readonly ILocalStorageService _localStorage;
+        private readonly HttpClient _httpClient;
+
+        public CustomAuthStateProvider(ILocalStorageService localStorage, HttpClient httpClient)
+        {
+            _localStorage = localStorage;
+            _httpClient = httpClient;
+        }
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            //enter JSON web token here.
-            string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-            var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
-            //var identity = new ClaimsIdentity();
+            string authToken = await _localStorage.GetItemAsStringAsync("authToken");
+            var identity = new ClaimsIdentity();
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+
+            if (!string.IsNullOrEmpty(authToken))
+            {
+                try
+                {
+                    identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
+                    _httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
+                }
+                catch
+                {
+                    await _localStorage.RemoveItemAsync("authToken");
+                    identity = new ClaimsIdentity();
+                }
+            }
+
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);
 
             NotifyAuthenticationStateChanged(Task.FromResult(state));
 
             return state;
-            throw new NotImplementedException();
         }
 
         //code from Steve Sanderson github

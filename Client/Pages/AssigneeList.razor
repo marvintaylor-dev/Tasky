@@ -4,6 +4,8 @@
 @inject IJSRuntime JS
 @inject ITaskService taskService
 @inject IMemberService memberService
+@attribute [Authorize]
+
 
 <div class="titleContainer d-flex justify-content-center align-items-center flex-column">
     <h3>Assignee List</h3>

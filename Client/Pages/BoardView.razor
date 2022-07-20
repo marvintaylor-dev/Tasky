@@ -2,6 +2,8 @@
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Authorization
 @inject ITaskService taskService;
+@attribute [Authorize]
+
 
 <AuthorizeView>
     <Authorized>

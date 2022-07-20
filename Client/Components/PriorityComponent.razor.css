@@ -17,3 +17,37 @@
 .five {
     background: #6D4C41;
 }
+
+.priorityDropdown {
+    display: none;
+    position: absolute;
+    top: 120%;
+    background: white;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1;
+    box-shadow: 6px 9px 39px -5px rgba(0,0,0,0.46);
+}
+
+.show{
+    display: flex;
+}
+
+.priorityOption{
+    min-width: fit-content;
+}
+
+.priorityItem{
+    cursor: pointer;
+    padding: .5rem .3rem;
+}
+
+.priorityItem:hover{
+    background: lightgray;
+}
+
+.priorityContainer{
+    position: relative;
+}
+

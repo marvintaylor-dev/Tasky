@@ -2,7 +2,7 @@
 @inject IJSRuntime JS
 @inject ITaskService taskService
 @inject IMemberService memberService
-
+@attribute [Authorize]
 
 <div class="titleContainer d-flex justify-content-center align-items-center">
     <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>

@@ -2,6 +2,8 @@
 @inject ITaskService taskService;
 @inject ITagService tagService;
 @inject IMemberService memberService;
+@attribute [Authorize]
+
 @using System.Reflection
 
 <div class="titleContainer d-flex justify-content-center align-items-center flex-column">

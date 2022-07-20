@@ -1,10 +1,39 @@
-﻿<select @bind-value="Task.PriorityLevel" @bind-value:event="onchange" @onfocus="ChildClicked">
-    @foreach (var priority in priorities)
-    {
-        <option value="@priority">@SplitCamelCase(priority.ToString())</option>
-    }
-</select>
+﻿@inject ITaskService taskService
 
+
+<div class="priorityContainer">
+    <div>
+        @if (Task.PriorityLevel == Priority.None)
+        {
+            <MudIcon Icon="@Icons.Filled.OutlinedFlag" Size="Size.Small" Color="Color.Default" @onclick="ToggleClicked" />
+        }
+        else if (Task.PriorityLevel == Priority.MustHave)
+        {
+            <MudIcon Icon="@Icons.Filled.Flag" Size="Size.Small" Color="Color.Error" @onclick="ToggleClicked" />
+        }
+        else if (Task.PriorityLevel == Priority.ShouldHave)
+        {
+            <MudIcon Icon="@Icons.Filled.Flag" Size="Size.Small" Color="Color.Info" @onclick="ToggleClicked" />
+        }
+        else if (Task.PriorityLevel == Priority.CouldHave)
+        {
+            <MudIcon Icon="@Icons.Filled.Flag" Size="Size.Small" Color="Color.Primary" @onclick="ToggleClicked" />
+        }
+        else if (Task.PriorityLevel == Priority.WouldHave)
+        {
+            <MudIcon Icon="@Icons.Filled.Flag" Size="Size.Small" Color="Color.Default" @onclick="ToggleClicked" />
+        }
+    </div>
+
+    <select size="5" class="priorityDropdown @ShowPriorityDropdown" @bind-value="Task.PriorityLevel" @bind-value:event="onchange">
+        @foreach (var priority in priorities)
+        {
+            <option class="priorityItem" value="@priority" @onclick="SavePriority">
+                @SplitCamelCase(priority.ToString())
+            </option>
+        }
+    </select>
+</div>
 
 @code {
 
@@ -12,6 +41,43 @@
     public NoteModel Task { get; set; }
 
     public bool IsClicked { get; set; }
+
+    public bool showMenu = false;
+
+    public string ShowPriorityDropdown => showMenu ? "show" : null;
+
+    Array priorities;
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
+    async void ToggleClicked()
+    {
+        IsClicked = !IsClicked;
+        showMenu = !showMenu;
+        await OnClick.InvokeAsync(IsClicked);
+    }
+
+    public async void SavePriority()
+    {
+        taskService.UpdateTask(Task);
+        showMenu = false;
+        IsClicked = false;
+        await OnClick.InvokeAsync(IsClicked);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        priorities = Enum.GetValues(typeof(Priority));
+        await base.OnParametersSetAsync();
+    }
+
+    public static string SplitCamelCase(string input)
+    {
+        return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
+    }
+
+
 
     //public int colorSelected = 0;
 
@@ -45,27 +111,5 @@
 
     //    }
     //}
-
-    Array priorities;
-
-    [Parameter]
-    public EventCallback<bool> OnClick { get; set; }
-
-    async void ChildClicked()
-    {
-        IsClicked = true;
-        await OnClick.InvokeAsync(IsClicked);
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        priorities = Enum.GetValues(typeof(Priority));
-        await base.OnParametersSetAsync();
-    }
-
-     public static string SplitCamelCase(string input)
-    {
-        return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
-    }
 
 }

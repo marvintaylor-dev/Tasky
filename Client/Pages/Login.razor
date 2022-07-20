@@ -1,4 +1,10 @@
 ﻿@page "/login"
+@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.WebUtilities
+@inject IAuthService authService
+@inject ILocalStorageService localStorage
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <h3>Login</h3>
 
@@ -16,13 +22,41 @@
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
 </EditForm>
+<div class="text-danger">
+    <span>@errorMessage</span>
+</div>
 
 
 @code {
     private UserLogin user = new UserLogin();
 
+    private string errorMessage = string.Empty;
+
+    private string returnUrl = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        if(QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
+        {
+            returnUrl = url;
+        }
+    }
+
     public async Task HandleLogin()
     {
-        Console.WriteLine("Handle Login");
+        var result = await authService.Login(user);
+        if (result.Success)
+        {
+            errorMessage = string.Empty;
+
+            await localStorage.SetItemAsync("authToken", result.Data);
+            await authenticationStateProvider.GetAuthenticationStateAsync();
+            navigationManager.NavigateTo(returnUrl);
+        }
+        else
+        {
+            errorMessage = result.Message;
+        }
     }
 }
