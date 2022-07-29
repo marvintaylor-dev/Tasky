@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Tasky.Server.Data;
 using Tasky.Shared;
 
@@ -7,10 +8,12 @@ namespace Tasky.Server.Data.TaskRepository
     public class TaskRepository : ITaskRepository
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public TaskRepository(AppDbContext context)
+        public TaskRepository(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<NoteModel> AddTask(NoteModel newTask)
@@ -66,17 +69,8 @@ namespace Tasky.Server.Data.TaskRepository
         public async Task<NoteModel> UpdateTask(NoteModel model)
         {
             NoteModel result = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == model.TaskId) ?? throw new Exception("Could not find id");
-
-            result.Name = model.Name;
-            result.Assignee = model.Assignee;
-            result.PriorityLevel = model.PriorityLevel;
-            result.StartDate = model.StartDate;
-            result.DueDate = model.DueDate;
-            result.LinkTo = model.LinkTo;
-            result.status = model.status;
-            result.isSubTask = model.isSubTask;
-            result.Tag = model.Tag;
-
+            _mapper.Map(model, result);
+           
             await _context.SaveChangesAsync();
             return result;
 

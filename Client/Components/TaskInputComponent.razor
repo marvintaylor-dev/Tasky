@@ -1,13 +1,13 @@
 ﻿@inject IJSRuntime JS
 
-<div class="d-flex justify-content-left align-items-center">
+<div class="d-flex justify-content-left align-items-center @SubtaskCss">
     @if (IsClicked || !IsClicked && Task.TaskId == 0 && ReadClicked == false)
     {
         <textarea
             id="taskInput" 
             placeholder="Enter Task Name"
             rows="2" cols="30"
-            @onfocus="ChildClicked"
+           @onfocus="ChildClicked"
            @onfocusout="ChildUnclicked"
            @onkeydown="Enter"
            @bind-value="Task.Name"
@@ -20,6 +20,8 @@
 </div>
 
 @code {
+
+
     [Parameter]
     public NoteModel Task { get; set; }
 
@@ -29,6 +31,7 @@
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
 
+    public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
 
     public bool IsClicked { get; set; }
 

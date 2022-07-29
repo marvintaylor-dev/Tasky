@@ -6,3 +6,8 @@
     padding: .2rem .5rem;
     resize: none;
 }
+
+.subtaskIndent {
+    margin-left: 2rem;
+    width: 170px;
+}

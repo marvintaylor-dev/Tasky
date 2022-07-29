@@ -4,8 +4,7 @@
 
 <div class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
     <div class="d-flex gap-3">
-        
-        <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"></TaskInputComponent>
+        <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" />
         <div class="containerLeftComponents">
             @if (Task.isSubTask == false && Task.TaskId > 0)
             {
@@ -20,22 +19,22 @@
             {
                 <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
             }
-            <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList"></TagComponent>
+            <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
         </div>
     </div>
 
     <div class="taskContainerRight">
         <div class="taskComponentsContainer">
-            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"  RefreshList="RefreshList"></MemberComponent>
-            <PriorityComponent OnClick="Activate" Task="Task"></PriorityComponent>
-            <StatusComponent OnClick="Activate" Task="Task"></StatusComponent>
-            <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList"></DateComponent>
+            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"  RefreshList="RefreshList" />
+            <PriorityComponent OnClick="Activate" Task="Task" />
+            <StatusComponent OnClick="Activate" Task="Task" />
+            <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
         </div>
         <div class="taskButtonsContainer">
-            <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks"></DeleteTaskComponent>
+            <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" />
             @if (IsClicked)
             {
-                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks"></EditSaveComponent>
+                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
             }
         </div>
     </div>

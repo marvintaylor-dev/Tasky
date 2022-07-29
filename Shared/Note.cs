@@ -12,16 +12,12 @@ namespace Tasky.Shared
     {
         [Key]
         public int NoteId { get; set; }
+        public int AuthorId { get; set; }
         public string Message { get; set; }
-        
-        [ForeignKey("MemberId")]
-        public int Author { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         [ForeignKey("TaskId")]
         public int AssignedToTask { get; set; }
-        [ForeignKey("SubTaskId")]
-        public int AssignedToSubTask { get; set; }
+       
     }
 }

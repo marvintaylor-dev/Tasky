@@ -27,8 +27,6 @@ namespace Tasky.Shared
 
         public DateTime StartDate { get; set; } = DateTime.Now;
         public DateTime DueDate {get; set;} = DateTime.Now;
-        
-        public List<Note>? Notes { get; set; }
 
         public Status status { get; set; } = Status.ToDo;
 

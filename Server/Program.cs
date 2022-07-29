@@ -17,6 +17,7 @@ builder.Services.AddTransient<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 

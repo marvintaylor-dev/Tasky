@@ -30,21 +30,25 @@ else
     {
         if (task.isSubTask == false)
         {
-            <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
+            <TaskComponent Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+
             @foreach (var t in tasks)
             {
                 if (t.LinkTo == task.TaskId)
                 {
-                    <TaskComponent Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
+                    <TaskComponent Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
                 }
             }
+
+
             @*@foreach (var pair in taskDictionary)
                 {
                 @if (pair.Value.isSubTask == true && pair.Value.LinkTo == task.TaskId)
                 {
                 <TaskComponent Task="pair.Value" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
                 }
-                }*@
+                }
+            *@
 
         }
     }
@@ -64,6 +68,7 @@ else
     {
         ShowInput = !ShowInput;
     }
+
 
     //Dictionary<int, NoteModel> taskDictionary = new Dictionary<int, NoteModel>();
     NoteModel newTask = new NoteModel();
