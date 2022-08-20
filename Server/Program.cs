@@ -2,6 +2,7 @@ global using Tasky.Server.Data.AuthService;
 global using Tasky.Server.Data.MemberRepository;
 global using Tasky.Server.Data.TagRepository;
 global using Tasky.Server.Data.TaskRepository;
+global using Tasky.Server.Data.SectionRepository;
 
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddTransient<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddTransient<ITagRepository, TagRepository>();
+builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

@@ -2,21 +2,33 @@
 @inject IJSRuntime JS
 @inject ITaskService taskService
 @inject IMemberService memberService
+@inject ISectionService sectionService
 @attribute [Authorize]
 
 <div class="titleContainer d-flex justify-content-center align-items-center">
     <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>
 </div>
 
-@*
-    Beginning of adding a section
-
-    <button class="btn btn-primary" @onclick="ToggleInput">Add a Section +</button>
-    @if (ShowInput)
+@if (sections.Count == 0)
+{
+    <div>no sections</div>
+}
+else
+{
+    @foreach (Section sec in sections)
     {
-    <input type="text" placeholder="Enter Section" />
-    <button>Save</button>
-    }*@
+        <div>@sec.SectionName</div>
+        <span @onclick="() => DeleteSection(sec.SectionId)">X</span>
+    }
+}
+
+
+<button class="btn btn-primary" @onclick="ToggleInput">Add a Section +</button>
+@if (ShowInput)
+{
+    <input type="text" placeholder="Enter Section" @bind-value="newSection.SectionName" @bind-value:event="oninput" />
+    <button @onclick="SaveSection">Save</button>
+}
 
 @if (tasks.Count == 0)
 {
@@ -73,6 +85,8 @@ else
     //Dictionary<int, NoteModel> taskDictionary = new Dictionary<int, NoteModel>();
     NoteModel newTask = new NoteModel();
     List<NoteModel> tasks = new List<NoteModel>();
+    Section newSection = new Section();
+    List<Section> sections = new List<Section>();
 
     //public async Task DictionaryUpdate()
     //{
@@ -89,6 +103,7 @@ else
     {
         tasks = await taskService.GetTasks();
         //await DictionaryUpdate();
+        sections = await sectionService.GetSections();
 
         await memberService.GetMembers();
         await base.OnInitializedAsync();
@@ -110,6 +125,19 @@ else
     //        }
     //    }
     //}
+    async void SaveSection()
+    {
+        await sectionService.CreateSection(newSection);
+        sections = await sectionService.GetSections();
+        StateHasChanged();
+    }
+
+    async void DeleteSection(int sectionId)
+    {
+        await sectionService.DeleteSection(sectionId);
+        sections = await sectionService.GetSections();
+        StateHasChanged();
+    }
 
     void AddNewTask()
     {

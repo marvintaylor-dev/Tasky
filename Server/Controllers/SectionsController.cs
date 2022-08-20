@@ -1,28 +1,30 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Tasky.Server.Data.TagRepository;
+using Tasky.Server.Data.SectionRepository;
 using Tasky.Shared;
 
 namespace Tasky.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TagsController : ControllerBase
+    public class SectionsController : ControllerBase
     {
-        private readonly ITagRepository _repository;
 
-        public TagsController(ITagRepository repo)
+        private readonly ISectionRepository _repository;
+
+        public SectionsController(ISectionRepository repo)
         {
             _repository = repo;
         }
 
+
         [HttpGet]
-        public async Task<ActionResult<Tag>> GetAllTags()
+        public async Task<ActionResult<List<Section>>> GetSections()
         {
             try
             {
-                var tags = await _repository.GetAllTags();
-                return Ok(tags);
+                var result = await _repository.GetSections();
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -31,12 +33,12 @@ namespace Tasky.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tag>> GetTagById(int tagId)
+        public async Task<ActionResult<Section>> GetSection(int sectionId)
         {
             try
             {
-                var tag = await _repository.GetTagById(tagId);
-                return Ok(tag);
+                var result = await _repository.GetSectionById(sectionId);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -45,16 +47,16 @@ namespace Tasky.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Tag>> AddTask(Tag tag)
+        public async Task<ActionResult<Section>> CreateSection(Section section)
         {
             try
             {
-                Tag addedTag = await _repository.AddTag(tag);
-                if (addedTag== null)
+                var result = await _repository.CreateSection(section);
+                if (result == null)
                 {
                     return BadRequest();
                 }
-                return Ok(addedTag);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -63,19 +65,19 @@ namespace Tasky.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Tag>> UpdateTag(Tag tag)
+        public async Task<ActionResult<Section>> UpdateSection(Section section)
         {
             try
             {
-                Tag tagToUpdate = await _repository.GetTagById(tag.TagId);
+                var result = await _repository.GetSectionById(section.SectionId);
 
-                if (tagToUpdate == null)
+                if (result == null)
                 {
-                    return NotFound($"Could not find tag.");
+                    return NotFound($"Could not find section.");
                 }
 
-                await _repository.UpdateTag(tag);
-                return Ok(tag);
+                await _repository.UpdateSection(section);
+                return Ok(section);
             }
             catch (Exception ex)
             {
@@ -83,21 +85,20 @@ namespace Tasky.Server.Controllers
             }
         }
 
-
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Tag>> DeleteTag(int id)
+        public async Task<ActionResult<Section>> DeleteSection(int Id)
         {
             try
             {
 
-                Tag FindDeletedTag = await _repository.GetTagById(id);
-                if (FindDeletedTag == null)
+                var FindDeletedSection = await _repository.GetSectionById(Id);
+                if (FindDeletedSection == null)
                 {
-                    return NotFound($"Cannot delete task with an id of {id}, as it was not found");
+                    return NotFound($"Cannot delete task with an id of {Id}, as it was not found");
                 }
 
-                Tag deletedTag = await _repository.DeleteTag(id);
-                return Ok(deletedTag);
+                Section deletedSection = await _repository.DeleteSection(Id);
+                return Ok(deletedSection);
 
             }
             catch (Exception)

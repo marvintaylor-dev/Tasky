@@ -17,6 +17,12 @@ namespace Tasky.Server.Data
             options.UseSqlServer(_configuration.GetConnectionString("TaskDB"));
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<sectionNoteModel>().HasKey(x => new {x.TaskId, x.SectionId});
+            base.OnModelCreating(builder);
+        }
+
         public DbSet<NoteModel> Tasks { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Guest> Guests { get; set; }
@@ -24,6 +30,8 @@ namespace Tasky.Server.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Section> Sections { get; set; }
+
+        public DbSet<sectionNoteModel> SectionNoteModels { get; set; }
 
     }
 }
