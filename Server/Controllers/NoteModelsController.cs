@@ -31,7 +31,7 @@ namespace Tasky.Server.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{taskId:int}")]
         public async Task<ActionResult<NoteModel>> GetTaskById(int taskId)
         {
             try

@@ -32,7 +32,7 @@ namespace Tasky.Server.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{sectionId:int}")]
         public async Task<ActionResult<Section>> GetSection(int sectionId)
         {
             try

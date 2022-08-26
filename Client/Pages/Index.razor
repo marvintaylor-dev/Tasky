@@ -7,7 +7,18 @@
 
 <div class="titleContainer d-flex justify-content-center align-items-center">
     <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>
+
 </div>
+<div>
+    <MudButton Variant="Variant.Text" Color="Color.Secondary" @onclick="ToggleInput">Section +</MudButton>
+    
+    @if (ShowInput)
+    {
+        <input type="text" placeholder="Enter Section" @bind-value="newSection.SectionName" @bind-value:event="oninput" />
+        <button @onclick="SaveSection">Save</button>
+    }
+</div>
+
 
 @if (sections.Count == 0)
 {
@@ -17,18 +28,10 @@ else
 {
     @foreach (Section sec in sections)
     {
-        <div>@sec.SectionName</div>
-        <span @onclick="() => DeleteSection(sec.SectionId)">X</span>
+        <SectionComponent sectionId="sec.SectionId" RefreshList="RefreshList" />
     }
 }
 
-
-<button class="btn btn-primary" @onclick="ToggleInput">Add a Section +</button>
-@if (ShowInput)
-{
-    <input type="text" placeholder="Enter Section" @bind-value="newSection.SectionName" @bind-value:event="oninput" />
-    <button @onclick="SaveSection">Save</button>
-}
 
 @if (tasks.Count == 0)
 {
@@ -109,22 +112,7 @@ else
         await base.OnInitializedAsync();
     }
 
-    //Code to make index page register a click when a task component is clicked
-    //add OnActive="DeActivate" to a task component for this to work
-
-    //public bool IsActive { get; set; }
-
-    //void DeActivate(bool isActive)
-    //{
-    //    IsActive = isActive;
-    //    foreach(var task in tasks)
-    //    {
-    //        if (IsActive)
-    //        {
-    //        Console.WriteLine($"{task.Name} is Active");
-    //        }
-    //    }
-    //}
+  
     async void SaveSection()
     {
         await sectionService.CreateSection(newSection);
@@ -132,12 +120,7 @@ else
         StateHasChanged();
     }
 
-    async void DeleteSection(int sectionId)
-    {
-        await sectionService.DeleteSection(sectionId);
-        sections = await sectionService.GetSections();
-        StateHasChanged();
-    }
+
 
     void AddNewTask()
     {
@@ -161,6 +144,7 @@ else
     public async Task RefreshList()
     {
         tasks = await taskService.GetTasks();
+        sections = await sectionService.GetSections();
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
     }

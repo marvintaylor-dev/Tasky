@@ -1,0 +1,29 @@
+﻿@inject ISectionService sectionService
+
+<MudChip Variant="Variant.Filled" OnClose="()=>DeleteSection(newSection.SectionId)" Size="Size.Small">@newSection.SectionName</MudChip>
+
+
+@code {
+    Section newSection = new Section();
+
+    [Parameter]
+    public int sectionId { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshList { get; set; }
+
+    async void DeleteSection(int sectionId)
+    {
+        await sectionService.DeleteSection(sectionId);
+        await RefreshList.InvokeAsync();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        newSection.SectionId = sectionId;
+        Section sectionInDb = await sectionService.GetSectionById(sectionId);
+        newSection.SectionName = sectionInDb.SectionName;
+        await base.OnInitializedAsync();
+    }
+}
