@@ -11,7 +11,7 @@
 </div>
 <div>
     <MudButton Variant="Variant.Text" Color="Color.Secondary" @onclick="ToggleInput">Section +</MudButton>
-    
+
     @if (ShowInput)
     {
         <input type="text" placeholder="Enter Section" @bind-value="newSection.SectionName" @bind-value:event="oninput" />
@@ -41,7 +41,7 @@ else
 }
 else
 {
-    @foreach (var task in tasks)
+     @foreach (var task in tasks)
     {
         if (task.isSubTask == false)
         {
@@ -56,23 +56,27 @@ else
             }
 
 
-            @*@foreach (var pair in taskDictionary)
+         @*   @foreach (var pair in taskDictionary)
                 {
                 @if (pair.Value.isSubTask == true && pair.Value.LinkTo == task.TaskId)
                 {
                 <TaskComponent Task="pair.Value" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
                 }
-                }
-            *@
+                }*@
+
 
         }
     }
+
 
 }
 
 <div class="centerTask">
     <MudFab Color="Color.Info" Style="margin-top: 2rem; margin-left: 10rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
 </div>
+
+
+
 
 
 
@@ -90,6 +94,7 @@ else
     List<NoteModel> tasks = new List<NoteModel>();
     Section newSection = new Section();
     List<Section> sections = new List<Section>();
+    sectionNoteModel link = new sectionNoteModel();
 
     //public async Task DictionaryUpdate()
     //{
@@ -112,11 +117,12 @@ else
         await base.OnInitializedAsync();
     }
 
-  
+
     async void SaveSection()
     {
         await sectionService.CreateSection(newSection);
         sections = await sectionService.GetSections();
+        ShowInput = false;
         StateHasChanged();
     }
 

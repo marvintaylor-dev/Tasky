@@ -4,18 +4,27 @@
 
 <div class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
     <div class="d-flex gap-3">
-        <TaskInputComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" />
+        @*<TaskInputComponent Task="Task" OnClick="Activate" ReadClicked="IsClicked"></TaskInputComponent>*@
+        @*<TaskInputComponent2 @ref="taskInputComponent" OnClick="Activate" OnFocusOut="IsClicked" Task="Task" />*@
+        <TaskInputComponent3 Active="Activate" Task="Task" />
+        @*<div class="taskInput d-flex justify-content-left align-items-center @SubtaskCss">
+            <textarea id="taskInput"
+                      placeholder="Enter Task Name"
+                      rows="2" cols="30"
+                      @onkeyup="e => Enter(e)"
+                      @onfocusout="DeActivate"
+                      @bind-value="Task.Name"
+                      @bind-value:event="oninput" />
+        </div>*@
         <div class="containerLeftComponents">
             @if (Task.isSubTask == false && Task.TaskId > 0)
             {
-                <MudIconButton 
-                    Icon="@Icons.Material.Filled.Link" 
-                    Variant="Variant.Outlined" 
-                    Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}; padding: 2px;")" 
-                    Size="Size.Small" @onclick="AddSubTask" 
-                />
+                <MudIconButton Icon="@Icons.Material.Filled.Link"
+                           Variant="Variant.Outlined"
+                           Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}; padding: 2px;")"
+                           Size="Size.Small" @onclick="AddSubTask" />
             }
-            else if(Task.isSubTask == true)
+            else if (Task.isSubTask == true)
             {
                 <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
             }
@@ -25,7 +34,7 @@
 
     <div class="taskContainerRight">
         <div class="taskComponentsContainer">
-            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task"  RefreshList="RefreshList" />
+            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
             <PriorityComponent OnClick="Activate" Task="Task" />
             <StatusComponent OnClick="Activate" Task="Task" />
             <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
@@ -47,6 +56,7 @@
     public List<NoteModel> tasks = new List<NoteModel>();
     public NoteModel newSubTask = new NoteModel();
 
+    public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
 
     [Parameter]
     public NoteModel Task { get; set; }
@@ -68,13 +78,15 @@
 
     private async Task DeActivate()
     {
-        await System.Threading.Tasks.Task.Delay(1000);
+        await System.Threading.Tasks.Task.Delay(500);
         IsClicked = false;
     }
 
 
     protected override async Task OnParametersSetAsync()
     {
+        //turn off adblocker in google chrome - else an error will be thrown
+        //await JS.InvokeVoidAsync("preventTextAreaLineChange");
         tasks = await taskService.GetTasks();
         await base.OnParametersSetAsync();
     }
@@ -95,11 +107,46 @@
 
     public async void RefreshTasks()
     {
-        
+
         StateHasChanged();
         await RefreshList.InvokeAsync();
         Console.WriteLine("Refresh SubTasks Has Been Called");
     }
 
-   
+
+    public async void Enter(KeyboardEventArgs e)
+    {
+
+        if (e.Code != "Enter")
+        {
+            Console.WriteLine(e.Code.ToString());
+            IsClicked = true;
+        }
+        else if (e.Code == "Enter" && IsClicked == false)
+        {
+            Console.WriteLine(e.Code.ToString());
+            return;
+        }
+        else if (e.Code == "Enter" || e.Code == "NumpadEnter" && IsClicked == true)
+        {
+            Console.WriteLine(e.Code.ToString());
+
+            await ClickSaveBtn();
+
+            IsClicked = false;
+        }
+    }
+
+
+    public async Task ClickSaveBtn()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("saveOnEnter");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
 }

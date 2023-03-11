@@ -16,9 +16,9 @@
         <tr class="tableViewHeader">
             @foreach (PropertyInfo property in properties)
             {
-                @if(property.Name == "Name" || property.Name == "Assignee" || property.Name == "Tag" || property.Name == "PriorityLevel" || property.Name == "DueDate" || property.Name == "status")
+                @if (property.Name == "Name" || property.Name == "Assignee" || property.Name == "Tag" || property.Name == "PriorityLevel" || property.Name == "DueDate" || property.Name == "status")
                 {
-                <th class="tableViewItem tableViewHeaderItem tableViewHeader" @onclick="() => SortNames(tasks, property.Name)">@SplitCamelCase(@property.Name)</th>                    
+                    <th class="tableViewItem tableViewHeaderItem tableViewHeader" @onclick="() => AlternateSort(tasks, property.Name)">@SplitCamelCase(@property.Name)</th>
                 }
             }
             <th></th>
@@ -28,16 +28,20 @@
     <tbody>
         @foreach (NoteModel task in tasks)
         {
-            <tr class="tableViewRow mud-elevation-1 py-2 px-5 rounded white">
-                <td class="tableViewItem"><TaskInputComponent Task="task" OnClick="Activate"></TaskInputComponent></td>
-                <td class="tableViewItem"><MemberComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></MemberComponent></td>
-                <td class="tableViewItem"><TagComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></TagComponent></td>
-                <td class="tableViewItem"><PriorityComponent Task="task" OnClick="Activate"></PriorityComponent></td>
-                <td class="tableViewItem"><DateComponent Task="task" OnClick="Activate"></DateComponent></td>
-                <td class="tableViewItem"><StatusComponent Task="task" OnClick="Activate"></StatusComponent></td>
-                <td class="tableViewItem"><EditSaveComponent Task="task" RefreshList="RefreshList" OnClick="Activate"></EditSaveComponent></td>
-                <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>
-            </tr>
+            if (task.status != Status.Completed)
+            {
+                <tr class="tableViewRow mud-elevation-1 py-2 px-5 rounded white">
+                    <td class="tableViewItem"><TaskInputComponent Task="task" OnClick="Activate"></TaskInputComponent></td>
+                    <td class="tableViewItem"><MemberComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></MemberComponent></td>
+                    <td class="tableViewItem"><TagComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></TagComponent></td>
+                    <td class="tableViewItem"><PriorityComponent Task="task" OnClick="Activate"></PriorityComponent></td>
+                    <td class="tableViewItem">@task.DueDate.ToLongDateString()</td>
+                    <td class="tableViewItem"><StatusComponent Task="task" OnClick="Activate"></StatusComponent></td>
+                    <td class="tableViewItem"><EditSaveComponent Task="task" RefreshList="RefreshList" OnClick="Activate"></EditSaveComponent></td>
+                    <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>
+                </tr>
+
+            }
         }
     </tbody>
 
@@ -54,6 +58,7 @@
     NoteModel newTask = new NoteModel();
     public IEnumerable<NoteModel> tasks = new List<NoteModel>();
     public List<Tag> tags = new List<Tag>();
+    private bool sorted = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -101,14 +106,28 @@
     public void SortMems(int assigneeId)
     {
         Member foundMember;
-        foreach(Member member in memberService.Members)
+        foreach (Member member in memberService.Members)
         {
-            if(member.MemberId == assigneeId)
+            if (member.MemberId == assigneeId)
             {
                 foundMember = member;
             }
         }
 
+    }
+
+    void AlternateSort(IEnumerable<NoteModel> list, string propertyName)
+    {
+        if (sorted == false)
+        {
+            sorted = true;
+            SortNames(list, propertyName);
+        }
+        else
+        {
+            sorted = false;
+            SortNamesDesc(list, propertyName);
+        }
     }
 
     public void SortNames(IEnumerable<NoteModel> listToSort, string propName)
@@ -145,9 +164,43 @@
                 break;
         }
 
-   
     }
 
-    
+    public void SortNamesDesc(IEnumerable<NoteModel> listToSort, string propName)
+    {
+
+        switch (propName)
+        {
+            case "Name":
+                tasks = listToSort.OrderByDescending(x => x.Name);
+                StateHasChanged();
+                break;
+            case "Assignee":
+                tasks = listToSort.OrderByDescending(x => x.Assignee);
+                StateHasChanged();
+                break;
+            case "Tag":
+                tasks = listToSort.OrderByDescending(x => x.Tag);
+                StateHasChanged();
+                break;
+            case "PriorityLevel":
+                tasks = listToSort.OrderByDescending(x => x.PriorityLevel);
+                StateHasChanged();
+                break;
+            case "DueDate":
+                tasks = listToSort.OrderByDescending(x => x.DueDate);
+                StateHasChanged();
+                break;
+            case "status":
+                tasks = listToSort.OrderByDescending(x => x.status);
+                StateHasChanged();
+                break;
+            default:
+                Console.WriteLine("Did not match");
+                break;
+        }
+
+    }
+
 
 }

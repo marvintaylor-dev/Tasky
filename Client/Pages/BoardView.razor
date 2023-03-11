@@ -3,6 +3,8 @@
 @using Microsoft.AspNetCore.Authorization
 @inject ITaskService taskService;
 @attribute [Authorize]
+@using Microsoft.AspNetCore.Components
+@using System.ComponentModel.DataAnnotations
 
 
 <AuthorizeView>
@@ -10,7 +12,7 @@
         <div>You're authorized as @context.User.Identity.Name</div>
     </Authorized>
     <NotAuthorized>
-    <div>Do you see this?</div>
+        <div>Do you see this?</div>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -18,45 +20,59 @@
     <h3>Board View</h3>
 </div>
 
-@using Microsoft.AspNetCore.Components
-@using System.ComponentModel.DataAnnotations
-
 <MudDropContainer T="KanbanTaskItem" @ref="_dropContainer" Items="@_tasks" ItemsSelector="@((item,column) => @item.Status.ToString() == column)" ItemDropped="TaskUpdated" Class="d-flex flex-row centerTask">
     <ChildContent>
         @foreach (var item in _sections)
         {
-            <MudPaper Elevation="0" Width="224px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
+            <MudPaper Elevation="0" MinWidth="224px" MaxWidth="500px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
                 <MudToolBar DisableGutters="true">
                     <MudText Typo="Typo.subtitle1"><b>@SplitCamelCase(@item.Name.ToString())</b></MudText>
                     <MudSpacer />
-
                 </MudToolBar>
                 <MudDropZone T="KanbanTaskItem" Identifier="@item.Name.ToString()" Class="mud-height-full" />
                 @*@if (item.NewTaskOpen)
-                    {
-                    <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-                    <MudTextField @bind-Value="item.NewTaskName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-                    <MudButton OnClick="@(() => AddTask(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Task</MudButton>
-                    </MudPaper>
-                    }
-                    else
-                    {
-                    <MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add Task</MudButton>
-                    }*@
+            {
+            <MudPaper Elevation="25" Class="pa-2 rounded-lg">
+            <MudTextField @bind-Value="item.NewTaskName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+            <MudButton OnClick="@(() => AddTask(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Task</MudButton>
+            </MudPaper>
+            }
+            else
+            {
+            <MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add Task</MudButton>
+            }*@
             </MudPaper>
         }
     </ChildContent>
     <ItemRenderer>
-        @if (context.isSubTask)
+        @* @if (context.isSubTask)
         {
-            <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3 subTaskBorder">
-                @context.Name                
-            </MudPaper>
-        }
-        else
+        <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3 subTaskBorder">
+        <div>Start Date: @context.StartDate.ToShortDateString()</div>
+        <div>Due Date: @context.DueDate.ToShortDateString()</div>
+        <br />
+        <div>Task Name: @context.Name</div>
+
+        </MudPaper>
+        }*@
+
+        @if (context.isSubTask == false)
         {
             <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3 taskBorder">
-                @context.Name
+
+                <div>Start Date: @context.StartDate.ToShortDateString()</div>
+                <div>Due Date: @context.DueDate.ToShortDateString()</div>
+                <MudDivider></MudDivider>
+                <br />
+                <div>Task Name: @context.Name</div>
+                @if (CountSubtasks(context.ItemId) > 0)
+                {
+                    <div class="mt-3 d-flex justify-content-end">
+                        <span class="subTaskCounter">
+                            @CountSubtasks(context.ItemId)
+                        </span>
+                    </div>
+                }
             </MudPaper>
         }
 
@@ -69,6 +85,23 @@
     private MudDropContainer<KanbanTaskItem> _dropContainer;
 
     public bool NewTaskOpen;
+
+    public List<NoteModel> subtasks = new List<NoteModel>();
+
+    public int CountSubtasks(int contextId)
+    {
+        int count = 0;
+
+        @foreach (var subtask in subtasks)
+        {
+            @if (subtask.LinkTo == contextId)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
 
     /* handling board events */
     private async void TaskUpdated(MudItemDropInfo<KanbanTaskItem> info)
@@ -116,7 +149,11 @@
 
         foreach (var task in tasks)
         {
-            _tasks.Add(new KanbanTaskItem(task.TaskId, task.Name, task.status, (bool)task.isSubTask, task.Assignee));
+            _tasks.Add(new KanbanTaskItem(task.TaskId, task.Name, task.status, (bool)task.isSubTask, task.Assignee, task.DueDate, task.StartDate, task.LinkTo));
+            if (task.isSubTask == true)
+            {
+                subtasks.Add(task);
+            }
         }
 
         await base.OnInitializedAsync();
@@ -150,14 +187,20 @@
         public Status Status { get; set; }
         public bool isSubTask { get; set; }
         public int Assignee { get; set; }
+        public DateTime DueDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public int? LinkTo { get; set; }
 
-        public KanbanTaskItem(int id, string name, Status status, bool isSub, int assignee)
+        public KanbanTaskItem(int id, string name, Status status, bool isSub, int assignee, DateTime dueDate, DateTime startDate, int? linkTo)
         {
             ItemId = id;
             Name = name;
             Status = status;
             isSubTask = isSub;
             Assignee = assignee;
+            DueDate = dueDate;
+            StartDate = startDate;
+            LinkTo = linkTo;
         }
     }
 
@@ -191,5 +234,4 @@
     //    section.NewTaskOpen = false;
     //    _dropContainer.Refresh();
     //}
-
-    }
+}

@@ -10,6 +10,7 @@
     <div class="dropdownMenu mud-elevation-1 py-2 px-5 rounded white @UserMenuCssClass">
         <AuthorizeView>
             <Authorized>
+                <a class="nav-link" href="/profile" @onclick="HideUserMenu" Match="NavLinkMatch.All">Profile</a>
                 <button class="nav-link" Match="NavLinkMatch.All" @onclick="LogOut">Log Out</button>
             </Authorized>
             <NotAuthorized>

@@ -4,7 +4,7 @@
 
 namespace Tasky.Server.Migrations
 {
-    public partial class sectionNoteModelLink : Migration
+    public partial class SectionNoteModelLink : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

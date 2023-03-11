@@ -15,18 +15,26 @@
         @foreach (var member in memberService.Members)
         {
             <option value="@member.MemberId">@member.Name</option>
+            
         }
     </select>
 </div>
 
-@if (Id != null)
+@if (Id > 0)
 {
     <div class="centerTask">
         @foreach (Member member in memberService.Members)
         {
             if (member.MemberId == Id)
             {
-                <h4 class="mt-3">@member.Name</h4>
+                <div class="d-flex align-content-center align-items-center gap-3">
+                    <h4 class="mt-3">@member.Name</h4>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add"
+                       Style="margin-top: none;"
+                       Variant="Variant.Outlined"
+                       Color="Color.Transparent"
+                       Size="Size.Small" @onclick="(() => AddNewTask(member.MemberId))" />
+                </div>
                 @foreach (NoteModel task in tasks)
                 {
                     if (task.Assignee == member.MemberId)
@@ -38,22 +46,25 @@
                         <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
                     }
                 }
-                <MudIconButton Icon="@Icons.Material.Filled.Add"
-                   Style="margin-top: 1rem;"
-                   Variant="Variant.Outlined"
-                   Color="Color.Transparent"
-                   Size="Size.Small" @onclick="(() => AddNewTask(member.MemberId))" />
+                
             }
         }
     </div>
 }
 
-@if (Id == null || Id == 0)
+@if (Id == 0)
 {
     <div class="centerTask">
         @foreach (Member member in memberService.Members)
         {
-            <h4 class="mt-3">@member.Name</h4>
+            <div class="d-flex align-content-center align-items-center gap-3">
+                <h4 class="mt-3">@member.Name</h4>
+                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                       Style="margin-top: none;"
+                       Variant="Variant.Outlined"
+                       Color="Color.Transparent"
+                       Size="Size.Small" @onclick="(() => AddNewTask(member.MemberId))" />
+            </div>
             @foreach (NoteModel task in tasks)
             {
                 if (task.Assignee == member.MemberId)
@@ -65,11 +76,7 @@
                     <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
                 }
             }
-            <MudIconButton Icon="@Icons.Material.Filled.Add"
-                   Style="margin-top: 1rem;"
-                   Variant="Variant.Outlined"
-                   Color="Color.Transparent"
-                   Size="Size.Small" @onclick="(() => AddNewTask(member.MemberId))" />
+         
         }
     </div>
 }

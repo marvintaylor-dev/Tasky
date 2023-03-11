@@ -1,8 +1,8 @@
-﻿.taskName{
+﻿.taskName {
     width: 200px;
 }
 
-#taskInput{
+#taskInput {
     padding: .2rem .5rem;
     resize: none;
 }

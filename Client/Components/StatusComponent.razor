@@ -1,4 +1,7 @@
-﻿<select @bind-value="Task.status" @bind-value:event="onchange" @onfocus="@ChildClicked">
+﻿@inject ITaskService taskService;
+
+@*<select name="status" @bind-value="Task.status" @bind-value:event="onchange" @onfocus="@ChildClicked" @onfocusout="@Deactivate">*@
+<select name="status" value="@Task.status" @onchange="UpdateStatus" @onfocus="@ChildClicked" @onfocusout="@Deactivate">
     @foreach (var status in Enum.GetValues(typeof(Status)))
     {
         <option value="@status">@SplitCamelCase(@status.ToString())</option>
@@ -9,19 +12,75 @@
     [Parameter]
     public NoteModel Task { get; set; }
 
-    public bool IsClicked { get; set; }
-
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
 
-    async void ChildClicked()
+
+    private async void UpdateStatus(ChangeEventArgs e)
     {
-        IsClicked = true;
-        await OnClick.InvokeAsync(IsClicked);
+        ParseStatus(e);
+
+        if (Task.TaskId == 0)
+        {
+            Console.WriteLine("Please add a Task Name before adding a status");
+        }
+        else if (Task.TaskId > 0)
+        {
+            await taskService.UpdateTask(Task);
+            await OnClick.InvokeAsync(false);
+            Console.WriteLine("Successful Update");
+        }
+
     }
 
+    //In charge of interpreting the status passed through from the select element.
+    //Will need to be adjusted when statuses are able to be configured by the user
+    private void ParseStatus(ChangeEventArgs e)
+    {
+        switch (e.Value)
+        {
+            case "ToDo":
+                Task.status = Status.ToDo;
+                break;
+            case "InProgress":
+                Task.status = Status.InProgress;
+                break;
+            case "InReview":
+                Task.status = Status.InReview;
+                break;
+            case "Completed":
+                Task.status = Status.Completed;
+                break;
+            default:
+                Console.WriteLine("Status is not acceptable.");
+                break;
+        }
+    }
+
+
+    //When tabbing through Child Clicked and Deactivate will notify the parent to display the Edit/Save button
+    async void ChildClicked()
+    {
+        await OnClick.InvokeAsync(true);
+    }
+
+    async void Deactivate()
+    {
+        await OnClick.InvokeAsync(false);
+    }
+
+    
+    //Splits model property names so that status is displayed as two words in the UI
     public static string SplitCamelCase(string input)
     {
-        return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
+        if (input == null)
+        {
+            return "Null value being passed to the status component";
+        }
+        else
+        {
+            return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
+        }
+
     }
 }

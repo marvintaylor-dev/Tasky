@@ -97,3 +97,9 @@ article {
     border-left: 10px solid #FF4081;
 }
 
+.subTaskCounter {
+    border: none;
+    padding: .2rem .5rem;
+    background: rgb(33, 150, 243);
+    color: white;
+}

@@ -42,8 +42,10 @@ namespace Tasky.Client.Services.TaskService
 
         public async Task<NoteModel> UpdateTask(NoteModel updateTask)
         {
+            Console.WriteLine($"Update requested: Change name to {updateTask.Name}");
             var result = await _httpClient.PutAsJsonAsync($"api/notemodels", updateTask);
             var task = await result.Content.ReadFromJsonAsync<NoteModel>();
+            Console.WriteLine(task?.Name);
             return task;
         }
     }

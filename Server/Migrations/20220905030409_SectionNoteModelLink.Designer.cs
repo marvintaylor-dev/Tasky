@@ -12,8 +12,8 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220820072054_sectionNoteModelLink")]
-    partial class sectionNoteModelLink
+    [Migration("20220905030409_SectionNoteModelLink")]
+    partial class SectionNoteModelLink
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -36,7 +36,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Guests");
+                    b.ToTable("Guests", (string)null);
                 });
 
             modelBuilder.Entity("Tasky.Shared.Member", b =>
@@ -52,7 +52,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("MemberId");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members", (string)null);
                 });
 
             modelBuilder.Entity("Tasky.Shared.Note", b =>
@@ -78,7 +78,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("NoteId");
 
-                    b.ToTable("Notes");
+                    b.ToTable("Notes", (string)null);
                 });
 
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
@@ -119,7 +119,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("TaskId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("Tasky.Shared.Section", b =>
@@ -136,7 +136,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("SectionId");
 
-                    b.ToTable("Sections");
+                    b.ToTable("Sections", (string)null);
                 });
 
             modelBuilder.Entity("Tasky.Shared.sectionNoteModel", b =>
@@ -149,7 +149,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("TaskId", "SectionId");
 
-                    b.ToTable("SectionNoteModels");
+                    b.ToTable("SectionNoteModels", (string)null);
                 });
 
             modelBuilder.Entity("Tasky.Shared.Tag", b =>
@@ -168,7 +168,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("TagId");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("Tasky.Shared.User", b =>
@@ -196,7 +196,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }
