@@ -1,0 +1,105 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+}
+
+article {
+    padding-bottom: 10rem;
+}
+.addTaskBtn {
+    background-color: transparent;
+    border: none;
+}
+.addTaskBtn:hover {
+    cursor: pointer;
+}
+
+.titleContainer{
+    margin: 2rem 0rem 2rem 0rem;
+}
+
+.titleName {
+    color: rgb(33, 150, 243);
+   
+}
+
+.title {
+    font-size: 2rem;
+    color: black;
+}
+
+.taskContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: .5px solid lightgrey;
+    padding: .5rem;
+    margin-bottom: .5rem;
+    position: relative;
+    min-width: fit-content;
+    max-width: 100%;
+    font-size: .8rem;
+    margin: 0rem 10rem .5rem 10rem;
+}
+.taskContainerLeft {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.containerLeftComponents{
+    display:flex;
+    align-items: center;
+    gap: .2rem;
+}
+.taskContainerRight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.taskComponentsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.5rem;
+    margin-right: 5rem;
+}
+
+.taskButtonsContainer {
+    display: flex;
+    gap: 1rem;
+    position: absolute;
+    right: .5rem;
+}
+
+.centerTask {
+    margin: auto;
+    width: contain;
+}
+
+.wideCenter{
+    max-width: 90%;
+}
+
+.taskBorder {
+    border-left: 10px solid rgb(33, 150, 243);
+}
+
+.subTaskBorder {
+    border-left: 10px solid #FF4081;
+}
+
+.subTaskCounter {
+    border: none;
+    padding: .2rem .5rem;
+    background: rgb(33, 150, 243);
+    color: white;
+}
