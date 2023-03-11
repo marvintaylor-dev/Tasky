@@ -4,18 +4,7 @@
 
 <div class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
     <div class="d-flex gap-3">
-        @*<TaskInputComponent Task="Task" OnClick="Activate" ReadClicked="IsClicked"></TaskInputComponent>*@
-        @*<TaskInputComponent2 @ref="taskInputComponent" OnClick="Activate" OnFocusOut="IsClicked" Task="Task" />*@
         <TaskInputComponent3 Active="Activate" Task="Task" />
-        @*<div class="taskInput d-flex justify-content-left align-items-center @SubtaskCss">
-            <textarea id="taskInput"
-                      placeholder="Enter Task Name"
-                      rows="2" cols="30"
-                      @onkeyup="e => Enter(e)"
-                      @onfocusout="DeActivate"
-                      @bind-value="Task.Name"
-                      @bind-value:event="oninput" />
-        </div>*@
         <div class="containerLeftComponents">
             @if (Task.isSubTask == false && Task.TaskId > 0)
             {

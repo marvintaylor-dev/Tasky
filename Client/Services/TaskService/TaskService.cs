@@ -27,6 +27,21 @@ namespace Tasky.Client.Services.TaskService
             return deletedTask;
         }
 
+        public async Task<NoteModel?> GetTaskById(int? taskId)
+        {
+            if (taskId == null)
+            {
+                return null;
+            }
+            var result = await _httpClient.GetFromJsonAsync<NoteModel>($"api/notemodels/{taskId}");
+            if(result == null )
+            {
+                return null;
+            }
+
+            return result;
+        }
+
         public async Task<List<NoteModel>> GetTasks()
         {
             var tasks = await _httpClient.GetFromJsonAsync<List<NoteModel>>("api/notemodels");

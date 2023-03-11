@@ -7,15 +7,6 @@
 @using System.ComponentModel.DataAnnotations
 
 
-<AuthorizeView>
-    <Authorized>
-        <div>You're authorized as @context.User.Identity.Name</div>
-    </Authorized>
-    <NotAuthorized>
-        <div>Do you see this?</div>
-    </NotAuthorized>
-</AuthorizeView>
-
 <div class="titleContainer d-flex justify-content-center align-items-center">
     <h3>Board View</h3>
 </div>
@@ -30,32 +21,10 @@
                     <MudSpacer />
                 </MudToolBar>
                 <MudDropZone T="KanbanTaskItem" Identifier="@item.Name.ToString()" Class="mud-height-full" />
-                @*@if (item.NewTaskOpen)
-            {
-            <MudPaper Elevation="25" Class="pa-2 rounded-lg">
-            <MudTextField @bind-Value="item.NewTaskName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
-            <MudButton OnClick="@(() => AddTask(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Task</MudButton>
-            </MudPaper>
-            }
-            else
-            {
-            <MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add Task</MudButton>
-            }*@
             </MudPaper>
         }
     </ChildContent>
     <ItemRenderer>
-        @* @if (context.isSubTask)
-        {
-        <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3 subTaskBorder">
-        <div>Start Date: @context.StartDate.ToShortDateString()</div>
-        <div>Due Date: @context.DueDate.ToShortDateString()</div>
-        <br />
-        <div>Task Name: @context.Name</div>
-
-        </MudPaper>
-        }*@
-
         @if (context.isSubTask == false)
         {
             <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3 taskBorder">
@@ -65,19 +34,23 @@
                 <MudDivider></MudDivider>
                 <br />
                 <div>Task Name: @context.Name</div>
-                @if (CountSubtasks(context.ItemId) > 0)
-                {
-                    <div class="mt-3 d-flex justify-content-end">
-                        <span class="subTaskCounter">
-                            @CountSubtasks(context.ItemId)
-                        </span>
-                    </div>
-                }
+                <ShowSubTasksComponent TaskId="context.ItemId" />
+             
             </MudPaper>
         }
 
     </ItemRenderer>
 </MudDropContainer>
+
+
+@*<AuthorizeView>
+    <Authorized>
+        <div>You're authorized as @context.User.Identity.Name</div>
+    </Authorized>
+    <NotAuthorized>
+        <div>Do you see this?</div>
+    </NotAuthorized>
+</AuthorizeView>*@
 
 @code {
     private bool _addSectionOpen;
@@ -88,21 +61,8 @@
 
     public List<NoteModel> subtasks = new List<NoteModel>();
 
-    public int CountSubtasks(int contextId)
-    {
-        int count = 0;
 
-        @foreach (var subtask in subtasks)
-        {
-            @if (subtask.LinkTo == contextId)
-            {
-                count++;
-            }
-        }
-        return count;
-    }
-
-
+   
     /* handling board events */
     private async void TaskUpdated(MudItemDropInfo<KanbanTaskItem> info)
     {
@@ -234,4 +194,24 @@
     //    section.NewTaskOpen = false;
     //    _dropContainer.Refresh();
     //}
+
+
+
+    //Delete if subtask component works well
+
+    //public int CountSubtasks(int contextId)
+    //{
+    //    int count = 0;
+
+    //    @foreach (var subtask in subtasks)
+    //    {
+    //        @if (subtask.LinkTo == contextId)
+    //        {
+    //            count++;
+    //        }
+    //    }
+    //    return count;
+    //}
+
+
 }
