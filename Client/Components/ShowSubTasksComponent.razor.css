@@ -18,7 +18,7 @@
     background: lightgray;
     border: 2px solid var(--mud-palette-secondary);
     padding: 1rem;
-    box-shadow: -1px 3px 29px 6px rgba(0,0,0,0.45);
+    box-shadow: -8px 8px 15px 3px rgba(0,0,0,0.45);
 }
 
 .subtaskItem {

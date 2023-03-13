@@ -31,19 +31,18 @@
     [Parameter]
     public EventCallback RefreshList { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
     public bool IsClicked { get; set; }
 
     public bool showMenu = false;
 
     public string MenuVisible => showMenu ? "show" : null;
 
-    [Parameter]
-    public EventCallback<bool> OnClick { get; set; }
-
     async void ChildClicked()
     {
-        IsClicked = true;
-        await OnClick.InvokeAsync(IsClicked);
+        await OnClick.InvokeAsync(true);
     }
 
     async void ToggleClicked()
@@ -56,17 +55,16 @@
     {
         await taskService.UpdateTask(Task);
         RefreshDates();
-        await CloseDropdown();
+        CloseDropdown();
     }
 
     async void RefreshDates()
     {
-        await RefreshList.InvokeAsync();
+        await RefreshList.InvokeAsync(true);
     }
 
-    async Task CloseDropdown()
+    void CloseDropdown()
     {
-        await System.Threading.Tasks.Task.Delay(100);
         showMenu = false;
     }
 

@@ -1,4 +1,4 @@
-﻿@page "/board"
+﻿@page "/board3"
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Authorization
 @inject ITaskService taskService;
@@ -11,22 +11,18 @@
     <h3>Board View</h3>
 </div>
 
-
-<MudDropContainer T="KanbanTaskItem" @ref="_dropContainer" Items="@_tasks" ItemsSelector="@((item,column) => item.Status.ToString() == column)" ItemDropped="TaskUpdated" Class="d-flex flex-row">
+<MudDropContainer T="KanbanTaskItem" @ref="_dropContainer" Items="@_tasks" ItemsSelector="@((item,column) => @item.Status.ToString() == column)" ItemDropped="TaskUpdated" Class="d-flex flex-row centerTask">
     <ChildContent>
         @foreach (var item in _sections)
         {
             <MudPaper Elevation="0" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg kanbanSections">
                 <MudToolBar DisableGutters="true">
-                    <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
+                    <MudText Typo="Typo.subtitle1"><b>@SplitCamelCase(@item.Name.ToString())</b></MudText>
                     <MudSpacer />
-                    
                 </MudToolBar>
                 <MudDropZone T="KanbanTaskItem" Identifier="@item.Name.ToString()" Class="mud-height-full" />
-
             </MudPaper>
         }
-
     </ChildContent>
     <ItemRenderer>
         @if (context.isSubTask == false)
@@ -41,35 +37,60 @@
                     {
                         if (task.TaskId == context.ItemId)
                         {
-                            <DateComponent Task="task" />
+                            <DateComponent Task="task" RefreshList="Refresh" />
                         }
                     }
                 </div>
+                @*<MudDivider></MudDivider>*@
                 <br />
                 <div>Task Name: @context.Name</div>
                 <ShowSubTasksComponent TaskId="context.ItemId" />
-
             </MudPaper>
         }
     </ItemRenderer>
 </MudDropContainer>
 
+@*
+<AuthorizeView>
+    <Authorized>
+        <div>You're authorized as @context.User.Identity.Name</div>
+    </Authorized>
+    <NotAuthorized>
+        <div>Do you see this?</div>
+    </NotAuthorized>
+</AuthorizeView>*@
+
 @code {
     private MudDropContainer<KanbanTaskItem> _dropContainer;
 
-    public List<NoteModel> tasks = new List<NoteModel>();
-
-
-    /* Setup for board  */
-    private List<KanBanSections> _sections = new List<KanBanSections>();
-
-    private List<KanbanTaskItem> _tasks = new List<KanbanTaskItem>();
-
     private bool _addSectionOpen;
+
+    //public bool NewTaskOpen;
+
+    void Refresh()
+    {
+        StateHasChanged();
+    }
+
+    //private async void UpdateInfo(NoteModel taskToUpdate)
+    //{
+    //    if (taskToUpdate == null)
+    //    {
+    //        Console.WriteLine("No Task to Update");
+    //    }
+    //    else
+    //    {
+    //    Console.WriteLine("Info Updated");
+    //        await taskService.UpdateTask(taskToUpdate);
+    //    Console.WriteLine($"Info Updated to {taskToUpdate.StartDate.Date}");
+    //        StateHasChanged();
+    //    Console.WriteLine("State should have changed");
+    //    }
+    //}
 
 
     /* handling board events */
-    private void TaskUpdated(MudItemDropInfo<KanbanTaskItem> info)
+    private async void TaskUpdated(MudItemDropInfo<KanbanTaskItem> info)
     {
         var statusForDropZoneToRead = info.Item.Status.ToString();
         statusForDropZoneToRead = info.DropzoneIdentifier;
@@ -91,7 +112,17 @@
                 }
             }
         }
+
     }
+
+    public List<NoteModel> tasks = new List<NoteModel>();
+    public List<Member> members = new List<Member>();
+
+    /* Setup for board  */
+    private List<KanBanSections> _sections = new List<KanBanSections>();
+
+    private List<KanbanTaskItem> _tasks = new List<KanbanTaskItem>();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,6 +140,8 @@
 
         await base.OnInitializedAsync();
     }
+
+
     public static string SplitCamelCase(string input)
     {
         return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
@@ -149,7 +182,38 @@
             DueDate = dueDate;
             StartDate = startDate;
         }
-    }
 
-    
+
+        KanBanNewForm newSectionModel = new KanBanNewForm();
+
+        public class KanBanNewForm
+        {
+            [Required]
+            [StringLength(10, ErrorMessage = "Name length can't be more than 10.")]
+            public string Name { get; set; }
+        }
+
+        //private void OnValidSectionSubmit(EditContext context)
+        //{
+        //    foreach (Status status in Enum.GetValues(typeof(Status)))
+        //    {
+        //        if (newSectionModel.Name == status.ToString())
+        //        {
+        //            _sections.Add(new KanBanSections(status, false, String.Empty));
+        //        }
+        //    }
+        //    newSectionModel.Name = string.Empty;
+        //    _addSectionOpen = false;
+        //}
+
+        //private void AddTask(KanBanSections section)
+        //{
+        //    _tasks.Add(new KanbanTaskItem(section.NewTaskName, section.Name));
+        //    section.NewTaskName = string.Empty;
+        //    section.NewTaskOpen = false;
+        //    _dropContainer.Refresh();
+        //}
+
+
+    }
 }

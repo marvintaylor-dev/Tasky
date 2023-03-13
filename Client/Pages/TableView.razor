@@ -6,10 +6,10 @@
 
 @using System.Reflection
 
+
 <div class="titleContainer d-flex justify-content-center align-items-center flex-column">
     <h3>Table View</h3>
 </div>
-
 
 <table class="tableView">
     <thead>
@@ -31,7 +31,14 @@
             if (task.status != Status.Completed)
             {
                 <tr class="tableViewRow mud-elevation-1 py-2 px-5 rounded white">
-                    <td class="tableViewItem"><TaskInputComponent Task="task" OnClick="Activate"></TaskInputComponent></td>
+                    @if (task.isSubTask == false)
+                    {
+                        <td class="tableViewItem" style="border-left: 5px solid rgb(33, 150, 243);"><TaskInputComponent Task="task" OnClick="Activate"></TaskInputComponent></td>
+                    }
+                    else
+                    {
+                        <td class="tableViewItem" style="border-left: 5px solid var(--mud-palette-secondary);"><TaskInputComponent Task="task" OnClick="Activate"></TaskInputComponent></td>
+                    }
                     <td class="tableViewItem"><MemberComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></MemberComponent></td>
                     <td class="tableViewItem"><TagComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></TagComponent></td>
                     <td class="tableViewItem"><PriorityComponent Task="task" OnClick="Activate"></PriorityComponent></td>
@@ -44,12 +51,55 @@
             }
         }
     </tbody>
-
 </table>
 
-<div class="centerTask">
+<div class="centerTask mb-3">
     <MudFab Color="Color.Info" Style="margin-top: 2rem; margin-left: 10rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
 </div>
+
+<table class="tableView">
+    <thead>
+        <tr class="tableViewHeader">
+            @foreach (PropertyInfo property in properties)
+            {
+                @if (property.Name == "Name" || property.Name == "Assignee" || property.Name == "Tag" || property.Name == "PriorityLevel" || property.Name == "DueDate" || property.Name == "status")
+                {
+                    <th class="tableViewItem tableViewHeaderItem tableViewHeader" @onclick="() => AlternateSort(tasks, property.Name)">@SplitCamelCase(@property.Name)</th>
+                }
+            }
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (NoteModel task in tasks)
+        {
+            if (task.status == Status.Completed)
+            {
+                <tr class="tableViewRow mud-elevation-1 py-2 px-5 rounded white">
+                    @if (task.isSubTask == false)
+                    {
+                        <td class="tableViewItem" style="border-left: 5px solid rgb(33, 150, 243);"><TaskInputComponent Task="task" OnClick="Activate"></TaskInputComponent></td>
+                    }
+                    else
+                    {
+                        <td class="tableViewItem" style="border-left: 5px solid var(--mud-palette-secondary);"><TaskInputComponent Task="task" OnClick="Activate"></TaskInputComponent></td>
+                    }
+                    <td class="tableViewItem"><MemberComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></MemberComponent></td>
+                    <td class="tableViewItem"><TagComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></TagComponent></td>
+                    <td class="tableViewItem"><PriorityComponent Task="task" OnClick="Activate"></PriorityComponent></td>
+                    <td class="tableViewItem">@task.DueDate.ToLongDateString()</td>
+                    <td class="tableViewItem"><StatusComponent Task="task" OnClick="Activate"></StatusComponent></td>
+                    <td class="tableViewItem"><EditSaveComponent Task="task" RefreshList="RefreshList" OnClick="Activate"></EditSaveComponent></td>
+                    <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>
+                </tr>
+
+            }
+        }
+    </tbody>
+</table>
+
+
 
 
 @code {

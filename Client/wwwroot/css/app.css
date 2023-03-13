@@ -97,4 +97,7 @@ article {
     border-left: 10px solid #FF4081;
 }
 
-
+.kanbanSections{
+    min-width: 150px;
+    width: 100%
+}
