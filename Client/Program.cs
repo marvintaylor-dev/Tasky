@@ -6,13 +6,12 @@ global using Tasky.Client.Services.AuthService;
 global using Tasky.Client.Services.SectionService;
 global using System.Net.Http.Json;
 global using Tasky.Shared;
+global using Tasky.Client.Services.EditSaveService;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Tasky.Client;
 using MudBlazor.Services;
-
-
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 //builder.Logging.SetMinimumLevel(LogLevel.Warning);
@@ -27,6 +26,7 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
+builder.Services.AddScoped<IEditSaveService, EditSaveService>();
 builder.Services.AddOptions();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddAuthorizationCore();

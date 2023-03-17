@@ -2,6 +2,8 @@
 @inject IJSRuntime JS
 @inject IMemberService memberService;
 @inject ITaskService taskService;
+@inject IEditSaveService EditSaveService;
+@implements IDisposable 
 
 
 <div class="d-flex align-items-center justify-content-center">
@@ -50,6 +52,7 @@
         await taskService.AddTask(task);
         await ChildClicked();
         await RefreshList.InvokeAsync();
+        EditSaveService.TaskDataUpdated();
     }
 
     async void EditTask(NoteModel task)
@@ -57,5 +60,17 @@
         await taskService.UpdateTask(task);
         await ChildClicked();
         await RefreshList.InvokeAsync();
+        EditSaveService.TaskDataUpdated();
+    }
+
+    protected override void OnInitialized()
+    {
+        EditSaveService.OnClick += StateHasChanged;
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        EditSaveService.OnClick -= StateHasChanged;
     }
 }

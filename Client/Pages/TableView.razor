@@ -45,16 +45,15 @@
                     <td class="tableViewItem">@task.DueDate.ToLongDateString()</td>
                     <td class="tableViewItem"><StatusComponent Task="task" OnClick="Activate"></StatusComponent></td>
                     <td class="tableViewItem"><EditSaveComponent Task="task" RefreshList="RefreshList" OnClick="Activate"></EditSaveComponent></td>
-                    <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>
+                    <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>          
                 </tr>
-
             }
         }
     </tbody>
 </table>
 
 <div class="centerTask mb-3">
-    <MudFab Color="Color.Info" Style="margin-top: 2rem; margin-left: 10rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
+    <MudFab Color="Color.Info" Style="margin-top: 2rem; margin-left: 10rem; margin-bottom: 5rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
 </div>
 
 <table class="tableView">
@@ -64,11 +63,12 @@
             {
                 @if (property.Name == "Name" || property.Name == "Assignee" || property.Name == "Tag" || property.Name == "PriorityLevel" || property.Name == "DueDate" || property.Name == "status")
                 {
-                    <th class="tableViewItem tableViewHeaderItem tableViewHeader" @onclick="() => AlternateSort(tasks, property.Name)">@SplitCamelCase(@property.Name)</th>
+                    <th class="tableViewItem tableViewHeaderItem tableViewHeader completeHeader" @onclick="() => AlternateSort(tasks, property.Name)">@SplitCamelCase(@property.Name)</th>
                 }
             }
-            <th></th>
-            <th></th>
+            <th class="completeHeader"></th>
+            <th class="completeHeader"></th>
+           
         </tr>
     </thead>
     <tbody>

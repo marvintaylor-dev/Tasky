@@ -70,10 +70,13 @@ namespace Tasky.Server.Data.TaskRepository
         {
             NoteModel result = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == model.TaskId) ?? throw new Exception("Could not find id");
             _mapper.Map(model, result);
-           
+
             await _context.SaveChangesAsync();
             return result;
 
         }
+
+
+        
     }
 }

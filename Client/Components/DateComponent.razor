@@ -29,7 +29,7 @@
     public NoteModel Task { get; set; }
 
     [Parameter]
-    public EventCallback RefreshList { get; set; }
+    public EventCallback<bool> RefreshList { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }

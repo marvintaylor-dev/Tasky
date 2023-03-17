@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Json;
 using Tasky.Shared;
 
 namespace Tasky.Client.Services.TaskService
@@ -62,6 +63,25 @@ namespace Tasky.Client.Services.TaskService
             var task = await result.Content.ReadFromJsonAsync<NoteModel>();
             Console.WriteLine(task?.Name);
             return task;
+        }
+
+
+        public int WorkInProgress(NoteModel task)
+        {
+            TimeSpan WorkInProgress = TimeSpan.Zero;
+            if (task == null)
+            {
+                return WorkInProgress.Days;
+            }
+            else if(task.status == Status.Completed)
+            {
+                return WorkInProgress.Days;
+            }
+            else
+            {
+                WorkInProgress = DateTime.Now - task.StartDate;
+                return WorkInProgress.Days;
+            }
         }
     }
 }
