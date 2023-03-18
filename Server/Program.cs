@@ -3,7 +3,7 @@ global using Tasky.Server.Data.MemberRepository;
 global using Tasky.Server.Data.TagRepository;
 global using Tasky.Server.Data.TaskRepository;
 global using Tasky.Server.Data.SectionRepository;
-
+global using Tasky.Server.Data.StatusRepository;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Tasky.Server.Data;
@@ -18,6 +18,7 @@ builder.Services.AddTransient<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddTransient<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ISectionRepository, SectionRepository>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

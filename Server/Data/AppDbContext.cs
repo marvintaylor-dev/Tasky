@@ -31,6 +31,7 @@ namespace Tasky.Server.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Section> Sections { get; set; }
 
+        public DbSet<StatusNew> Statuses { get; set; }
         public DbSet<sectionNoteModel> SectionNoteModels { get; set; }
 
     }

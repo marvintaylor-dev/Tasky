@@ -1,0 +1,17 @@
+﻿.deleteDialogue {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: lightgray;
+    border: 1px solid black;
+    padding: .5rem 1rem;
+    position: absolute;
+    width: 350px;
+    right: 50%;
+    top: -1rem;
+    z-index: 1;
+}
+
+.show{
+    display: flex;
+}
