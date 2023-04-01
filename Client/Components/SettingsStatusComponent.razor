@@ -1,0 +1,116 @@
+﻿@using Tasky.Shared.DTOs;
+@inject IStatusService statusService;
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    td button {
+        border: none;
+        background-color: transparent;
+        color: red;
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+        td button:hover {
+            color: #ff6666;
+        }
+
+    input[type="text"], input[type="number"] {
+        padding: 6px 10px;
+        margin: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 1rem;
+    }
+
+    button[type="submit"] {
+        background-color: #ffc107;
+        color: white;
+        border: none;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #ffcd38;
+        }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>Status Name</th>
+            <th>Definition of Finished</th>
+            <th>Work In Progress Limit</th>
+            <th>Remove</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var status in statuses)
+        {
+            <tr>
+                <td>@status.StatusName</td>
+                <td>@status.StatusDefinitionOfFinished</td>
+                <td>@status.WorkInProgressLimit</td>
+                <td @onclick="() => DeleteStatus(status.StatusName)">&#10006;</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4 class="mt-4">Add a New Status</h4>
+<form @onsubmit="AddStatus" >
+    <input type="text" @bind-value="newStatus.StatusName" @bind-value:event="oninput" />
+    <input type="text" @bind-value="newStatus.StatusDefinitionOfFinished" @bind-value:event="oninput" />
+    <input type="number" @bind-value="newStatus.WorkInProgressLimit" @bind-value:event="oninput" />
+    <button type="submit" class="btn btn-warning">Add a status</button>
+</form>
+
+
+
+
+@code {
+    private List<StatusDTO> statuses = new();
+    private StatusDTO newStatus = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        statuses = await statusService.GetAllStatuses();
+        await base.OnInitializedAsync();
+    }
+
+    async void DeleteStatus(string name)
+    {
+        await statusService.DeleteStatus(name);
+        statuses = await statusService.GetAllStatuses();
+        StateHasChanged();
+    }
+
+    async void AddStatus()
+    {
+        await statusService.AddStatus(newStatus);
+        statuses = await statusService.GetAllStatuses();
+        newStatus = new StatusDTO();
+        StateHasChanged();
+    }
+
+
+}

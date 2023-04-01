@@ -1,11 +1,14 @@
-﻿namespace Tasky.Client.Services.StatusService
+﻿using Tasky.Shared.DTOs;
+
+namespace Tasky.Client.Services.StatusService
 {
     public interface IStatusService
     {
-        Task<List<StatusNew>> GetAllStatuses();
-        Task<StatusNew> AddStatus(StatusNew status);
-        Task<StatusNew> GetStatusById(int id);
-        Task<StatusNew> UpdateStatus(StatusNew status);
-        Task<StatusNew> DeleteStatus(int id);
+        Task<List<StatusDTO>> GetAllStatuses();
+        Task<StatusDTO> AddStatus(StatusDTO status);
+        Task<StatusDTO> GetStatusById(int id);
+        Task<StatusDTO> UpdateStatus(StatusDTO status);
+        Task<StatusDTO> DeleteStatus(string statusName);
+        Task<StatusDTO> GetStatusByName(string statusName);
     }
 }

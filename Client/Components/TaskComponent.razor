@@ -4,8 +4,17 @@
 
 <div class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
     <div class="d-flex gap-3">
+        <OrderComponent Task="Task" Active="Activate" />
         <TaskInputComponent3 Active="Activate" Task="Task" />
         <div class="containerLeftComponents">
+            @if (ShowOrHideCriteria)
+            {
+                <textarea cols="20" rows="4" @bind-value="Task.AcceptanceCriteria" @bind-value:event="oninput"></textarea>
+            }
+            else
+            {
+                <AcceptanceCriteriaComponent Task="Task" />
+            }
             @if (Task.isSubTask == false && Task.TaskId > 0)
             {
                 <MudIconButton Icon="@Icons.Material.Filled.Link"
@@ -18,6 +27,7 @@
                 <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
             }
             <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
+
         </div>
     </div>
 
@@ -25,7 +35,7 @@
         <div class="taskComponentsContainer">
             <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
             <PriorityComponent OnClick="Activate" Task="Task" />
-            <StatusComponent OnClick="Activate" Task="Task" />
+            <NewStatusComponent OnClick="Activate" Task="Task" />
             <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
         </div>
         <div class="taskButtonsContainer">
@@ -47,6 +57,7 @@
 
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
 
+
     [Parameter]
     public NoteModel Task { get; set; }
 
@@ -55,6 +66,9 @@
 
     [Parameter]
     public EventCallback CallSubTask { get; set; }
+
+    [Parameter]
+    public bool ShowOrHideCriteria { get; set; }
 
     public string TaskOrSubtask => Task.isSubTask == false ? "taskBorder" : "subtaskBorder";
 

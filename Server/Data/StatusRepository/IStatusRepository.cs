@@ -1,14 +1,19 @@
 ﻿using Tasky.Shared;
+using Tasky.Shared.DTOs;
 
 namespace Tasky.Server.Data.StatusRepository
 {
     public interface IStatusRepository
     {
-        Task<List<StatusNew>> GetAllStatuses();
-        Task<StatusNew> AddStatus(StatusNew status);
-        Task<StatusNew> GetStatusById(int id);
-        Task<StatusNew> UpdateStatus(StatusNew status);
-        Task<StatusNew> DeleteStatus(int id);
+        Task<List<StatusDTO>> GetAllStatuses();
+        Task<StatusDTO> AddStatus(StatusDTO status);
+        Task<StatusDTO> GetStatusById(int id);
+        Task<StatusDTO> GetStatusIdByName(string name);
+
+        Task<StatusDTO> UpdateStatus(StatusDTO status);
+        Task<StatusDTO> DeleteStatus(int id);
+
+
 
     }
 }

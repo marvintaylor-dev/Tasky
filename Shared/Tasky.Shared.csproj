@@ -22,4 +22,9 @@
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\Incoming\" />
+    <Folder Include="DTOs\Outgoing\" />
+  </ItemGroup>
 </Project>

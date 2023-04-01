@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Tasky.Server.Data;
 using Tasky.Shared;
+using Tasky.Shared.DTOs;
 
 namespace Tasky.Server.Data.TaskRepository
 {
@@ -42,13 +43,41 @@ namespace Tasky.Server.Data.TaskRepository
         public async Task<List<NoteModel>> GetAllTasks()
         {
             var result = await _context.Tasks.ToListAsync();
-
             if (result == null)
             {
                 throw new Exception("No Tasks were found");
             }
             else
             {
+                
+                return result;
+            }
+        }
+
+        public async Task<List<NoteModel>> GetAllTasksInOrder()
+        {
+            var result = await _context.Tasks.OrderBy(x => x.Order ?? x.TaskId).ToListAsync();
+            if (result == null)
+            {
+                throw new Exception("No Tasks were found");
+            }
+            else
+            {
+
+                return result;
+            }
+        }
+
+        public async Task<List<NoteModel>> GetAllSubtasks()
+        {
+            var result = await _context.Tasks.Where(x => x.isSubTask == true).ToListAsync();
+            if (result == null)
+            {
+                throw new Exception("No Tasks were found");
+            }
+            else
+            {
+
                 return result;
             }
         }
@@ -73,10 +102,8 @@ namespace Tasky.Server.Data.TaskRepository
 
             await _context.SaveChangesAsync();
             return result;
-
         }
 
-
-        
+       
     }
 }

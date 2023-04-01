@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tasky.Server.Data;
 using Tasky.Server.Data.TaskRepository;
 using Tasky.Shared;
+using Tasky.Shared.DTOs;
 
 namespace Tasky.Server.Controllers
 {
@@ -23,6 +25,36 @@ namespace Tasky.Server.Controllers
             try
             {
                 var tasks = await _repository.GetAllTasks();
+                return Ok(tasks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving data from the database. {ex}");
+            }
+        }
+
+        [HttpGet]
+        [Route("subtasks")]
+        public async Task<ActionResult<NoteModel>> GetAllSubtasks()
+        {
+            try
+            {
+                var tasks = await _repository.GetAllSubtasks();
+                return Ok(tasks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving data from the database. {ex}");
+            }
+        }
+
+        [HttpGet]
+        [Route("inorder")]
+        public async Task<ActionResult<NoteModel>> GetAllTasksInOrder()
+        {
+            try
+            {
+                var tasks = await _repository.GetAllTasksInOrder();
                 return Ok(tasks);
             }
             catch (Exception ex)

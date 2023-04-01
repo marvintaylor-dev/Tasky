@@ -12,10 +12,22 @@ namespace Tasky.Shared
 {
     public class NoteModel 
     {
+        //create these properties for the model
+        //string SupportingDocuments - may require a many-to-many relationship so that multiple documents can be linked to multiple tasks and tasks can be assigned more than one document.
+        //int StoryPoints - May require it's own model packages (T-shirt sizing, fib #s etc)
+
         [Key]
         public int TaskId { get; set; }
         [Required]
         public string Name { get; set; } = string.Empty;
+
+       public int? Order { get; set; }
+
+       [ForeignKey("StoryId")]
+       public int? UserStory { get; set; }
+
+       public string AcceptanceCriteria { get; set; } = string.Empty;
+
 
         [ForeignKey("MemberId")]
         public int Assignee { get; set; }
@@ -28,13 +40,17 @@ namespace Tasky.Shared
         public DateTime StartDate { get; set; } = DateTime.Now;
         public DateTime DueDate {get; set;} = DateTime.Now;
 
-        public Status status { get; set; } = Status.ToDo;
+        public DateTime DateCreated { get; set; } = DateTime.Now;
+
+
+        [ForeignKey("StatusId")]
+       public int? Status { get; set; }
 
         public bool? isSubTask { get; set; } = false;
 
-        public int? LinkTo { get; set; }
+       // public bool? recurringTask { get; set; } 
 
-        //public IList<int> SubTaskIds { get; set; } 
+        public int? LinkTo { get; set; }
 
     }
 

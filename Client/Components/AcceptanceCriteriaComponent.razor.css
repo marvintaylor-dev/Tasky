@@ -1,0 +1,41 @@
+﻿.entireComponentContainer:hover{
+    cursor: pointer;
+}
+
+.entireComponentContainer:hover::after{
+    content: "Acceptance Criteria";
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: 1.5rem;
+    padding: .5rem;
+    background: yellow;
+    z-index: 1;
+    box-shadow: 6px 9px 39px -5px rgba(0,0,0,0.46);
+}
+
+.acceptanceCriteriaContainer {
+    z-index: 1;
+    background: white;
+    border: 3px solid black;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.acceptanceCriteria {
+    display: none;
+    background: white;
+    min-width: 500px;
+    min-height: 150px;
+    border: 1px solid black;
+    padding: .2rem 1rem;
+    margin: 1rem 0rem;
+}
+
+.show {
+    display: block;
+}
+
+.closeButton:hover{
+    cursor:pointer;
+}

@@ -154,7 +154,7 @@ namespace Tasky.Server.Migrations
                     b.ToTable("SectionNoteModels");
                 });
 
-            modelBuilder.Entity("Tasky.Shared.StatusNew", b =>
+            modelBuilder.Entity("Tasky.Shared.Status", b =>
                 {
                     b.Property<int>("StatusId")
                         .ValueGeneratedOnAdd()

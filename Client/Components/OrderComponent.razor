@@ -1,0 +1,57 @@
+﻿@inject ITaskService taskService
+
+<input type="number"
+       min="0"
+       style="width: 60px; border: 1px solid black; padding-left: 2%; border-radius: .3rem;"
+       @bind-value="Task.Order"
+       @bind-value:event="oninput"
+       @onchange="Activate"
+       @onkeydown="KeyPressed" />
+
+
+@code {
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> Active { get; set; }
+
+    void Activate()
+    {
+        Active.InvokeAsync(true);
+    }
+
+    public async void KeyPressed(KeyboardEventArgs e)
+    {
+        try
+        {
+            if (e.Code != "Enter")
+            {
+                //send message to parent that child is active and buttons should be displayed
+                await Active.InvokeAsync(true);
+            }
+            else if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            {
+                if (Task.TaskId > 0)
+                {
+                    await taskService.UpdateTask(Task);
+
+                }
+                else if (Task.TaskId == 0)
+                {
+                    await taskService.AddTask(Task);
+                }
+
+                //send message to parent that child is inactive and buttons should be hidden
+                await Active.InvokeAsync(false);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message.ToString());
+        }
+
+
+    }
+
+}

@@ -1,4 +1,8 @@
-﻿namespace Tasky.Client.Services.StatusService
+﻿using System.Security.Cryptography.X509Certificates;
+using Tasky.Shared;
+using Tasky.Shared.DTOs;
+
+namespace Tasky.Client.Services.StatusService
 {
     public class StatusService : IStatusService
     {
@@ -8,10 +12,10 @@
         {
             _httpClient = httpClient;
         }
-        public async Task<StatusNew> AddStatus(StatusNew status)
+        public async Task<StatusDTO> AddStatus(StatusDTO status)
         {
             var result = await _httpClient.PostAsJsonAsync("api/status", status);
-            var response = await result.Content.ReadFromJsonAsync<StatusNew>();
+            var response = await result.Content.ReadFromJsonAsync<StatusDTO>();
 
             if (response == null)
             {
@@ -21,10 +25,13 @@
             return response;
         }
 
-        public async Task<StatusNew> DeleteStatus(int id)
+        public async Task<StatusDTO> DeleteStatus(string statusName)
         {
-            var result = await _httpClient.DeleteAsync($"api/status/{id}");
-            var response = await result.Content.ReadFromJsonAsync<StatusNew>();
+            //Get the id from the database so we can update the status and not get a header error.
+            var fullStatus = await GetStatusByName(statusName);
+        
+            var result = await _httpClient.DeleteAsync($"api/status/{fullStatus.StatusId}");
+            var response = await result.Content.ReadFromJsonAsync<StatusDTO>();
 
             if (response == null)
             {
@@ -33,9 +40,9 @@
             return response;
         }
 
-        public async Task<List<StatusNew>> GetAllStatuses()
+        public async Task<List<StatusDTO>> GetAllStatuses()
         {
-            var result = await _httpClient.GetFromJsonAsync<List<StatusNew>>("api/status");
+            var result = await _httpClient.GetFromJsonAsync<List<StatusDTO>>("api/status");
             if(result == null)
             {
                 throw new Exception("No Statuses found.");
@@ -43,9 +50,9 @@
             return result;
         }
 
-        public async Task<StatusNew> GetStatusById(int id)
+        public async Task<StatusDTO> GetStatusById(int id)
         {
-            var result = await _httpClient.GetFromJsonAsync<StatusNew>($"api/status/{id}");
+            var result = await _httpClient.GetFromJsonAsync<StatusDTO>($"api/status/{id}");
             if(result == null)
             {
                 throw new Exception($"No status by id of {id} were found.");
@@ -53,15 +60,27 @@
             return result;
         }
 
-        public async Task<StatusNew> UpdateStatus(StatusNew status)
+        public async Task<StatusDTO> UpdateStatus(StatusDTO status)
         {
-            var result = await _httpClient.PutAsJsonAsync($"api/status", status);
-            var response = await result.Content.ReadFromJsonAsync<StatusNew>();
-            if (response == null)
-            {
-                throw new Exception("Status not updated");
-            }
+            //Get the id from the database so we can update the status and not get a header error.
+            var name = status.StatusName;
+            var fullStatus = await GetStatusByName(name);
+            status.StatusId = fullStatus.StatusId;
+
+            var result = await _httpClient.PutAsJsonAsync($"api/status/{status.StatusId}", status);
+            var response = await result.Content.ReadFromJsonAsync<StatusDTO>();
+            
             return response;
+        }
+
+        public async Task<StatusDTO> GetStatusByName(string statusName)
+        {
+            var result = await _httpClient.GetFromJsonAsync<StatusDTO>($"api/status/name/{statusName}");
+            if(result == null)
+            {
+                throw new Exception($"Could not update status of {statusName}");
+            }
+            return result;
         }
     }
 }

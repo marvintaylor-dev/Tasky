@@ -1,0 +1,64 @@
+﻿@inject ITaskService taskService;
+
+
+<div class="position-relative">
+    <div class="entireComponentContainer">
+        <MudIcon Icon="@Icons.Material.Filled.FormatListBulleted" Size="Size.Small" @onclick="Clicked" />
+    </div>
+    @if (iconClicked)
+    {
+        <div class="position-absolute acceptanceCriteriaContainer">
+            <div class="d-flex justify-content-end">
+                <span class="closeButton" @onclick="CloseBox">&#10006;</span>
+            </div>
+
+            <div class="fw-bold" style="font-size: 1rem;">Acceptance Criteria</div>
+            <span>Add a list of criteria that your task has to meet in order to be considered acceptable.</span>
+            <textarea @bind-value="Task.AcceptanceCriteria" @bind-value:event="oninput" class="acceptanceCriteria @showDropdown"></textarea>
+            <div class="d-flex justify-content-end">
+                @if (Task.TaskId == 0)
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => Save(Task)">Submit</MudButton>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => Update(Task)">Update</MudButton>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    private bool iconClicked = false;
+    public string showDropdown => iconClicked == false ? "" : "show";
+
+
+    
+
+    void Clicked()
+    {
+        iconClicked = !iconClicked;
+    }
+
+    void CloseBox()
+    {
+        iconClicked = false;
+    }
+
+    async void Save(NoteModel task)
+    {
+        CloseBox();
+        await taskService.AddTask(task);
+    }
+
+    async void Update(NoteModel updateTask)
+    {
+        CloseBox();
+        await taskService.UpdateTask(updateTask);
+    }
+}

@@ -1,68 +1,89 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Net.Sockets;
+using System.Reflection.Metadata;
 using Tasky.Shared;
+using Tasky.Shared.DTOs;
 
 namespace Tasky.Server.Data.StatusRepository
 {
     public class StatusRepository : IStatusRepository
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public StatusRepository(AppDbContext context)
+        public StatusRepository(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<StatusNew> AddStatus(StatusNew status)
+        public async Task<StatusDTO> AddStatus(StatusDTO status)
         {
-
-            var result = await _context.Statuses.AddAsync(status);
-            await _context.SaveChangesAsync();
-            return result.Entity;
-
+            try
+            {
+                //Convert Dto to model
+                var parameterToModel = _mapper.Map<Status>(status);
+                await _context.Statuses.AddAsync(parameterToModel);
+                await _context.SaveChangesAsync();
+                var result = _mapper.Map<StatusDTO>(parameterToModel);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public async Task<StatusNew> DeleteStatus(int id)
+        public async Task<StatusDTO> DeleteStatus(int id)
         {
             string message = string.Empty;
-            var result = await _context.Statuses.FirstOrDefaultAsync<StatusNew>(x => x.StatusId == id);
-            if (result == null)
+            var matchingStatus = await _context.Statuses.FirstOrDefaultAsync(x => x.StatusId == id);
+            if (matchingStatus == null)
             {
                 message = "No status to delete";
                 throw new Exception("No status to delete");
             }
-            _context.Statuses.Remove(result);
+            _context.Statuses.Remove(matchingStatus);
             await _context.SaveChangesAsync();
-            message = $"Status of {result.StatusName} has been deleted";
-            return result;
+
+            var deletedDTO = _mapper.Map<StatusDTO>(matchingStatus);
+
+            return deletedDTO;
         }
 
-        public async Task<List<StatusNew>> GetAllStatuses()
+        public async Task<List<StatusDTO>> GetAllStatuses()
         {
-            string message = string.Empty;
             try
             {
                 var result = await _context.Statuses.ToListAsync();
-
-                return result;
+                var statusResponse = new List<StatusDTO>();
+                result.ForEach(result => statusResponse.Add(new StatusDTO
+                {
+                    StatusId = result.StatusId,
+                    WorkInProgressLimit = result.WorkInProgressLimit,
+                    StatusDefinitionOfFinished = result.StatusDefinitionOfFinished,
+                    StatusName = result.StatusName,
+                })); 
+                return statusResponse;
             }
             catch (Exception ex)
             {
-                message = "No status is available to return";
                 throw new Exception(ex.Message);
             }
         }
 
-        public async Task<StatusNew> GetStatusById(int id)
+        public async Task<StatusDTO> GetStatusById(int id)
         {
             string message = string.Empty;
-            var result = await _context.Statuses.FirstOrDefaultAsync(x => x.StatusId == id);
+            var matchingStatus = await _context.Statuses.FirstOrDefaultAsync(x => x.StatusId == id);
             try
             {
-                if (result == null)
+                if (matchingStatus == null)
                 {
-                    message = $"There is no status with the id of {id}";
                     throw new Exception("Status is null");
                 }
+                var result = _mapper.Map<StatusDTO>(matchingStatus);
                 return result;
             }
             catch (Exception ex)
@@ -71,22 +92,39 @@ namespace Tasky.Server.Data.StatusRepository
             }
         }
 
-        public async Task<StatusNew> UpdateStatus(StatusNew status)
+        public async Task<StatusDTO> GetStatusIdByName(string name)
         {
-            string message = string.Empty;
-            var result = _context.Statuses.FirstOrDefault(x => x.StatusId == status.StatusId);
+            var reducedName = name.ToLower().Trim().Replace(" ", "");
+            var result = await _context.Statuses
+                .FirstOrDefaultAsync(x => x.StatusName.ToLower().Trim().Replace(" ", "") == reducedName);
             if (result == null)
             {
-                message = "Could not update status";
-                throw new Exception("Cannot update status as it has returned null.");
+                throw new Exception($"{name} is not found.");
             }
 
-            result.StatusName = status.StatusName;
-            result.StatusDefinitionOfFinished = status.StatusDefinitionOfFinished;
-            result.WorkInProgressLimit = status.WorkInProgressLimit;
+            var status = _mapper.Map<StatusDTO>(result);
+                     
+            return status;
+        }
 
+        public async Task<StatusDTO> UpdateStatus(StatusDTO status)
+        {
+            var foundStatusInDb = _context.Statuses.FirstOrDefault(x => x.StatusName == status.StatusName);
+            if (foundStatusInDb == null)
+            {
+                throw new Exception("Cannot update status as it has returned null.");
+            }
+            foundStatusInDb.StatusId = foundStatusInDb.StatusId;
+            foundStatusInDb.StatusName = status.StatusName;
+            foundStatusInDb.StatusDefinitionOfFinished = status.StatusDefinitionOfFinished;
+            foundStatusInDb.WorkInProgressLimit = status.WorkInProgressLimit;
+            
             await _context.SaveChangesAsync();
+
+            var result = _mapper.Map<StatusDTO>(foundStatusInDb);
+
             return result;
         }
     }
 }
+

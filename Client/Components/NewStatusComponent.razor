@@ -1,0 +1,54 @@
+﻿@using Tasky.Shared.DTOs;
+@inject ITaskService taskService;
+@inject IStatusService statusService;
+
+
+<select name="status" @bind-value="Task.Status" @bind-value:event="oninput" @onchange="UpdateStatus" @onfocus="@ChildClicked" @onfocusout="@Deactivate">
+    @foreach (var status in statuses)
+    {
+        <option value="@status.StatusId">@status.StatusName</option>
+    }
+</select>
+
+
+@code {
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
+    private List<StatusDTO> statuses = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        statuses = await statusService.GetAllStatuses();
+        await base.OnInitializedAsync();
+    }
+
+    private async void UpdateStatus(ChangeEventArgs e)
+    {
+        Console.WriteLine($"{Task.Status}");
+        if (Task.TaskId == 0)
+        {
+            Console.WriteLine("Please add a Task Name before adding a status");
+        }
+        else if (Task.TaskId > 0)
+        {
+           await taskService.UpdateTask(Task);
+           await OnClick.InvokeAsync(false);
+        }
+    }
+
+
+    //When tabbing through Child Clicked and Deactivate will notify the parent to display the Edit/Save button
+    async void ChildClicked()
+    {
+        await OnClick.InvokeAsync(true);
+    }
+
+    async void Deactivate()
+    {
+        await OnClick.InvokeAsync(false);
+    }
+}

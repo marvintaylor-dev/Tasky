@@ -28,6 +28,17 @@ namespace Tasky.Client.Services.TaskService
             return deletedTask;
         }
 
+        public async Task<List<NoteModel>> GetSubtasks()
+        {
+            var tasks = await _httpClient.GetFromJsonAsync<List<NoteModel>>("api/notemodels/subtasks");
+            if (tasks == null)
+            {
+                return null;
+            }
+
+            return tasks;
+        }
+
         public async Task<NoteModel?> GetTaskById(int? taskId)
         {
             if (taskId == null)
@@ -54,7 +65,16 @@ namespace Tasky.Client.Services.TaskService
             return tasks;
         }
 
+        public async Task<List<NoteModel>> GetTasksInOrder()
+        {
+            var tasks = await _httpClient.GetFromJsonAsync<List<NoteModel>>("api/notemodels/inorder");
+            if (tasks == null)
+            {
+                return null;
+            }
 
+            return tasks;
+        }
 
         public async Task<NoteModel> UpdateTask(NoteModel updateTask)
         {
@@ -73,7 +93,7 @@ namespace Tasky.Client.Services.TaskService
             {
                 return WorkInProgress.Days;
             }
-            else if(task.status == Status.Completed)
+            else if(task.Status == 7)
             {
                 return WorkInProgress.Days;
             }

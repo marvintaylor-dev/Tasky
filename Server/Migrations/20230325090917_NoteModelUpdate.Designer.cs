@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230325090917_NoteModelUpdate")]
+    partial class NoteModelUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,7 +120,7 @@ namespace Tasky.Server.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Status")
+                    b.Property<int?>("StatusNewStatusId")
                         .HasColumnType("int");
 
                     b.Property<int?>("Tag")
@@ -130,7 +132,12 @@ namespace Tasky.Server.Migrations
                     b.Property<bool?>("isSubTask")
                         .HasColumnType("bit");
 
+                    b.Property<int>("status")
+                        .HasColumnType("int");
+
                     b.HasKey("TaskId");
+
+                    b.HasIndex("StatusNewStatusId");
 
                     b.ToTable("Tasks");
                 });
@@ -283,6 +290,15 @@ namespace Tasky.Server.Migrations
                     b.HasKey("StoryId");
 
                     b.ToTable("UserStories");
+                });
+
+            modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
+                {
+                    b.HasOne("Tasky.Shared.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusNewStatusId");
+
+                    b.Navigation("Status");
                 });
 #pragma warning restore 612, 618
         }
