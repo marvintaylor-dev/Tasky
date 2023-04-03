@@ -19,6 +19,11 @@ namespace Tasky.Server.Data.TaskRepository
 
         public async Task<NoteModel> AddTask(NoteModel newTask)
         {
+            var firstStatus = await _context.Statuses.OrderBy(x => x.StatusOrder).FirstAsync();
+            if(newTask.Status == null)
+            {
+                newTask.Status = firstStatus.StatusId;
+            }
             var task = await _context.Tasks.AddAsync(newTask);
             await _context.SaveChangesAsync();
             return task.Entity;

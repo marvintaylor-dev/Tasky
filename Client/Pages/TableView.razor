@@ -159,8 +159,8 @@
 
     public void SortMems(int assigneeId)
     {
-        Member foundMember;
-        foreach (Member member in memberService.Members)
+        MemberDTO foundMember;
+        foreach (var member in memberService.Members)
         {
             if (member.MemberId == assigneeId)
             {

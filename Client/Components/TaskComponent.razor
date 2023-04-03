@@ -1,53 +1,58 @@
 ﻿@inject IJSRuntime JS
 @inject ITaskService taskService;
 
-
-<div class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
-    <div class="d-flex gap-3">
-        <OrderComponent Task="Task" Active="Activate" />
-        <TaskInputComponent3 Active="Activate" Task="Task" />
-        <div class="containerLeftComponents">
-            @if (ShowOrHideCriteria)
-            {
-                <textarea cols="20" rows="4" @bind-value="Task.AcceptanceCriteria" @bind-value:event="oninput"></textarea>
-            }
-            else
-            {
-                <AcceptanceCriteriaComponent Task="Task" />
-            }
-            @if (Task.isSubTask == false && Task.TaskId > 0)
-            {
-                <MudIconButton Icon="@Icons.Material.Filled.Link"
+@if (tasks.Count == 0)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <div class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
+        <div class="d-flex gap-3">
+            <OrderComponent Task="Task" Active="Activate" />
+            <TaskInputComponent3 Active="Activate" Task="Task" />
+            <div class="containerLeftComponents">
+                @if (ShowOrHideCriteria)
+                {
+                    <textarea cols="40" rows="4" @bind-value="Task.AcceptanceCriteria" @bind-value:event="oninput"></textarea>
+                }
+                else
+                {
+                    <AcceptanceCriteriaComponent Task="Task" />
+                }
+                @if (Task.isSubTask == false && Task.TaskId > 0)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Link"
                            Variant="Variant.Outlined"
                            Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}; padding: 2px;")"
                            Size="Size.Small" @onclick="AddSubTask" />
-            }
-            else if (Task.isSubTask == true)
-            {
-                <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
-            }
-            <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
+                }
+                else if (Task.isSubTask == true)
+                {
+                    <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
+                }
+                <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
 
+            </div>
+        </div>
+
+        <div class="taskContainerRight">
+            <div class="taskComponentsContainer">
+                <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+                <PriorityComponent OnClick="Activate" Task="Task" />
+                <NewStatusComponent OnClick="Activate" Task="Task" />
+                <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            </div>
+            <div class="taskButtonsContainer">
+                <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" />
+                @if (IsClicked)
+                {
+                    <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
+                }
+            </div>
         </div>
     </div>
-
-    <div class="taskContainerRight">
-        <div class="taskComponentsContainer">
-            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-            <PriorityComponent OnClick="Activate" Task="Task" />
-            <NewStatusComponent OnClick="Activate" Task="Task" />
-            <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-        </div>
-        <div class="taskButtonsContainer">
-            <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" />
-            @if (IsClicked)
-            {
-                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
-            }
-        </div>
-    </div>
-</div>
-
+}
 
 
 

@@ -7,10 +7,6 @@
     resize: none;
 }
 
-.subtaskIndent {
-    margin-left: 2rem;
-    width: 170px;
-}
 
 .taskInput:hover {
     cursor: pointer;

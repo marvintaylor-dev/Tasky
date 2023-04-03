@@ -37,11 +37,10 @@ namespace Tasky.Server.Data.StatusRepository
 
         public async Task<StatusDTO> DeleteStatus(int id)
         {
-            string message = string.Empty;
+            
             var matchingStatus = await _context.Statuses.FirstOrDefaultAsync(x => x.StatusId == id);
             if (matchingStatus == null)
             {
-                message = "No status to delete";
                 throw new Exception("No status to delete");
             }
             _context.Statuses.Remove(matchingStatus);
@@ -56,13 +55,14 @@ namespace Tasky.Server.Data.StatusRepository
         {
             try
             {
-                var result = await _context.Statuses.ToListAsync();
+                var result = await _context.Statuses.OrderBy(x => x.StatusOrder).ToListAsync();
                 var statusResponse = new List<StatusDTO>();
                 result.ForEach(result => statusResponse.Add(new StatusDTO
                 {
                     StatusId = result.StatusId,
                     WorkInProgressLimit = result.WorkInProgressLimit,
                     StatusDefinitionOfFinished = result.StatusDefinitionOfFinished,
+                    StatusOrder = result.StatusOrder,   
                     StatusName = result.StatusName,
                 })); 
                 return statusResponse;
@@ -109,12 +109,12 @@ namespace Tasky.Server.Data.StatusRepository
 
         public async Task<StatusDTO> UpdateStatus(StatusDTO status)
         {
-            var foundStatusInDb = _context.Statuses.FirstOrDefault(x => x.StatusName == status.StatusName);
+            var foundStatusInDb = _context.Statuses.FirstOrDefault(x => x.StatusId == status.StatusId);
             if (foundStatusInDb == null)
             {
                 throw new Exception("Cannot update status as it has returned null.");
             }
-            foundStatusInDb.StatusId = foundStatusInDb.StatusId;
+            foundStatusInDb.StatusOrder = status.StatusOrder;
             foundStatusInDb.StatusName = status.StatusName;
             foundStatusInDb.StatusDefinitionOfFinished = status.StatusDefinitionOfFinished;
             foundStatusInDb.WorkInProgressLimit = status.WorkInProgressLimit;

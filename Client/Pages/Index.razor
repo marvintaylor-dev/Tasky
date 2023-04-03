@@ -3,6 +3,7 @@
 @inject ITaskService taskService
 @inject IMemberService memberService
 @inject ISectionService sectionService
+@inject IStatusService statusService
 @attribute [Authorize]
 
 <div class="titleContainer d-flex justify-content-center align-items-center">
@@ -54,11 +55,31 @@
 }
 else
 {
-    @foreach (var task in tasks)
+
+
+    <Virtualize Items="@tasks" Context="task">
+        @if (task.isSubTask == false)
+        {
+            <TaskComponent @key="task.TaskId" ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+            @foreach (var t in subtasks)
+            {
+                if (t.LinkTo == task.TaskId)
+                {
+                    <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+                }
+            }
+        }
+    </Virtualize>
+
+
+    @*    How I used to call my tasks. Above is now the virtualized way.*@
+    @* @foreach (var task in tasks)
     {
         if (task.isSubTask == false)
         {
-            <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+            <Virtualize Items="@tasks" Context="task">
+                <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+            </Virtualize>
 
             @foreach (var t in subtasks)
             {
@@ -67,22 +88,9 @@ else
                     <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
                 }
             }
-
-
-            @*   @foreach (var pair in taskDictionary)
-                {
-                @if (pair.Value.isSubTask == true && pair.Value.LinkTo == task.TaskId)
-                {
-                <TaskComponent Task="pair.Value" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)"></TaskComponent>
-                }
-                }*@
-
-
-        }
-    }
-
-
+        }*@
 }
+
 
 <div class="centerTask">
     <MudFab Color="Color.Info" Style="margin-top: 2rem; margin-left: 10rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
@@ -108,7 +116,6 @@ else
         StateHasChanged();
     }
 
-    //Dictionary<int, NoteModel> taskDictionary = new Dictionary<int, NoteModel>();
     NoteModel newTask = new NoteModel();
     List<NoteModel> tasks = new List<NoteModel>();
     List<NoteModel> subtasks = new List<NoteModel>();
@@ -118,16 +125,6 @@ else
     List<Section> sections = new List<Section>();
     sectionNoteModel link = new sectionNoteModel();
 
-    //public async Task DictionaryUpdate()
-    //{
-    //    @foreach (var task in tasks)
-    //    {
-    //        if (!taskDictionary.ContainsKey(task.TaskId))
-    //        {
-    //            taskDictionary.Add(task.TaskId, task);
-    //        }
-    //    }
-    //}
 
     protected override async Task OnInitializedAsync()
     {
@@ -166,7 +163,6 @@ else
         newTask.Name = String.Empty;
         newTask.isSubTask = true;
         newTask.LinkTo = taskId;
-        //await DictionaryUpdate();
         StateHasChanged();
     }
 

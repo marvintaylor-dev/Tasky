@@ -25,12 +25,9 @@ namespace Tasky.Client.Services.StatusService
             return response;
         }
 
-        public async Task<StatusDTO> DeleteStatus(string statusName)
+        public async Task<StatusDTO> DeleteStatus(int id)
         {
-            //Get the id from the database so we can update the status and not get a header error.
-            var fullStatus = await GetStatusByName(statusName);
-        
-            var result = await _httpClient.DeleteAsync($"api/status/{fullStatus.StatusId}");
+            var result = await _httpClient.DeleteAsync($"api/status/{id}");
             var response = await result.Content.ReadFromJsonAsync<StatusDTO>();
 
             if (response == null)
@@ -63,9 +60,9 @@ namespace Tasky.Client.Services.StatusService
         public async Task<StatusDTO> UpdateStatus(StatusDTO status)
         {
             //Get the id from the database so we can update the status and not get a header error.
-            var name = status.StatusName;
-            var fullStatus = await GetStatusByName(name);
-            status.StatusId = fullStatus.StatusId;
+            //var name = status.StatusName;
+            //var fullStatus = await GetStatusByName(name);
+            //status.StatusId = fullStatus.StatusId;
 
             var result = await _httpClient.PutAsJsonAsync($"api/status/{status.StatusId}", status);
             var response = await result.Content.ReadFromJsonAsync<StatusDTO>();

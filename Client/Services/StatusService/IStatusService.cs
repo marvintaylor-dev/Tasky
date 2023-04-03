@@ -8,7 +8,7 @@ namespace Tasky.Client.Services.StatusService
         Task<StatusDTO> AddStatus(StatusDTO status);
         Task<StatusDTO> GetStatusById(int id);
         Task<StatusDTO> UpdateStatus(StatusDTO status);
-        Task<StatusDTO> DeleteStatus(string statusName);
+        Task<StatusDTO> DeleteStatus(int id);
         Task<StatusDTO> GetStatusByName(string statusName);
     }
 }

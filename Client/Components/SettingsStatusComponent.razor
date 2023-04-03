@@ -5,6 +5,7 @@
     table {
         border-collapse: collapse;
         width: 100%;
+        margin-bottom: 3rem;
     }
 
     th, td {
@@ -31,7 +32,6 @@
 
     input[type="text"], input[type="number"] {
         padding: 6px 10px;
-        margin: 5px;
         border-radius: 4px;
         border: 1px solid #ccc;
         box-sizing: border-box;
@@ -42,8 +42,6 @@
         background-color: #ffc107;
         color: white;
         border: none;
-        padding: 10px;
-        margin-top: 10px;
         border-radius: 4px;
         cursor: pointer;
         font-size: 1rem;
@@ -52,44 +50,101 @@
         button[type="submit"]:hover {
             background-color: #ffcd38;
         }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .validation-summary {
+        margin-bottom: 1rem;
+    }
 </style>
 
-<table>
-    <thead>
-        <tr>
-            <th>Status Name</th>
-            <th>Definition of Finished</th>
-            <th>Work In Progress Limit</th>
-            <th>Remove</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var status in statuses)
-        {
+<MudButton Color="Color.Secondary" @onclick="ToggleStatusSettings">Status Settings</MudButton>
+
+@if (ShowStatus)
+{
+    <table>
+        <thead>
             <tr>
-                <td>@status.StatusName</td>
-                <td>@status.StatusDefinitionOfFinished</td>
-                <td>@status.WorkInProgressLimit</td>
-                <td @onclick="() => DeleteStatus(status.StatusName)">&#10006;</td>
+                <th>Order of Statuses</th>
+                <th>Status Name</th>
+                <th>Definition of Finished</th>
+                <th>Work In Progress Limit</th>
+                <th>Remove</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var status in statuses)
+            {
+                <tr>
+                    @if (status.IsEditing)
+                    {
+                        <td><input type="number" @bind-value="@status.StatusOrder" /></td>
+                        <td><input type="text" @bind-value="@status.StatusName" /></td>
+                        <td><input type="text" @bind-value="@status.StatusDefinitionOfFinished" /></td>
+                        <td><input type="text" @bind-value="@status.WorkInProgressLimit" /></td>
+                        <td @onclick="() => SaveStatus(status)">Save</td>
 
-<h4 class="mt-4">Add a New Status</h4>
-<form @onsubmit="AddStatus" >
-    <input type="text" @bind-value="newStatus.StatusName" @bind-value:event="oninput" />
-    <input type="text" @bind-value="newStatus.StatusDefinitionOfFinished" @bind-value:event="oninput" />
-    <input type="number" @bind-value="newStatus.WorkInProgressLimit" @bind-value:event="oninput" />
-    <button type="submit" class="btn btn-warning">Add a status</button>
-</form>
+                    }
+                    else
+                    {
+                        <td @onclick="() => EditStatus(status)">@status.StatusOrder</td>
+                        <td @onclick="() => EditStatus(status)">@status.StatusName</td>
+                        <td @onclick="() => EditStatus(status)">@status.StatusDefinitionOfFinished</td>
+                        <td @onclick="() => EditStatus(status)">@status.WorkInProgressLimit</td>
+                        <td @onclick="() => DeleteStatus(status.StatusId)">&#10006;</td>
 
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
 
+    <h4 class="mt-4">Add a New Status</h4>
+    <EditForm Model="@newStatus" OnValidSubmit="@AddStatus">
+        <DataAnnotationsValidator />
+
+        <div class="d-flex gap-3 align-items-center">
+            <div class="form-group">
+                <label for="status-order">Status Order</label>
+                <InputNumber id="status-order" class="form-control" @bind-Value="newStatus.StatusOrder" />
+            </div>
+            <div class="form-group">
+                <label for="status-name">Status Name</label>
+                <InputText id="status-name" class="form-control" @bind-Value="newStatus.StatusName" />
+            </div>
+            <div class="form-group">
+                <label for="status-definition">Status Definition Of Finished</label>
+                <InputText id="status-definition" class="form-control" @bind-Value="newStatus.StatusDefinitionOfFinished" />
+            </div>
+            <div class="form-group">
+                <label for="wip-limit">Work In Progress Limit</label>
+                <InputNumber id="wip-limit" class="form-control" @bind-Value="@newStatus.WorkInProgressLimit" />
+            </div>
+
+            <button type="submit" class="btn btn-warning">Add New Status</button>
+
+        </div>
+    </EditForm>
+}
 
 
 @code {
     private List<StatusDTO> statuses = new();
     private StatusDTO newStatus = new();
+
+    private bool ShowStatus = false;
+    void ToggleStatusSettings()
+    {
+        ShowStatus = !ShowStatus;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,9 +152,9 @@
         await base.OnInitializedAsync();
     }
 
-    async void DeleteStatus(string name)
+    async void DeleteStatus(int id)
     {
-        await statusService.DeleteStatus(name);
+        await statusService.DeleteStatus(id);
         statuses = await statusService.GetAllStatuses();
         StateHasChanged();
     }
@@ -112,5 +167,17 @@
         StateHasChanged();
     }
 
+    async void EditStatus(StatusDTO status)
+    {
+        status.IsEditing = true;
+    }
+
+    async void SaveStatus(StatusDTO status)
+    {
+        Console.WriteLine(status.StatusOrder);
+        status.IsEditing = false;
+        await statusService.UpdateStatus(status);
+        StateHasChanged();
+    }
 
 }

@@ -1,0 +1,242 @@
+﻿@using Tasky.Shared.DTOs;
+@inject IMemberService memberService
+@using System.Reflection
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 3rem;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    td button {
+        border: none;
+        background-color: transparent;
+        color: red;
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+        td button:hover {
+            color: #ff6666;
+        }
+
+    input[type="text"], input[type="number"] {
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 1rem;
+    }
+
+    button[type="submit"] {
+        background-color: #ffc107;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #ffcd38;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .validation-summary {
+        margin-bottom: 1rem;
+    }
+</style>
+
+<MudButton @onclick="ToggleOpen" Color="Color.Tertiary">User Configuration</MudButton>
+
+@if (isOpen)
+{
+    @if (memberService.Members.Count == 0 || props.Length == 0)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <table>
+            <thead>
+                <tr>
+                    @foreach (var prop in props)
+                    {
+                        if(prop.Name != "IsEditing" && prop.Name != "MemberId")
+                        {
+                        <th>@prop.Name</th>
+                            
+                        }
+                    }
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var member in memberService.Members)
+                {
+                    <tr>
+                        @if (member.IsEditing)
+                        {
+                            <td><input type="text" @bind-value="@member.Name" /></td>
+                            <td><input type="text" @bind-value="@member.FirstName" /></td>
+                            <td><input type="text" @bind-value="@member.LastName" /></td>
+                            <td><input type="text" @bind-value="@member.Email" /></td>
+                            <td><input type="text" @bind-value="@member.Birthday" /></td>
+                            <td><input type="text" @bind-value="@member.Title" /></td>
+                            <td><input type="text" @bind-value="@member.Position" /></td>
+                            <td><input type="number" @bind-value="@member.WorkAssigned" /></td>
+                            <td><input type="text" @bind-value="@member.TimeZone" /></td>
+                            <td><input type="number" @bind-value="@member.TeamId" /></td>
+                            <td @onclick="()=>UpdateMember(member)">Save</td>
+                        }
+                        else
+                        {
+                            <td @onclick="() => MakeEditable(member)">@member.Name</td>
+                            <td @onclick="() => MakeEditable(member)">@member.FirstName</td>
+                            <td @onclick="() => MakeEditable(member)">@member.LastName</td>
+                            <td @onclick="() => MakeEditable(member)">@member.Email</td>
+                            <td @onclick="() => MakeEditable(member)">@member.Birthday</td>
+                            <td @onclick="() => MakeEditable(member)">@member.Title</td>
+                            <td @onclick="() => MakeEditable(member)">@member.Position</td>
+                            <td @onclick="() => MakeEditable(member)">@member.WorkAssigned</td>
+                            <td @onclick="() => MakeEditable(member)">@member.TimeZone</td>
+                            <td @onclick="() => MakeEditable(member)">@member.TeamId</td>
+
+                        }
+                        <td @onclick="()=>DeleteMember(member.MemberId)" style="color: red">&#10006;</td>
+                    </tr>
+                    
+                }
+            </tbody>
+        </table>
+    }
+
+
+    <h4 class="mt-4">Add a New Team Member</h4>
+    <EditForm Model="@newMember" OnValidSubmit="@AddMember">
+        <DataAnnotationsValidator />
+        
+        <div class="d-flex flex-column gap-1 col-lg-4 col-md-6 col-sm-12">
+            <div class="form-group">
+                <label for="member-name">Name</label>
+                <InputText id="member-name" class="form-control" @bind-Value="newMember.Name" />
+            </div>
+            <div class="form-group">
+                <label for="member-firstName">First Name</label>
+                <InputText id="member-firstName" class="form-control" @bind-Value="newMember.FirstName" />
+            </div>
+            <div class="form-group">
+                <label for="member-lastName">Last Name</label>
+                <InputText id="member-lastName" class="form-control" @bind-Value="newMember.LastName" />
+            </div>
+            <div class="form-group">
+                <label for="member-email">Email</label>
+                <InputText id="member-email" class="form-control" @bind-Value="newMember.Email" />
+                <ValidationMessage For="() => newMember.Email" class="validation-message" style="color: red" />
+            </div>
+            <div class="form-group">
+                <label for="member-birthday">Birthday</label>
+                <InputDate id="member-birthday" class="form-control" @bind-Value="newMember.Birthday" />
+            </div>
+            <div class="form-group">
+                <label for="member-title">Job Title</label>
+                <InputText id="member-title" class="form-control" @bind-Value="newMember.Title" />
+            </div>
+            <div class="form-group">
+                <label for="member-position">Position</label>
+                <InputText id="member-position" class="form-control" @bind-Value="newMember.Position" />
+            </div>
+            <div class="form-group">
+                <label for="member-workAssigned">Work Assigned</label>
+                <InputNumber id="member-workAssigned" class="form-control" @bind-Value="newMember.WorkAssigned" />
+            </div>
+            <div class="form-group">
+                <label for="member-timezone">Time Zone</label>
+                <InputText id="member-timezone" class="form-control" @bind-Value="newMember.TimeZone" />
+            </div>
+            <div class="form-group">
+                <label for="member-teamId">Team Id</label>
+                <InputNumber id="member-teamId" class="form-control" @bind-Value="newMember.TeamId" />
+            </div>
+
+            <button type="submit" class="btn btn-warning">Add New Member</button>
+
+        </div>
+    </EditForm>
+}
+
+
+
+@code {
+    //public List<T> data = new();
+    public MemberDTO newMember = new();
+    private PropertyInfo[] props;
+
+    private bool isOpen = false;
+
+    void ToggleOpen()
+    {
+        isOpen = !isOpen;
+    }
+
+    async void AddMember()
+    {
+        await memberService.AddMember(newMember);
+        await memberService.GetMembers();
+        newMember = new MemberDTO();
+        StateHasChanged();
+    }
+
+    async void DeleteMember(int id)
+    {
+        await memberService.DeleteMember(id);
+        await memberService.GetMembers();
+        StateHasChanged();
+    }
+
+    void MakeEditable(MemberDTO member)
+    {
+        member.IsEditing = true;
+    }
+
+    async void UpdateMember(MemberDTO member)
+    {
+        await memberService.UpdateMember(member);
+        await memberService.GetMembers();
+        member.IsEditing = false;
+        StateHasChanged();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await memberService.GetMembers();
+        var memberType = typeof(MemberDTO);
+
+        props = memberType.GetProperties();
+
+        await base.OnInitializedAsync();
+    }
+
+
+}

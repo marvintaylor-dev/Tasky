@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tasky.Shared
+namespace Tasky.Shared.DTOs
 {
-    public class Member
+    public class MemberDTO
     {
-        [Key]
         public int MemberId { get; set; }
         public string? Name { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
         public DateTime? Birthday { get; set; }
         //throws an error that a keyless type or primary key is required
         //public List<DateTime>? VacationDates { get; set; }
@@ -28,5 +24,7 @@ namespace Tasky.Shared
         public string TimeZone { get; set; } = string.Empty;
         //public List<TimeSpan> ActiveTimes { get; set; }
         public int TeamId { get; set; } = 0;
+
+        public bool IsEditing { get; set; }
     }
 }

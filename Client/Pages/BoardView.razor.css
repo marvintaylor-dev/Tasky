@@ -9,3 +9,15 @@
     color: black;
     font-weight: bold;
 }
+
+.wipLimitNumber{
+    font-size: 1rem;
+    background: gray;
+    padding: .25rem .6rem;
+    color: white;
+}
+
+.wipButton{
+    font-size: 1rem;
+    width: 1rem;
+}

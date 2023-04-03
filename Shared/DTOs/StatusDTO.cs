@@ -13,5 +13,7 @@ namespace Tasky.Shared.DTOs
         public string StatusName { get; set; } = string.Empty;
         public string StatusDefinitionOfFinished { get; set; } = string.Empty;
         public int WorkInProgressLimit { get; set; } = 0;
+        public int StatusOrder { get; set; }   
+        public bool IsEditing { get; set; }
     }
 }
