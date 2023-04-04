@@ -8,6 +8,7 @@
 @attribute [Authorize]
 
 
+
 <div class="titleContainer d-flex justify-content-center align-items-center flex-column">
     <h3>Assignee List</h3>
 
@@ -20,6 +21,11 @@
         }
     </select>
 </div>
+
+@if (isLoading)
+{
+    <LoadingIndicatorComponent />
+}
 
 @if (Id > 0)
 {
@@ -109,6 +115,7 @@
 
 
 @code {
+    private bool isLoading = true;
 
     [Parameter]
     public int Id { get; set; }
@@ -121,7 +128,7 @@
     {
         tasks = await taskService.GetTasks();
         await memberService.GetMembers();
-
+        isLoading = false;
         await base.OnInitializedAsync();
     }
 
@@ -144,14 +151,18 @@
 
     public async Task RefreshList()
     {
+        isLoading = true;
         tasks = await taskService.GetTasks();
+        isLoading = false;
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
     }
 
     public async void RefreshSubTasks()
     {
+        isLoading = true;
         tasks = await taskService.GetTasks();
+        isLoading = false;
         StateHasChanged();
         Console.WriteLine("Refresh SubTasks Has Been Called");
     }

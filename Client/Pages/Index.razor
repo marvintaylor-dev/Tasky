@@ -10,29 +10,17 @@
     <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>
 
 </div>
-<div>
-    <MudButton Variant="Variant.Text" Color="Color.Secondary" @onclick="ToggleInput">Section +</MudButton>
 
-    @if (ShowInput)
-    {
-        <input type="text" placeholder="Enter Section" @bind-value="newSection.SectionName" @bind-value:event="oninput" />
-        <button @onclick="SaveSection">Save</button>
-    }
-</div>
 
-<div class="d-flex justify-content-between mb-3">
-    @if (sections.Count == 0)
-    {
-        <div>no sections</div>
-    }
-    else
-    {
-        @foreach (Section sec in sections)
-        {
-            <SectionComponent sectionId="sec.SectionId" RefreshList="RefreshList" />
-        }
-    }
+<div class="d-flex justify-content-end mb-3">
 
+    @*
+    Removed Sections code for the time being. It doesn't work how it's supposed to anyway.
+    @foreach (Section sec in sections)
+    {
+    <SectionComponent sectionId="sec.SectionId" RefreshList="RefreshList" />
+    }
+    *@
     @if (ShowOrHideAcceptanceCriteria == false)
     {
         <div @onclick="ToggleAcceptanceCriteriaVisibility" class="btn btn-outline-dark">
@@ -47,49 +35,30 @@
     }
 </div>
 
-@if (tasks.Count == 0)
-{
-    <h2>Click the "+" to add your first task!</h2>
 
-    <MudFab Color="Color.Info" Style="margin-top: 2rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
+@if (isLoading)
+{
+    <LoadingIndicatorComponent />
 }
-else
+
+@if(isLoading == false && tasks.Count == 0)
 {
+    <div style="font-size: 1rem; font-weight: bold;">Click the button to add your first task!</div>
+}
 
-
-    <Virtualize Items="@tasks" Context="task">
-        @if (task.isSubTask == false)
+<Virtualize Items="@tasks" Context="task">
+    @if (task.isSubTask == false)
+    {
+        <TaskComponent @key="task.TaskId" ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+        @foreach (var t in subtasks)
         {
-            <TaskComponent @key="task.TaskId" ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
-            @foreach (var t in subtasks)
+            if (t.LinkTo == task.TaskId)
             {
-                if (t.LinkTo == task.TaskId)
-                {
-                    <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
-                }
+                <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
             }
         }
-    </Virtualize>
-
-
-    @*    How I used to call my tasks. Above is now the virtualized way.*@
-    @* @foreach (var task in tasks)
-    {
-        if (task.isSubTask == false)
-        {
-            <Virtualize Items="@tasks" Context="task">
-                <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
-            </Virtualize>
-
-            @foreach (var t in subtasks)
-            {
-                if (t.LinkTo == task.TaskId)
-                {
-                    <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
-                }
-            }
-        }*@
-}
+    }
+</Virtualize>
 
 
 <div class="centerTask">
@@ -97,18 +66,9 @@ else
 </div>
 
 
-
-
-
-
 @code {
-    public bool ShowInput = false;
+    private bool isLoading = true;
     public bool ShowOrHideAcceptanceCriteria = false;
-
-    public void ToggleInput()
-    {
-        ShowInput = !ShowInput;
-    }
 
     void ToggleAcceptanceCriteriaVisibility()
     {
@@ -120,9 +80,8 @@ else
     List<NoteModel> tasks = new List<NoteModel>();
     List<NoteModel> subtasks = new List<NoteModel>();
     List<TaskComponent> taskComponents = new();
+    //List<Section> sections = new();
 
-    Section newSection = new Section();
-    List<Section> sections = new List<Section>();
     sectionNoteModel link = new sectionNoteModel();
 
 
@@ -130,24 +89,10 @@ else
     {
         tasks = await taskService.GetTasksInOrder();
         subtasks = await taskService.GetSubtasks();
-
-        //await DictionaryUpdate();
-        sections = await sectionService.GetSections();
-
         await memberService.GetMembers();
+        isLoading = false;
         await base.OnInitializedAsync();
     }
-
-
-    async void SaveSection()
-    {
-        await sectionService.CreateSection(newSection);
-        sections = await sectionService.GetSections();
-        ShowInput = false;
-        StateHasChanged();
-    }
-
-
 
     void AddNewTask()
     {
@@ -166,12 +111,13 @@ else
         StateHasChanged();
     }
 
-
     public async Task RefreshList()
     {
+        isLoading = true;
         tasks = await taskService.GetTasksInOrder();
         subtasks = await taskService.GetSubtasks();
-        sections = await sectionService.GetSections();
+        //sections = await sectionService.GetSections();
+        isLoading = false;
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
     }
