@@ -202,6 +202,50 @@ max-width: 10rem;
         background: lightgray;
         cursor: pointer;
     }
+/* /Components/ShowSubTasksComponent.razor.rz.scp.css */
+
+
+.subTaskCounter:hover[b-b5ndk2yh7k] {
+    background: rgb(33, 150, 243);
+    cursor: pointer;
+}
+
+.subTaskCounter[b-b5ndk2yh7k] {
+    border: none;
+    padding: .2rem .5rem;
+    background: var(--mud-palette-secondary);
+    color: white;
+}
+
+.subtaskList[b-b5ndk2yh7k] {
+    position: absolute;
+    transform: translateY(30px);
+    background: lightgray;
+    border: 2px solid var(--mud-palette-secondary);
+    padding: 1rem;
+    box-shadow: -1px 3px 29px 6px rgba(0,0,0,0.45);
+}
+
+.subtaskItem[b-b5ndk2yh7k] {
+    background: var(--mud-palette-dark);
+    color: white;
+    padding: .5rem .5rem;
+    width: 150px;
+    margin: .3rem;
+}
+
+.hide[b-b5ndk2yh7k] {
+    display: none;
+}
+
+.subtaskInfo[b-b5ndk2yh7k]{
+    display: flex;
+    margin-bottom: .4rem;
+}
+
+.subtaskInfo:last-of-type[b-b5ndk2yh7k]{
+    margin-bottom: 0;
+}
 /* /Components/TagComponent.razor.rz.scp.css */
 .tagContainer[b-fybdqig5hx]{
     position: relative;
