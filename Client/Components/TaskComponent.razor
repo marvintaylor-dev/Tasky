@@ -5,7 +5,7 @@
 
 
 <div id="@Task.TaskId" class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
-    <div class="d-flex gap-3">
+    <div class="taskContainerLeft">
         <OrderComponent Task="Task" Active="Activate" />
         <TaskInputComponent3 Active="Activate" Task="Task" />
         <div class="containerLeftComponents">
@@ -35,17 +35,28 @@
 
     <div class="taskContainerRight">
         <div class="taskComponentsContainer">
-            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-            <PriorityComponent OnClick="Activate" Task="Task" />
-            <NewStatusComponent OnClick="Activate" Task="Task" />
-            <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-        </div>
-        <div class="taskButtonsContainer">
-            <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" />
-            @if (IsClicked)
-            {
-                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
-            }
+            <div class="singleComponentRight">
+                <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            </div>
+            <div class="singleComponentRight">
+                <PriorityComponent OnClick="Activate" Task="Task" />
+            </div>
+            <div class="singleComponentRight">
+                <NewStatusComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            </div>
+            <div class="singleComponentRight">
+                <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            </div>
+            <div class="singleComponentRight">
+                <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" />
+            </div>
+            <div class="singleComponentRight">
+                @if (IsClicked)
+                {
+                    <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
+                }
+            </div>
+
         </div>
     </div>
 </div>

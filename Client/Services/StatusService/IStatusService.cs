@@ -10,5 +10,7 @@ namespace Tasky.Client.Services.StatusService
         Task<StatusDTO> UpdateStatus(StatusDTO status);
         Task<StatusDTO> DeleteStatus(int id);
         Task<StatusDTO> GetStatusByName(string statusName);
+
+        Task<StatusDTO> GetLastStatus();
     }
 }

@@ -1,23 +1,22 @@
-﻿
-@inject IJSRuntime JS
+﻿@inject IJSRuntime JS
 @inject IMemberService memberService;
 @inject ITaskService taskService;
 @inject IEditSaveService EditSaveService;
-@implements IDisposable 
+@implements IDisposable
 
 
-<div class="d-flex align-items-center justify-content-center">
 
-    @if (Task.TaskId > 0)
-    {
-        <MudIconButton Color="EditColorIs" id="editButton" Icon="@Icons.Material.Filled.Create" Size="Size.Small" @onclick="(()=> EditTask(Task))" />
-        
-    }
-    else
-    {
-        <MudIconButton Color="SaveColorIs" id="saveButton" Icon="@Icons.Material.Filled.Save" Size="Size.Small" @onclick="(() => SaveTask(Task))" />
-    }
-</div>
+
+@if (Task.TaskId > 0)
+{
+    <MudIconButton Color="EditColorIs" id="editButton" Icon="@Icons.Material.Filled.Create" Size="Size.Small" @onclick="(()=> EditTask(Task))" />
+
+}
+else
+{
+    <MudIconButton Color="SaveColorIs" id="saveButton" Icon="@Icons.Material.Filled.Save" Size="Size.Small" @onclick="(() => SaveTask(Task))" />
+}
+
 
 
 

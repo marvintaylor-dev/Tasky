@@ -35,8 +35,8 @@ namespace Tasky.Client.Services.TaskService
             {
                 return null;
             }
-
-            return tasks;
+            var tasksInOrder = tasks.OrderBy(x => x.Order ?? x.TaskId).ToList();
+            return tasksInOrder;
         }
 
         public async Task<NoteModel?> GetTaskById(int? taskId)

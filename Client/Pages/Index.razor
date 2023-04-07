@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Tasky.Shared.DTOs;
 @inject IJSRuntime JS
 @inject ITaskService taskService
 @inject IMemberService memberService
@@ -8,12 +9,10 @@
 
 <div class="titleContainer d-flex justify-content-center align-items-center">
     <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>
-
 </div>
 
 
 <div class="d-flex justify-content-end mb-3">
-
     @*
     Removed Sections code for the time being. It doesn't work how it's supposed to anyway.
     @foreach (Section sec in sections)
@@ -33,32 +32,39 @@
             Hide Acceptance Criteria
         </div>
     }
+  
+    <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" ListUpdated="RefreshList" />
+   
 </div>
-
 
 @if (isLoading)
 {
     <LoadingIndicatorComponent />
 }
 
-@if(isLoading == false && tasks.Count == 0)
+@if (isLoading == false && tasks.Count == 0)
 {
     <div style="font-size: 1rem; font-weight: bold;">Click the button to add your first task!</div>
 }
 
-<Virtualize Items="@tasks" Context="task">
-    @if (task.isSubTask == false)
-    {
-        <TaskComponent @key="task.TaskId" ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
-        @foreach (var t in subtasks)
+<div class="d-flex flex-column" style="min-width: fit-content; max-width: 70%; margin: auto;">
+    <Virtualize Items="@tasks" Context="task">
+        @if (task.isSubTask == false)
         {
-            if (t.LinkTo == task.TaskId)
+            if (task.Status != lastStatus)
             {
-                <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+                <TaskComponent @key="task.TaskId" ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+                @foreach (var t in subtasks)
+                {
+                    if (t.LinkTo == task.TaskId)
+                    {
+                        <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+                    }
+                }
             }
         }
-    }
-</Virtualize>
+    </Virtualize>
+</div>
 
 
 <div class="centerTask">
@@ -76,11 +82,14 @@
         StateHasChanged();
     }
 
+    protected CompletedTasksComponent CompletedTasksComponent;
+
     NoteModel newTask = new NoteModel();
     List<NoteModel> tasks = new List<NoteModel>();
     List<NoteModel> subtasks = new List<NoteModel>();
     List<TaskComponent> taskComponents = new();
     //List<Section> sections = new();
+    int lastStatus;
 
     sectionNoteModel link = new sectionNoteModel();
 
@@ -90,6 +99,8 @@
         tasks = await taskService.GetTasksInOrder();
         subtasks = await taskService.GetSubtasks();
         await memberService.GetMembers();
+        StatusDTO lastStatusDTO = await statusService.GetLastStatus();
+        lastStatus = lastStatusDTO.StatusId;
         isLoading = false;
         await base.OnInitializedAsync();
     }
@@ -118,6 +129,7 @@
         subtasks = await taskService.GetSubtasks();
         //sections = await sectionService.GetSections();
         isLoading = false;
+        CompletedTasksComponent.ChangeState();
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
     }

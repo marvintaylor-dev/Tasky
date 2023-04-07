@@ -1,0 +1,27 @@
+﻿.completedTasksContainer {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    align-items: center;
+    min-width: 850px;
+    max-width: 1300px;
+    right: 0;
+    top: 3rem;
+    z-index: 2;
+    padding: 1rem;
+    background-color: #DAF3E4;
+    box-shadow: 6px 9px 39px -5px rgba(0,0,0,0.46);
+}
+
+
+
+.completedTask::after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: #E6E1E2;
+    opacity: 50%;
+    z-index: 3;
+}
+

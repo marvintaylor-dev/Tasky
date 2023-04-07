@@ -1,0 +1,76 @@
+﻿@using Tasky.Shared.DTOs;
+@inject ITaskService taskService
+@inject IStatusService statusService
+
+<MudButton Color="Color.Success"  @onclick="ToggleShow">Completed Tasks: @completedTasks.Count</MudButton>
+
+
+
+@if (Show)
+{
+   
+    <div class="position-relative d-flex flex-column align-items-center">
+        <div class="completedTasksContainer">
+
+            <h4>Completed Items</h4>
+            @if (isLoading)
+            {
+                <LoadingIndicatorComponent />
+            }
+            <div class="completedTasks">
+                @foreach (var task in completedTasks)
+                {
+                    <TaskComponent RefreshList="RefreshTaskFromCompletedTaskList" Task="task" />
+                }
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public List<NoteModel> Tasks { get; set; }
+    [Parameter]
+    public List<NoteModel> Subtasks { get; set; }
+    public StatusDTO lastStatus = new();
+    public List<NoteModel> completedTasks = new();
+
+    private bool Show = false;
+    private bool isLoading;
+
+    [Parameter]
+    public EventCallback ListUpdated { get; set; }
+
+
+    void ToggleShow()
+    {
+        Show = !Show;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        StatusDTO lastStatus = await statusService.GetLastStatus();
+        completedTasks = Tasks.Where(x => x.Status == lastStatus.StatusId).ToList();
+        isLoading = false;
+        await base.OnParametersSetAsync();
+    }
+
+
+    public void RefreshTaskFromCompletedTaskList()
+    {
+        isLoading = true;
+        ListUpdated.InvokeAsync();
+        StateHasChanged();
+        isLoading = false;
+        Console.WriteLine("RefreshList Has Been Called");
+    }
+
+    public void ChangeState()
+    {
+        isLoading = true;
+        StateHasChanged();
+        isLoading = false;
+    }
+}

@@ -18,6 +18,9 @@
     [Parameter]
     public EventCallback<bool> OnClick { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> RefreshList { get; set; }
+
     private List<StatusDTO> statuses = new();
 
     protected override async Task OnInitializedAsync()
@@ -35,8 +38,9 @@
         }
         else if (Task.TaskId > 0)
         {
-           await taskService.UpdateTask(Task);
-           await OnClick.InvokeAsync(false);
+            await taskService.UpdateTask(Task);
+            await OnClick.InvokeAsync(false);
+            await RefreshList.InvokeAsync(true);
         }
     }
 

@@ -126,7 +126,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        tasks = await taskService.GetTasks();
+        tasks = await taskService.GetTasksInOrder();
         await memberService.GetMembers();
         isLoading = false;
         await base.OnInitializedAsync();
@@ -152,7 +152,7 @@
     public async Task RefreshList()
     {
         isLoading = true;
-        tasks = await taskService.GetTasks();
+        tasks = await taskService.GetTasksInOrder();
         isLoading = false;
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
@@ -161,7 +161,7 @@
     public async void RefreshSubTasks()
     {
         isLoading = true;
-        tasks = await taskService.GetTasks();
+        tasks = await taskService.GetTasksInOrder();
         isLoading = false;
         StateHasChanged();
         Console.WriteLine("Refresh SubTasks Has Been Called");
