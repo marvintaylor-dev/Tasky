@@ -7,6 +7,10 @@
 @inject IMemberService memberService
 @attribute [Authorize]
 
+@if (message != string.Empty)
+{
+    <div style="position: sticky; top: 0; z-index: 1; background: pink;">@message <span @onclick="ResetMessage">Close</span></div>
+}
 
 
 <div class="titleContainer d-flex justify-content-center align-items-center flex-column">
@@ -17,7 +21,7 @@
         @foreach (var member in memberService.Members)
         {
             <option value="@member.MemberId">@member.Name</option>
-            
+
         }
     </select>
 </div>
@@ -46,14 +50,22 @@
                 {
                     if (task.Assignee == member.MemberId)
                     {
-                        <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+                        <TaskComponent Task="task"
+                   RefreshList="RefreshList"
+                   CallSubTask="() => AddNewSubTask(member.MemberId,task.TaskId)"
+                   SimpleStateChange="RemoveTaskWithoutCallingDB" />
+
                     }
                     else if (task.TaskId == 0 && task.Assignee == member.MemberId)
                     {
-                        <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+                        <TaskComponent Task="task"
+                   RefreshList="RefreshList"
+                   CallSubTask="() => AddNewSubTask(member.MemberId,task.TaskId)"
+                   SimpleStateChange="RemoveTaskWithoutCallingDB" />
+                        
                     }
                 }
-                
+
             }
         }
     </div>
@@ -76,14 +88,22 @@
             {
                 if (task.Assignee == member.MemberId)
                 {
-                    <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+                    <TaskComponent Task="task"
+                   RefreshList="RefreshList"
+                   CallSubTask="() => AddNewSubTask(member.MemberId, task.TaskId)"
+                   SimpleStateChange="RemoveTaskWithoutCallingDB">
+                    </TaskComponent>
                 }
                 else if (task.TaskId == 0 && task.Assignee == member.MemberId)
                 {
-                    <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+                    <TaskComponent Task="task"
+                   RefreshList="RefreshList"
+                   CallSubTask="() => AddNewSubTask(member.MemberId, task.TaskId)"
+                   SimpleStateChange="RemoveTaskWithoutCallingDB">
+                    </TaskComponent>
                 }
             }
-         
+
         }
     </div>
 }
@@ -94,14 +114,22 @@
     {
         if (task.Assignee == 0 && task.isSubTask == false)
         {
-            <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+            <TaskComponent Task="task"
+                   RefreshList="RefreshList"
+                   CallSubTask="() => AddNewSubTask(task.TaskId)"
+                   SimpleStateChange="RemoveTaskWithoutCallingDB">
+            </TaskComponent>
         }
         if (task.isSubTask == true && task.Assignee == 0)
         {
             NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
             if (isTaskAvailable == null)
             {
-                <TaskComponent Task="task" RefreshList="RefreshList"></TaskComponent>
+                <TaskComponent Task="task"
+                   RefreshList="RefreshList"
+                   CallSubTask="() => AddNewSubTask(task.TaskId)"
+                   SimpleStateChange="RemoveTaskWithoutCallingDB">
+                </TaskComponent>
             }
             else
             {
@@ -121,33 +149,94 @@
     public int Id { get; set; }
 
     NoteModel newTask = new NoteModel();
-    List<NoteModel> tasks = new List<NoteModel>();
-    MemberDTO memberId = new MemberDTO();
+    List<NoteModel> tasks = new();
+    List<NoteModel> subtasks = new();
+    MemberDTO member = new MemberDTO();
+    public string message = string.Empty;
+
+    void ResetMessage()
+    {
+        message = string.Empty;
+    }
 
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasksInOrder();
+        subtasks = tasks.FindAll(x => x.isSubTask == true);
         await memberService.GetMembers();
         isLoading = false;
         await base.OnInitializedAsync();
     }
 
+    void AddNewTask()
+    {
+        var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null)
+        {
+            tasks.Add(newTask);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
+    }
 
     void AddNewTask(int id)
     {
-        tasks.Add(newTask);
-        newTask.Name = String.Empty;
-        memberId = memberService.Members.FirstOrDefault(m => m.MemberId == id);
-        newTask.Assignee = memberId.MemberId;
-        StateHasChanged();
+        var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null)
+        {
+            member = memberService.Members.FirstOrDefault(m => m.MemberId == id);
+            newTask.Assignee = member.MemberId;
+            tasks.Add(newTask);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
     }
 
-    void AddNewTask()
+    void AddNewSubTask(int id, int taskId)
     {
-        tasks.Add(newTask);
-        newTask.Name = String.Empty;
-        StateHasChanged();
+        var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null)
+        {
+            member = memberService.Members.FirstOrDefault(m => m.MemberId == id);
+            newTask.Assignee = member.MemberId;
+            newTask.isSubTask = true;
+            newTask.LinkTo = taskId;
+            tasks.Add(newTask);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
     }
+
+    void AddNewSubTask(int taskId)
+    {
+        var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null)
+        {
+            newTask.isSubTask = true;
+            newTask.LinkTo = taskId;
+            tasks.Add(newTask);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
+
+    }
+
 
     public async Task RefreshList()
     {
@@ -165,5 +254,11 @@
         isLoading = false;
         StateHasChanged();
         Console.WriteLine("Refresh SubTasks Has Been Called");
+    }
+
+    void RemoveTaskWithoutCallingDB()
+    {
+        tasks = tasks.FindAll(x => x.TaskId != 0);
+        subtasks = subtasks.FindAll(x => x.TaskId != 0);
     }
 }

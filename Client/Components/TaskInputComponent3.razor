@@ -19,6 +19,9 @@
     [Parameter]
     public EventCallback<bool> Active { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> RefreshList { get; set; }
+
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
 
     public async void DeActivate()
@@ -40,23 +43,25 @@
                 if (Task.TaskId > 0)
                 {
                     await taskService.UpdateTask(Task);
+                    await RefreshList.InvokeAsync();
 
                 }
                 else if (Task.TaskId == 0)
                 {
                     await taskService.AddTask(Task);
+                    await RefreshList.InvokeAsync();
                 }
 
                 //send message to parent that child is inactive and buttons should be hidden
                 await Active.InvokeAsync(false);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message.ToString());
         }
 
-       
+
     }
 
 }

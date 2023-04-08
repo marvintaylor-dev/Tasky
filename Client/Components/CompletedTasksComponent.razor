@@ -33,7 +33,8 @@
     public List<NoteModel> Tasks { get; set; }
     [Parameter]
     public List<NoteModel> Subtasks { get; set; }
-    public StatusDTO lastStatus = new();
+    [Parameter]
+    public int LastStatus { get; set; }
     public List<NoteModel> completedTasks = new();
 
     private bool Show = false;
@@ -51,8 +52,7 @@
     protected override async Task OnParametersSetAsync()
     {
         isLoading = true;
-        StatusDTO lastStatus = await statusService.GetLastStatus();
-        completedTasks = Tasks.Where(x => x.Status == lastStatus.StatusId).ToList();
+        completedTasks = Tasks.Where(x => x.Status == LastStatus).ToList();
         isLoading = false;
         await base.OnParametersSetAsync();
     }

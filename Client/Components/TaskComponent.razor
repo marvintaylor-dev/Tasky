@@ -6,8 +6,8 @@
 
 <div id="@Task.TaskId" class="taskContainer @TaskOrSubtask mud-elevation-1 py-2 px-5 rounded white">
     <div class="taskContainerLeft">
-        <OrderComponent Task="Task" Active="Activate" />
-        <TaskInputComponent3 Active="Activate" Task="Task" />
+        <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
+        <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
         <div class="containerLeftComponents">
             @if (ShowOrHideCriteria)
             {
@@ -29,7 +29,6 @@
                 <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
             }
             <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
-
         </div>
     </div>
 
@@ -48,7 +47,7 @@
                 <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
             </div>
             <div class="singleComponentRight">
-                <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" />
+                <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
             </div>
             <div class="singleComponentRight">
                 @if (IsClicked)
@@ -79,6 +78,9 @@
 
     [Parameter]
     public EventCallback CallSubTask { get; set; }
+
+    [Parameter]
+    public EventCallback SimpleStateChange { get; set; }
 
     [Parameter]
     public bool ShowOrHideCriteria { get; set; }
@@ -123,10 +125,13 @@
 
     public async void RefreshTasks()
     {
-
         StateHasChanged();
         await RefreshList.InvokeAsync();
-        Console.WriteLine("Refresh SubTasks Has Been Called");
+    }
+
+    void InformPageOfStateChange()
+    {
+        SimpleStateChange.InvokeAsync();
     }
 
 

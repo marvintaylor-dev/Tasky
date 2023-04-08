@@ -16,6 +16,9 @@
     [Parameter]
     public EventCallback<bool> Active { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> RefreshList { get; set; }
+
     void Activate()
     {
         Active.InvokeAsync(true);
@@ -35,11 +38,12 @@
                 if (Task.TaskId > 0)
                 {
                     await taskService.UpdateTask(Task);
-
+                    await RefreshList.InvokeAsync();
                 }
                 else if (Task.TaskId == 0)
                 {
                     await taskService.AddTask(Task);
+                    await RefreshList.InvokeAsync();
                 }
 
                 //send message to parent that child is inactive and buttons should be hidden
@@ -50,8 +54,8 @@
         {
             Console.WriteLine(ex.Message.ToString());
         }
-
-
     }
+
+
 
 }

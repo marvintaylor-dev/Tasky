@@ -7,12 +7,18 @@
 @inject IStatusService statusService
 @attribute [Authorize]
 
+@if (message != string.Empty)
+{
+    <div style="position: sticky; top: 0; z-index: 1; background: pink;">@message <span @onclick="ResetMessage">Close</span></div>
+}
+
 <div class="titleContainer d-flex justify-content-center align-items-center">
     <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>
 </div>
 
 
-<div class="d-flex justify-content-end mb-3">
+
+<div class="d-flex justify-content-between mb-3">
     @*
     Removed Sections code for the time being. It doesn't work how it's supposed to anyway.
     @foreach (Section sec in sections)
@@ -20,6 +26,7 @@
     <SectionComponent sectionId="sec.SectionId" RefreshList="RefreshList" />
     }
     *@
+    <MudButton Color="Color.Secondary" @onclick="AutoOrder">Auto Order</MudButton>
     @if (ShowOrHideAcceptanceCriteria == false)
     {
         <div @onclick="ToggleAcceptanceCriteriaVisibility" class="btn btn-outline-dark">
@@ -32,9 +39,9 @@
             Hide Acceptance Criteria
         </div>
     }
-  
-    <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" ListUpdated="RefreshList" />
-   
+
+    <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" LastStatus="lastStatus" ListUpdated="RefreshList" />
+
 </div>
 
 @if (isLoading)
@@ -53,12 +60,21 @@
         {
             if (task.Status != lastStatus)
             {
-                <TaskComponent @key="task.TaskId" ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="task" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+                <TaskComponent @key="task.TaskId"
+                       ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria"
+                       Task="task"
+                       RefreshList="RefreshList"
+                       CallSubTask="() => AddNewSubTask(task.TaskId)"
+                       SimpleStateChange="RemoveTaskWithoutCallingDB" />
                 @foreach (var t in subtasks)
                 {
                     if (t.LinkTo == task.TaskId)
                     {
-                        <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria" Task="t" RefreshList="RefreshList" CallSubTask="() => AddNewSubTask(task.TaskId)" />
+                        <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria"
+                       Task="t"
+                       RefreshList="RefreshList"
+                       CallSubTask="() => AddNewSubTask(task.TaskId)"
+                       SimpleStateChange="RemoveTaskWithoutCallingDB" />
                     }
                 }
             }
@@ -75,11 +91,37 @@
 @code {
     private bool isLoading = true;
     public bool ShowOrHideAcceptanceCriteria = false;
+    private string message = string.Empty;
+
+    async Task AutoOrder()
+    {
+        int order = 1;
+        foreach (var task in tasks)
+        {
+            if (task.isSubTask == false)
+            {
+                if (task.Status != lastStatus)
+                {
+                    task.Order = order;
+                    await taskService.UpdateTask(task);
+                    order++;
+                }
+            }
+
+        }
+        StateHasChanged();
+        order = 1;
+    }
 
     void ToggleAcceptanceCriteriaVisibility()
     {
         ShowOrHideAcceptanceCriteria = !ShowOrHideAcceptanceCriteria;
         StateHasChanged();
+    }
+
+    void ResetMessage()
+    {
+        message = string.Empty;
     }
 
     protected CompletedTasksComponent CompletedTasksComponent;
@@ -107,19 +149,35 @@
 
     void AddNewTask()
     {
-        tasks.Add(newTask);
-        newTask.Name = String.Empty;
-        newTask.isSubTask = false;
-        StateHasChanged();
+        var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null)
+        {
+            tasks.Add(newTask);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
     }
 
     void AddNewSubTask(int taskId)
     {
-        subtasks.Add(newTask);
-        newTask.Name = String.Empty;
-        newTask.isSubTask = true;
-        newTask.LinkTo = taskId;
-        StateHasChanged();
+        var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null)
+        {
+            newTask.isSubTask = true;
+            newTask.LinkTo = taskId;
+            subtasks.Add(newTask);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
+
     }
 
     public async Task RefreshList()
@@ -132,5 +190,11 @@
         CompletedTasksComponent.ChangeState();
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
+    }
+
+    void RemoveTaskWithoutCallingDB()
+    {
+        tasks = tasks.FindAll(x => x.TaskId != 0);
+        subtasks = subtasks.FindAll(x => x.TaskId != 0);
     }
 }

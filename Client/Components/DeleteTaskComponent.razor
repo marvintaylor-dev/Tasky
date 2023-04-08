@@ -28,6 +28,9 @@ else
     [Parameter]
     public EventCallback RefreshList { get; set; }
 
+    [Parameter]
+    public EventCallback SimpleStateChange { get; set; }
+
     public List<NoteModel> tasks = new List<NoteModel>();
 
     protected override async Task OnInitializedAsync()
@@ -60,9 +63,9 @@ else
         await RefreshList.InvokeAsync();
     }
 
-    async void DeleteUnsavedTask()
+    void DeleteUnsavedTask()
     {
         tasks.Remove(Task);
-        await RefreshList.InvokeAsync();
+        SimpleStateChange.InvokeAsync();
     }
 }
