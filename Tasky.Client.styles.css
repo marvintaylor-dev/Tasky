@@ -1,3 +1,73 @@
+/* /Components/AcceptanceCriteriaComponent.razor.rz.scp.css */
+.entireComponentContainer:hover[b-8lf05c6pvd]{
+    cursor: pointer;
+}
+
+.entireComponentContainer:hover[b-8lf05c6pvd]::after{
+    content: "Acceptance Criteria";
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: 1.5rem;
+    padding: .5rem;
+    background: yellow;
+    z-index: 1;
+    box-shadow: 6px 9px 39px -5px rgba(0,0,0,0.46);
+}
+
+.acceptanceCriteriaContainer[b-8lf05c6pvd] {
+    z-index: 1;
+    background: white;
+    border: 3px solid black;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.acceptanceCriteria[b-8lf05c6pvd] {
+    display: none;
+    background: white;
+    min-width: 500px;
+    min-height: 150px;
+    border: 1px solid black;
+    padding: .2rem 1rem;
+    margin: 1rem 0rem;
+}
+
+.show[b-8lf05c6pvd] {
+    display: block;
+}
+
+.closeButton:hover[b-8lf05c6pvd]{
+    cursor:pointer;
+}
+/* /Components/CompletedTasksComponent.razor.rz.scp.css */
+.completedTasksContainer[b-l9431jssyu] {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    align-items: center;
+    min-width: 850px;
+    max-width: 1300px;
+    right: 0;
+    top: 3rem;
+    z-index: 2;
+    padding: 1rem;
+    background-color: #DAF3E4;
+    box-shadow: 6px 9px 39px -5px rgba(0,0,0,0.46);
+}
+
+
+
+.completedTask[b-l9431jssyu]::after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: #E6E1E2;
+    opacity: 50%;
+    z-index: 3;
+}
+
 /* /Components/DateComponent.razor.rz.scp.css */
 .dateComponentContainer[b-8zyibo9czk]{
     position: relative;
@@ -62,6 +132,24 @@
 
 .end[b-8zyibo9czk] {
     background: #ff4081ff;
+}
+/* /Components/DeleteTaskComponent.razor.rz.scp.css */
+.deleteDialogue[b-4vhjiumjdo] {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: lightgray;
+    border: 1px solid black;
+    padding: .5rem 1rem;
+    position: absolute;
+    width: 350px;
+    right: 50%;
+    top: -1rem;
+    z-index: 1;
+}
+
+.show[b-4vhjiumjdo]{
+    display: flex;
 }
 /* /Components/MemberComponent.razor.rz.scp.css */
 .memberContainer[b-iim7n992ah]{
@@ -223,7 +311,8 @@ max-width: 10rem;
     background: lightgray;
     border: 2px solid var(--mud-palette-secondary);
     padding: 1rem;
-    box-shadow: -1px 3px 29px 6px rgba(0,0,0,0.45);
+    box-shadow: -8px 8px 15px 3px rgba(0,0,0,0.45);
+    z-index: 1;
 }
 
 .subtaskItem[b-b5ndk2yh7k] {
@@ -332,6 +421,7 @@ max-width: 10rem;
 
 .subtaskBorder[b-nmzoxhkka9] {
     border-left: 10px solid #FF4081;
+   
 }
 
 .taskDropdown[b-nmzoxhkka9]{
@@ -349,44 +439,6 @@ max-width: 10rem;
 }
 
 
-/* /Components/TaskInputComponent.razor.rz.scp.css */
-.taskName[b-ak28ivhost]{
-    width: 200px;
-}
-
-#taskInput[b-ak28ivhost]{
-    padding: .2rem .5rem;
-    resize: none;
-}
-
-.subtaskIndent[b-ak28ivhost] {
-    margin-left: 2rem;
-    width: 170px;
-}
-
-.taskInput:hover[b-ak28ivhost] {
-    cursor: pointer;
-    border: 1px solid black;
-}
-/* /Components/TaskInputComponent2.razor.rz.scp.css */
-.taskName[b-ty8ei2hlf9] {
-    width: 200px;
-}
-
-#taskInput[b-ty8ei2hlf9] {
-    padding: .2rem .5rem;
-    resize: none;
-}
-
-.subtaskIndent[b-ty8ei2hlf9] {
-    margin-left: 2rem;
-    width: 170px;
-}
-
-.taskInput:hover[b-ty8ei2hlf9] {
-    cursor: pointer;
-    border: 1px solid black;
-}
 /* /Components/TaskInputComponent3.razor.rz.scp.css */
 .taskName[b-3xaex4g1hg] {
     width: 200px;
@@ -397,10 +449,6 @@ max-width: 10rem;
     resize: none;
 }
 
-.subtaskIndent[b-3xaex4g1hg] {
-    margin-left: 2rem;
-    width: 170px;
-}
 
 .taskInput:hover[b-3xaex4g1hg] {
     cursor: pointer;
@@ -426,6 +474,30 @@ max-width: 10rem;
 .nav-link:hover[b-wgurrrsii6]{
     cursor: pointer;
 }
+/* /Pages/BoardView.razor.rz.scp.css */
+.itemAge[b-ly061c0dzs] {
+    background: #F2E33A;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: black;
+    font-weight: bold;
+}
+
+.wipLimitNumber[b-ly061c0dzs]{
+    font-size: 1rem;
+    background: gray;
+    padding: .25rem .6rem;
+    color: white;
+}
+
+.wipButton[b-ly061c0dzs]{
+    font-size: 1rem;
+    width: 1rem;
+}
 /* /Pages/Registration.razor.rz.scp.css */
 .message-danger[b-pxdctww0bs]{
     color: red;
@@ -449,6 +521,11 @@ max-width: 10rem;
 .tableViewHeader[b-2ijobpjosd] {
     background: rgb(33, 150, 243);
     color: aliceblue;
+}
+
+.completeHeader[b-2ijobpjosd] {
+    background: #50F216;
+    color: #333333;
 }
 
 .tableViewHeaderItem:hover[b-2ijobpjosd]{

@@ -7,27 +7,29 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    
 }
+
+
 
 article {
     padding-bottom: 10rem;
 }
+
 .addTaskBtn {
     background-color: transparent;
     border: none;
 }
-.addTaskBtn:hover {
-    cursor: pointer;
-}
 
-.titleContainer{
+    .addTaskBtn:hover {
+        cursor: pointer;
+    }
+
+.titleContainer {
     margin: 2rem 0rem 2rem 0rem;
 }
 
 .titleName {
     color: rgb(33, 150, 243);
-   
 }
 
 .title {
@@ -43,49 +45,46 @@ article {
     padding: .5rem;
     margin-bottom: .5rem;
     position: relative;
-    min-width: fit-content;
-    max-width: 100%;
-    font-size: .8rem;
-    margin: 0rem 10rem .5rem 10rem;
-}
-.taskContainerLeft {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    font-size: 1rem;
 }
 
-.containerLeftComponents{
-    display:flex;
-    align-items: center;
-    gap: .2rem;
+.taskContainerLeft {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
 }
-.taskContainerRight {
+
+.containerLeftComponents {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.taskContainerRight {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
 }
 
 .taskComponentsContainer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 1.5rem;
-    margin-right: 5rem;
+    display: flex;  
 }
 
-.taskButtonsContainer {
-    display: flex;
-    gap: 1rem;
-    position: absolute;
-    right: .5rem;
+.singleComponentRight{
+    margin: 0rem 1rem;
 }
+
+.singleComponentRight:last-of-type{
+    margin: 0rem;
+}
+
 
 .centerTask {
     margin: auto;
     width: contain;
 }
 
-.wideCenter{
+.wideCenter {
     max-width: 90%;
 }
 
@@ -97,4 +96,12 @@ article {
     border-left: 10px solid #FF4081;
 }
 
+.kanbanSections {
+    min-width: 15%;
+    max-width: 25%;
+}
 
+.validation-message {
+    color: red;
+    font-weight: bold;
+}
