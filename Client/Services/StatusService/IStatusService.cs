@@ -12,5 +12,8 @@ namespace Tasky.Client.Services.StatusService
         Task<StatusDTO> GetStatusByName(string statusName);
 
         Task<StatusDTO> GetLastStatus();
+        Task<StatusDTO> GetFirstStatus();
+
+        Task<StatusDTO> GetSecondStatus();
     }
 }

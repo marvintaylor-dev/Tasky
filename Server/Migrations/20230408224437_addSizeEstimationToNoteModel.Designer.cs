@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230408224437_addSizeEstimationToNoteModel")]
+    partial class addSizeEstimationToNoteModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,7 +164,7 @@ namespace Tasky.Server.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("EndDate")
+                    b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("LinkTo")
@@ -178,10 +180,10 @@ namespace Tasky.Server.Migrations
                     b.Property<int>("PriorityLevel")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SizeEstimate")
+                    b.Property<int?>("SizeEstimateEstimationId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("Status")
@@ -198,6 +200,8 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("TaskId");
 
+                    b.HasIndex("SizeEstimateEstimationId");
+
                     b.ToTable("Tasks");
                 });
 
@@ -212,7 +216,7 @@ namespace Tasky.Server.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EstimationGroup")
+                    b.Property<int>("EstimationGroupId")
                         .HasColumnType("int");
 
                     b.Property<int>("OrganizationId")
@@ -226,6 +230,8 @@ namespace Tasky.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EstimationId");
+
+                    b.HasIndex("EstimationGroupId");
 
                     b.ToTable("RelativeEstimates");
                 });
@@ -361,6 +367,26 @@ namespace Tasky.Server.Migrations
                     b.HasKey("StoryId");
 
                     b.ToTable("UserStories");
+                });
+
+            modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
+                {
+                    b.HasOne("Tasky.Shared.RelativeEstimation", "SizeEstimate")
+                        .WithMany()
+                        .HasForeignKey("SizeEstimateEstimationId");
+
+                    b.Navigation("SizeEstimate");
+                });
+
+            modelBuilder.Entity("Tasky.Shared.RelativeEstimation", b =>
+                {
+                    b.HasOne("Tasky.Shared.EstimationGroup", "EstimationGroup")
+                        .WithMany()
+                        .HasForeignKey("EstimationGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EstimationGroup");
                 });
 #pragma warning restore 612, 618
         }

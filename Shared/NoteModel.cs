@@ -14,7 +14,7 @@ namespace Tasky.Shared
     {
         //create these properties for the model
         //string SupportingDocuments - may require a many-to-many relationship so that multiple documents can be linked to multiple tasks and tasks can be assigned more than one document.
-        //int StoryPoints - May require it's own model packages (T-shirt sizing, fib #s etc)
+      
 
         [Key]
         public int TaskId { get; set; }
@@ -28,7 +28,7 @@ namespace Tasky.Shared
 
        public string AcceptanceCriteria { get; set; } = string.Empty;
 
-
+        
         [ForeignKey("MemberId")]
         public int Assignee { get; set; }
 
@@ -37,8 +37,11 @@ namespace Tasky.Shared
 
         public Priority PriorityLevel { get; set; } = Priority.None;
 
-        public DateTime StartDate { get; set; } = DateTime.Now;
-        public DateTime DueDate {get; set;} = DateTime.Now;
+        [ForeignKey("EstimationId")]
+        public int? SizeEstimate { get; set; }
+
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public DateTime DateCreated { get; set; } = DateTime.Now;
 

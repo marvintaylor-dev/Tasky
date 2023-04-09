@@ -86,5 +86,19 @@ namespace Tasky.Client.Services.StatusService
             var lastStatus = statuses.OrderByDescending(x => x.StatusOrder).First();
             return lastStatus;
         }
+
+        public async Task<StatusDTO> GetFirstStatus()
+        {
+            var statuses = await GetAllStatuses();
+            var firstStatus = statuses.OrderBy(x => x.StatusOrder).First();
+            return firstStatus;
+        }
+
+        public async Task<StatusDTO> GetSecondStatus()
+        {
+            var statuses = await GetAllStatuses();
+            var secondStatus = statuses.OrderBy(x => x.StatusOrder).ElementAt(1);
+            return secondStatus;
+        }
     }
 }

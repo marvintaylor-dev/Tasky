@@ -70,8 +70,22 @@
                         if (task.TaskId == context.ItemId)
                         {
                             <div>
-                                <div><b>Start Date:</b> @task.StartDate.ToShortDateString()</div>
-                                <div><b>Due Date:</b> @task.DueDate.ToShortDateString()</div>
+                                @if (task.StartDate != null)
+                                {
+                                    <div><b>Start Date:</b> @task.StartDate.GetValueOrDefault().ToShortDateString()</div>
+                                }
+                                else
+                                {
+                                    <div><b>Start Date:</b></div>
+                                }
+                                @if (task.EndDate != null)
+                                {
+                                    <div><b>End Date:</b> @task.EndDate.GetValueOrDefault().ToShortDateString()</div>
+                                }
+                                else
+                                {
+                                    <div><b>End Date:</b></div>
+                                }
                             </div>
 
                             <DateComponent Task="task" RefreshList="RefreshInfo" />
@@ -85,9 +99,12 @@
                     if (task.TaskId == context.ItemId)
                     {
                         <div class="mt-3 d-flex justify-content-between align-items-center">
-                            <div class="itemAge">
-                                <span>@taskService.WorkInProgress(task)</span>
-                            </div>
+                            @if (@taskService.WorkInProgress(task, firstStatus, lastStatus) > 0)
+                            {
+                                <div class="itemAge">
+                                    <span>@taskService.WorkInProgress(task,firstStatus,lastStatus)</span>
+                                </div>
+                            }
                             <ShowSubTasksComponent TaskId="context.ItemId" />
                         </div>
                     }
@@ -103,6 +120,9 @@
 
     public List<NoteModel> tasks = new List<NoteModel>();
     public List<StatusDTO> statuses = new List<StatusDTO>();
+    public StatusDTO firstStatus = new();
+    public StatusDTO lastStatus = new();
+    public StatusDTO secondStatus = new();
 
     private bool WipActiveShowSaveButton = false;
 
@@ -151,6 +171,14 @@
                 if (statusForDropZoneToRead == status.StatusName)
                 {
                     taskToUpdate.Status = status.StatusId;
+                    if (taskToUpdate.Status == lastStatus.StatusId && taskToUpdate.EndDate == null)
+                    {
+                        taskToUpdate.EndDate = DateTime.Now;
+                    }
+                    if(taskToUpdate.Status == secondStatus.StatusId && taskToUpdate.StartDate == null)
+                    {
+                        taskToUpdate.StartDate = DateTime.Now;
+                    }
                     taskService.UpdateTask(taskToUpdate);
                     info.Item.StatusName = status.StatusName;
                 }
@@ -164,6 +192,9 @@
     {
         tasks = await taskService.GetTasksInOrder();
         statuses = await statusService.GetAllStatuses();
+        lastStatus = await statusService.GetLastStatus();
+        firstStatus = await statusService.GetFirstStatus();
+        secondStatus = await statusService.GetSecondStatus();
 
         foreach (var status in statuses)
         {
@@ -173,7 +204,7 @@
         foreach (var task in tasks)
         {
             var statusName = await statusService.GetStatusById((int)task.Status);
-            _tasks.Add(new KanbanTaskItem(task.TaskId, task.Name, statusName.StatusName, task.isSubTask, task.Assignee, task.DueDate, task.StartDate));
+            _tasks.Add(new KanbanTaskItem(task.TaskId, task.Name, statusName.StatusName, task.isSubTask, task.Assignee, task.EndDate, task.StartDate));
         }
 
         await base.OnInitializedAsync();
@@ -203,17 +234,17 @@
         public string? StatusName { get; set; }
         public bool? isSubTask { get; set; }
         public int Assignee { get; set; }
-        public DateTime DueDate { get; set; }
-        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
-        public KanbanTaskItem(int id, string name, string? statusName, bool? isSub, int assignee, DateTime dueDate, DateTime startDate)
+        public KanbanTaskItem(int id, string name, string? statusName, bool? isSub, int assignee, DateTime? endDate, DateTime? startDate)
         {
             ItemId = id;
             Name = name;
             StatusName = statusName;
             isSubTask = isSub;
             Assignee = assignee;
-            DueDate = dueDate;
+            EndDate = endDate;
             StartDate = startDate;
         }
     }

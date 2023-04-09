@@ -10,7 +10,6 @@ html, body {
 }
 
 
-
 article {
     padding-bottom: 10rem;
 }
@@ -25,7 +24,7 @@ article {
     }
 
 .titleContainer {
-    margin: 2rem 0rem 2rem 0rem;
+    margin: 0rem 2rem 2rem 0rem;
 }
 
 .titleName {
@@ -67,16 +66,16 @@ article {
 }
 
 .taskComponentsContainer {
-    display: flex;  
+    display: flex;
 }
 
-.singleComponentRight{
+.singleComponentRight {
     margin: 0rem 1rem;
 }
 
-.singleComponentRight:last-of-type{
-    margin: 0rem;
-}
+    .singleComponentRight:last-of-type {
+        margin: 0rem;
+    }
 
 
 .centerTask {

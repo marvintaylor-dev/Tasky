@@ -1,4 +1,5 @@
 ﻿using Tasky.Shared;
+using Tasky.Shared.DTOs;
 
 namespace Tasky.Client.Services.TaskService
 {
@@ -13,6 +14,6 @@ namespace Tasky.Client.Services.TaskService
         Task<NoteModel> UpdateTask(NoteModel updateTask);
         Task<NoteModel> DeleteTask(int taskId);
 
-        public int WorkInProgress(NoteModel task);
+        public int WorkInProgress(NoteModel task, StatusDTO firstStatus, StatusDTO lastStatus);
     }
 }

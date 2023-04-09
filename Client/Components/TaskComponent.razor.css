@@ -1,24 +1,39 @@
-﻿.taskBorder {
-    border-left: 10px solid rgb(33, 150, 243);
+﻿.taskId {
+    background: rgb(33, 150, 243);
 }
 
-.subtaskBorder {
-    border-left: 10px solid #FF4081;
-   
+.subtaskId {
+    background: #FF4081;
 }
 
-.taskDropdown{
+.idStyle {
+    min-width: fit-content;
+    padding: .5rem;
+    color: white;
+    border-radius: 1rem 1rem 0rem 0rem;
+    transform: translateX(20px) rotate(-90deg);    
+    transition: .5s ease-in-out;
+}
+
+    .idStyle:hover {
+        transform: rotate(0deg);
+        
+    }
+
+    .idStyle:focus {
+        transform: rotate(0deg);
+    }
+
+.taskDropdown {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-.showMenu{
+.showMenu {
     display: flex;
 }
 
-.triggerDropdown:hover{
+.triggerDropdown:hover {
     display: flex;
 }
-
-

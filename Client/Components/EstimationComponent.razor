@@ -1,0 +1,62 @@
+﻿@inject IEstimationService estimationService
+@inject ITaskService taskService
+
+
+
+<select name="estimation" 
+    @bind-value="Task.SizeEstimate" 
+    @bind-value:event="oninput" 
+    @onchange="UpdateEstimate" 
+    @onfocus="@ChildClicked" 
+    @onfocusout="@Deactivate">
+    @foreach (var estimates in estimationService.AllEstimationValues)
+    {
+        <option value="@estimates.EstimationId">@estimates.Value</option>
+    }
+</select>
+
+
+@code {
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClick { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> RefreshList { get; set; }
+
+    string groupName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await estimationService.GetAllEstimationValues();
+        await base.OnInitializedAsync();
+    }
+
+    private async void UpdateEstimate(ChangeEventArgs e)
+    {
+        if (Task.TaskId == 0)
+        {
+            Console.WriteLine("Please add a Task Name before adding a status");
+        }
+        else if (Task.TaskId > 0)
+        {
+            await taskService.UpdateTask(Task);
+            await OnClick.InvokeAsync(false);
+            await RefreshList.InvokeAsync(true);
+        }
+    }
+
+
+    //When tabbing through Child Clicked and Deactivate will notify the parent to display the Edit/Save button
+    async void ChildClicked()
+    {
+        await OnClick.InvokeAsync(true);
+    }
+
+    async void Deactivate()
+    {
+        await OnClick.InvokeAsync(false);
+    }
+}

@@ -22,10 +22,14 @@
     public EventCallback<bool> RefreshList { get; set; }
 
     private List<StatusDTO> statuses = new();
+    private StatusDTO lastStatus = new();
+    private StatusDTO secondStatus = new();
 
     protected override async Task OnInitializedAsync()
     {
         statuses = await statusService.GetAllStatuses();
+        lastStatus = await statusService.GetLastStatus();
+        secondStatus = await statusService.GetSecondStatus();
         await base.OnInitializedAsync();
     }
 
@@ -38,6 +42,14 @@
         }
         else if (Task.TaskId > 0)
         {
+            if(Task.Status == lastStatus.StatusId && Task.EndDate == null)
+            {
+                Task.EndDate = DateTime.Now;
+            }
+            if(Task.Status == secondStatus.StatusId && Task.StartDate == null)
+            {
+                Task.StartDate = DateTime.Now;
+            }
             await taskService.UpdateTask(Task);
             await OnClick.InvokeAsync(false);
             await RefreshList.InvokeAsync(true);

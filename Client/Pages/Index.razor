@@ -12,13 +12,8 @@
     <div style="position: sticky; top: 0; z-index: 1; background: pink;">@message <span @onclick="ResetMessage">Close</span></div>
 }
 
-<div class="titleContainer d-flex justify-content-center align-items-center">
-    <h1 class="title">Welcome to <span class="titleName">T</span><MudIcon Color="Color.Secondary" Style="font-size: 2rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName">sky</span></h1>
-</div>
 
-
-
-<div class="d-flex justify-content-between mb-3">
+<div class="d-flex justify-content-between mb-3" style="min-width: fit-content; max-width: 70%; margin: auto;">
     @*
     Removed Sections code for the time being. It doesn't work how it's supposed to anyway.
     @foreach (Section sec in sections)
@@ -149,8 +144,9 @@
 
     void AddNewTask()
     {
+        var nullSubtasks = subtasks.Find(x => x.TaskId == 0);
         var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
-        if (taskWithIdOfZero == null)
+        if (taskWithIdOfZero == null && nullSubtasks == null)
         {
             tasks.Add(newTask);
             StateHasChanged();
@@ -164,8 +160,9 @@
 
     void AddNewSubTask(int taskId)
     {
-        var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
-        if (taskWithIdOfZero == null)
+        var anyTaskWithZero = tasks.Find(x => x.TaskId == 0);
+        var taskWithIdOfZero = subtasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null && anyTaskWithZero == null)
         {
             newTask.isSubTask = true;
             newTask.LinkTo = taskId;

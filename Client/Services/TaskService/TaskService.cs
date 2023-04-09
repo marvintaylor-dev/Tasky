@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Json;
 using Tasky.Shared;
+using Tasky.Shared.DTOs;
 
 namespace Tasky.Client.Services.TaskService
 {
@@ -8,10 +9,11 @@ namespace Tasky.Client.Services.TaskService
     {
 
         private readonly HttpClient _httpClient;
-
-        public TaskService(HttpClient httpClient)
+        private readonly IStatusService _statusService;
+        public TaskService(HttpClient httpClient, IStatusService statusService)
         {
             _httpClient = httpClient;
+            _statusService = statusService;
         }
 
         public async Task<NoteModel> AddTask(NoteModel addTask)
@@ -46,7 +48,7 @@ namespace Tasky.Client.Services.TaskService
                 return null;
             }
             var result = await _httpClient.GetFromJsonAsync<NoteModel>($"api/notemodels/{taskId}");
-            if(result == null )
+            if (result == null)
             {
                 return null;
             }
@@ -86,21 +88,24 @@ namespace Tasky.Client.Services.TaskService
         }
 
 
-        public int WorkInProgress(NoteModel task)
+        public int WorkInProgress(NoteModel task, StatusDTO firstStatus, StatusDTO lastStatus)
         {
-            TimeSpan WorkInProgress = TimeSpan.Zero;
-            if (task == null)
+            TimeSpan? WorkInProgress = TimeSpan.Zero;
+            if (task == null || task.Status == firstStatus.StatusId)
             {
-                return WorkInProgress.Days;
+                WorkInProgress = TimeSpan.Zero;
+                return WorkInProgress.GetValueOrDefault().Days;
             }
-            else if(task.Status == 7)
+            else if (task.Status != lastStatus.StatusId)
             {
-                return WorkInProgress.Days;
+                WorkInProgress = DateTime.Now - task.StartDate;
+                return WorkInProgress.GetValueOrDefault().Days;
             }
             else
             {
-                WorkInProgress = DateTime.Now - task.StartDate;
-                return WorkInProgress.Days;
+                task.EndDate = DateTime.Today;
+                WorkInProgress = task.EndDate - task.StartDate;
+                return WorkInProgress.GetValueOrDefault().Days;
             }
         }
     }

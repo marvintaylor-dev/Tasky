@@ -18,7 +18,7 @@
         <tr class="tableViewHeader">
             @foreach (PropertyInfo property in properties)
             {
-                @if (property.Name == "Name" || property.Name == "Assignee" || property.Name == "Tag" || property.Name == "PriorityLevel" || property.Name == "DueDate" || property.Name == "status")
+                @if (property.Name == "Name" || property.Name == "Assignee" || property.Name == "Tag" || property.Name == "PriorityLevel" || property.Name == "EndDate" || property.Name == "status")
                 {
                     <th class="tableViewItem tableViewHeaderItem tableViewHeader" @onclick="() => AlternateSort(tasks, property.Name)">@SplitCamelCase(@property.Name)</th>
                 }
@@ -44,7 +44,7 @@
                     <td class="tableViewItem"><MemberComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></MemberComponent></td>
                     <td class="tableViewItem"><TagComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></TagComponent></td>
                     <td class="tableViewItem"><PriorityComponent Task="task" OnClick="Activate"></PriorityComponent></td>
-                    <td class="tableViewItem">@task.DueDate.ToLongDateString()</td>
+                    <td class="tableViewItem">@task.EndDate.GetValueOrDefault().ToLongDateString()</td>
                     <td class="tableViewItem"><NewStatusComponent Task="task" OnClick="Activate"></NewStatusComponent></td>
                     <td class="tableViewItem"><EditSaveComponent Task="task" RefreshList="RefreshList" OnClick="Activate"></EditSaveComponent></td>
                     <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>          
@@ -90,7 +90,7 @@
                     <td class="tableViewItem"><MemberComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></MemberComponent></td>
                     <td class="tableViewItem"><TagComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></TagComponent></td>
                     <td class="tableViewItem"><PriorityComponent Task="task" OnClick="Activate"></PriorityComponent></td>
-                    <td class="tableViewItem">@task.DueDate.ToLongDateString()</td>
+                    <td class="tableViewItem">@task.EndDate.GetValueOrDefault().ToLongDateString()</td>
                     <td class="tableViewItem"><NewStatusComponent Task="task" OnClick="Activate"></NewStatusComponent></td>
                     <td class="tableViewItem"><EditSaveComponent Task="task" RefreshList="RefreshList" OnClick="Activate"></EditSaveComponent></td>
                     <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>
@@ -206,7 +206,7 @@
                 StateHasChanged();
                 break;
             case "DueDate":
-                tasks = listToSort.OrderBy(x => x.DueDate);
+                tasks = listToSort.OrderBy(x => x.EndDate);
                 StateHasChanged();
                 break;
             case "status":
@@ -242,7 +242,7 @@
                 StateHasChanged();
                 break;
             case "DueDate":
-                tasks = listToSort.OrderByDescending(x => x.DueDate);
+                tasks = listToSort.OrderByDescending(x => x.EndDate);
                 StateHasChanged();
                 break;
             case "status":
