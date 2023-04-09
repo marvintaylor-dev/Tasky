@@ -312,6 +312,7 @@ max-width: 10rem;
     border: 2px solid var(--mud-palette-secondary);
     padding: 1rem;
     box-shadow: -8px 8px 15px 3px rgba(0,0,0,0.45);
+    right: 0;
     z-index: 1;
 }
 
@@ -415,30 +416,45 @@ max-width: 10rem;
     display: none;
 }
 /* /Components/TaskComponent.razor.rz.scp.css */
-.taskBorder[b-nmzoxhkka9] {
-    border-left: 10px solid rgb(33, 150, 243);
+.taskId[b-nmzoxhkka9] {
+    background: rgb(33, 150, 243);
 }
 
-.subtaskBorder[b-nmzoxhkka9] {
-    border-left: 10px solid #FF4081;
-   
+.subtaskId[b-nmzoxhkka9] {
+    background: #FF4081;
 }
 
-.taskDropdown[b-nmzoxhkka9]{
+.idStyle[b-nmzoxhkka9] {
+    min-width: fit-content;
+    padding: .5rem;
+    color: white;
+    border-radius: 1rem 1rem 0rem 0rem;
+    transform: translateX(20px) rotate(-90deg);    
+    transition: .5s ease-in-out;
+}
+
+    .idStyle:hover[b-nmzoxhkka9] {
+        transform: rotate(0deg);
+        
+    }
+
+    .idStyle:focus[b-nmzoxhkka9] {
+        transform: rotate(0deg);
+    }
+
+.taskDropdown[b-nmzoxhkka9] {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-.showMenu[b-nmzoxhkka9]{
+.showMenu[b-nmzoxhkka9] {
     display: flex;
 }
 
-.triggerDropdown:hover[b-nmzoxhkka9]{
+.triggerDropdown:hover[b-nmzoxhkka9] {
     display: flex;
 }
-
-
 /* /Components/TaskInputComponent3.razor.rz.scp.css */
 .taskName[b-3xaex4g1hg] {
     width: 200px;
