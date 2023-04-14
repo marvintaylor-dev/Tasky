@@ -290,6 +290,19 @@ max-width: 10rem;
         background: lightgray;
         cursor: pointer;
     }
+/* /Components/ReusableTableComponent.razor.rz.scp.css */
+.reusableTable[b-or0qwo9c0u] {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 3rem;
+}
+
+.tableName[b-or0qwo9c0u]{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+
 /* /Components/ShowSubTasksComponent.razor.rz.scp.css */
 
 
@@ -454,6 +467,14 @@ max-width: 10rem;
 
 .triggerDropdown:hover[b-nmzoxhkka9] {
     display: flex;
+}
+
+.dropzone[b-nmzoxhkka9]{
+    height: .5rem;
+}
+
+.color[b-nmzoxhkka9]{
+    border: 2px dashed green;
 }
 /* /Components/TaskInputComponent3.razor.rz.scp.css */
 .taskName[b-3xaex4g1hg] {
