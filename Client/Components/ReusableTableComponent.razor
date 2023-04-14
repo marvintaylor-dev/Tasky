@@ -1,0 +1,95 @@
+﻿@typeparam TItem
+
+
+<style>
+    th, td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    td button {
+        border: none;
+        background-color: transparent;
+        color: red;
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+        td button:hover {
+            color: #ff6666;
+        }
+
+    input[type="text"], input[type="number"] {
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 1rem;
+    }
+
+    button[type="submit"] {
+        background-color: #ffc107;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #ffcd38;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .validation-summary {
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="tableName">@TableName</div>
+<table class="reusableTable">
+    <thead>
+        <tr>
+            @Header
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Items)
+        {
+            <tr>
+                @Row(item)
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    [Parameter]
+    public string? TableName { get; set; }
+
+    [Parameter]
+    public RenderFragment Header { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem> Row { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<TItem> Items { get; set; }
+
+}
+

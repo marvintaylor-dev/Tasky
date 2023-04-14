@@ -1,111 +1,38 @@
 ﻿@using Tasky.Shared.DTOs;
 @inject IStatusService statusService;
 
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-bottom: 3rem;
-    }
-
-    th, td {
-        text-align: left;
-        padding: 8px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    td button {
-        border: none;
-        background-color: transparent;
-        color: red;
-        cursor: pointer;
-        font-size: 1.5rem;
-    }
-
-        td button:hover {
-            color: #ff6666;
-        }
-
-    input[type="text"], input[type="number"] {
-        padding: 6px 10px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        font-size: 1rem;
-    }
-
-    button[type="submit"] {
-        background-color: #ffc107;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-    }
-
-        button[type="submit"]:hover {
-            background-color: #ffcd38;
-        }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-    }
-
-    .validation-summary {
-        margin-bottom: 1rem;
-    }
-</style>
-
 <MudButton Color="Color.Secondary" @onclick="ToggleStatusSettings">Status Settings</MudButton>
 
 @if (ShowStatus)
 {
-    <table>
-        <thead>
-            <tr>
-                <th>Order of Statuses</th>
-                <th>Status Name</th>
-                <th>Definition of Finished</th>
-                <th>Work In Progress Limit</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var status in statuses)
+    <ReusableTableComponent Items="statuses">
+        <Header>
+            <th>Order of Statuses</th>
+            <th>Status Name</th>
+            <th>Definition of Finished</th>
+            <th>Work In Progress Limit</th>
+            <th>Remove</th>
+        </Header>
+        <Row>
+            @if (context.IsEditing)
             {
-                <tr>
-                    @if (status.IsEditing)
-                    {
-                        <td><input type="number" @bind-value="@status.StatusOrder" /></td>
-                        <td><input type="text" @bind-value="@status.StatusName" /></td>
-                        <td><input type="text" @bind-value="@status.StatusDefinitionOfFinished" /></td>
-                        <td><input type="text" @bind-value="@status.WorkInProgressLimit" /></td>
-                        <td @onclick="() => SaveStatus(status)">Save</td>
+                <td><input type="number" @bind-value="@context.StatusOrder" /></td>
+                <td><input type="text" @bind-value="@context.StatusName" /></td>
+                <td><input type="text" @bind-value="@context.StatusDefinitionOfFinished" /></td>
+                <td><input type="text" @bind-value="@context.WorkInProgressLimit" /></td>
+                <td @onclick="() => SaveStatus(context)">Save</td>
 
-                    }
-                    else
-                    {
-                        <td @onclick="() => EditStatus(status)">@status.StatusOrder</td>
-                        <td @onclick="() => EditStatus(status)">@status.StatusName</td>
-                        <td @onclick="() => EditStatus(status)">@status.StatusDefinitionOfFinished</td>
-                        <td @onclick="() => EditStatus(status)">@status.WorkInProgressLimit</td>
-                        <td @onclick="() => DeleteStatus(status.StatusId)">&#10006;</td>
-
-                    }
-                </tr>
             }
-        </tbody>
-    </table>
+            else
+            {
+                <td @onclick="() => EditStatus(context)">@context.StatusOrder</td>
+                <td @onclick="() => EditStatus(context)">@context.StatusName</td>
+                <td @onclick="() => EditStatus(context)">@context.StatusDefinitionOfFinished</td>
+                <td @onclick="() => EditStatus(context)">@context.WorkInProgressLimit</td>
+                <td style="color: red" @onclick="() => DeleteStatus(context.StatusId)">&#10006;</td>
+            }
+        </Row>
+    </ReusableTableComponent>
 
     <h4 class="mt-4">Add a New Status</h4>
     <EditForm Model="@newStatus" OnValidSubmit="@AddStatus">

@@ -101,10 +101,21 @@ namespace Tasky.Client.Services.TaskService
                 WorkInProgress = DateTime.Now - task.StartDate;
                 return WorkInProgress.GetValueOrDefault().Days;
             }
+            else if(task.Status == lastStatus.StatusId)
+            {
+                if(task.EndDate != null)
+                {
+                   WorkInProgress = task.EndDate - task.StartDate;
+                }
+                else
+                {
+                    task.EndDate = DateTime.Today;
+                    WorkInProgress = task.EndDate - task.StartDate;
+                }
+                return WorkInProgress.GetValueOrDefault().Days; 
+            }
             else
             {
-                task.EndDate = DateTime.Today;
-                WorkInProgress = task.EndDate - task.StartDate;
                 return WorkInProgress.GetValueOrDefault().Days;
             }
         }

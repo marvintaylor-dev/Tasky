@@ -37,3 +37,11 @@
 .triggerDropdown:hover {
     display: flex;
 }
+
+.dropzone{
+    height: .5rem;
+}
+
+.color{
+    border: 2px dashed green;
+}

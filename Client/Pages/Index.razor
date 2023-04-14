@@ -49,8 +49,10 @@
     <div style="font-size: 1rem; font-weight: bold;">Click the button to add your first task!</div>
 }
 
-<div class="d-flex flex-column" style="min-width: fit-content; max-width: 70%; margin: auto;">
+<div class="d-flex flex-column" style="min-width: fit-content; max-width: 70%; margin: auto">
+
     <Virtualize Items="@tasks" Context="task">
+
         @if (task.isSubTask == false)
         {
             if (task.Status != lastStatus)
@@ -60,7 +62,9 @@
                        Task="task"
                        RefreshList="RefreshList"
                        CallSubTask="() => AddNewSubTask(task.TaskId)"
-                       SimpleStateChange="RemoveTaskWithoutCallingDB" />
+                       SimpleStateChange="RemoveTaskWithoutCallingDB"
+                       OnTaskDragged="HandleTaskDragged"
+                       OnOrderUpdated="UpdateTaskAsync" />
                 @foreach (var t in subtasks)
                 {
                     if (t.LinkTo == task.TaskId)
@@ -69,7 +73,9 @@
                        Task="t"
                        RefreshList="RefreshList"
                        CallSubTask="() => AddNewSubTask(task.TaskId)"
-                       SimpleStateChange="RemoveTaskWithoutCallingDB" />
+                       SimpleStateChange="RemoveTaskWithoutCallingDB"
+                       OnTaskDragged="HandleTaskDragged"
+                       OnOrderUpdated="UpdateTaskAsync" />
                     }
                 }
             }
@@ -87,6 +93,62 @@
     private bool isLoading = true;
     public bool ShowOrHideAcceptanceCriteria = false;
     private string message = string.Empty;
+
+    [CascadingParameter]
+    TaskContainer Container { get; set; }
+
+    public NoteModel lastMoved { get; set; }
+
+    public TaskComponent taskComponent;
+    public NoteModel Payload;
+
+    public List<NoteModel> TaskOrder { get; set; }
+
+    void HandleTaskDragged(NoteModel payload)
+    {
+        Console.WriteLine($"Received {payload.TaskId} in the index page");
+        Payload = payload;
+        Console.WriteLine($"Payload is = to: {Payload.TaskId}");
+    }
+
+    public async Task UpdateTaskAsync(NoteModel targetTask)
+    {
+
+
+        if (targetTask != null)
+        {
+            if (targetTask != null && Payload != null && Payload != targetTask)
+            {
+                var currentIndex = tasks.IndexOf(Payload);
+
+                var targetIndex = tasks.IndexOf(targetTask);
+
+                tasks.RemoveAt(currentIndex);
+
+                if (currentIndex < targetIndex)
+                {
+                    tasks.Insert(targetIndex - 1, Payload);
+                }
+                else
+                {
+                    tasks.Insert(targetIndex, Payload); 
+                }
+
+                Payload.Order = targetTask.Order;
+            }
+        }
+        StateHasChanged();
+                AutoOrder();
+    }
+
+
+    //protected override void OnParametersSet()
+    //{
+    //    TaskOrder.Clear();
+    //    TaskOrder.AddRange(Container.Tasks.OrderBy(x => x.Order));
+    //}
+
+
 
     async Task AutoOrder()
     {
@@ -134,6 +196,7 @@
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasksInOrder();
+        TaskOrder = tasks;
         subtasks = await taskService.GetSubtasks();
         await memberService.GetMembers();
         StatusDTO lastStatusDTO = await statusService.GetLastStatus();

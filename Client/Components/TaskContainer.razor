@@ -1,0 +1,52 @@
+﻿@using Tasky.Shared.DTOs;
+<h3>TaskContainer</h3>
+
+<div class="jobs-container">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter]
+    public List<NoteModel> Tasks { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } 
+
+    [Parameter]
+    public EventCallback<NoteModel> OnOrderUpdated { get; set; }
+
+    public NoteModel Payload { get; set; }
+
+    public async Task UpdateTaskAsync(NoteModel targetTask)
+    {
+        //var task = Tasks.SingleOrDefault(x => x.TaskId == newPosition.TaskId);
+        if(targetTask != null)
+        {
+            if (targetTask != null && Payload != null && Payload != targetTask)
+            {
+                var currentIndex = Tasks.IndexOf(Payload);
+
+                var targetIndex = Tasks.IndexOf(targetTask);
+
+                Tasks.RemoveAt(currentIndex);
+
+                if (currentIndex < targetIndex)
+                {
+                    Tasks.Insert(targetIndex - 1, Payload);
+                    Payload.Order = targetTask.Order;
+                    targetTask.Order++;
+
+                }
+                else
+                {
+                    Tasks.Insert(targetIndex, Payload);
+                    Payload.Order = targetTask.Order;
+                    targetTask.Order--;
+                }
+            }
+            await OnOrderUpdated.InvokeAsync(Payload);
+        }
+    }
+}

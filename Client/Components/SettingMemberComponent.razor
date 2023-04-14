@@ -2,140 +2,63 @@
 @inject IMemberService memberService
 @using System.Reflection
 
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-bottom: 3rem;
-    }
+@*Styles for this page found in ReusableeTableComponent*@
 
-    th, td {
-        text-align: left;
-        padding: 8px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    td button {
-        border: none;
-        background-color: transparent;
-        color: red;
-        cursor: pointer;
-        font-size: 1.5rem;
-    }
-
-        td button:hover {
-            color: #ff6666;
-        }
-
-    input[type="text"], input[type="number"] {
-        padding: 6px 10px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        font-size: 1rem;
-    }
-
-    button[type="submit"] {
-        background-color: #ffc107;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-    }
-
-        button[type="submit"]:hover {
-            background-color: #ffcd38;
-        }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-    }
-
-    .validation-summary {
-        margin-bottom: 1rem;
-    }
-</style>
 
 <MudButton @onclick="ToggleOpen" Color="Color.Tertiary">User Configuration</MudButton>
 
 @if (isOpen)
 {
-    @if (memberService.Members.Count == 0 || props.Length == 0)
-    {
-        <p>Loading...</p>
-    }
-    else
-    {
-        <table>
-            <thead>
-                <tr>
-                    @foreach (var prop in props)
-                    {
-                        if(prop.Name != "IsEditing" && prop.Name != "MemberId")
-                        {
-                        <th>@prop.Name</th>
-                            
-                        }
-                    }
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var member in memberService.Members)
+    <ReusableTableComponent Items="memberService.Members">
+        <Header>
+            @foreach (var prop in props)
+            {
+                if (prop.Name != "IsEditing" && prop.Name != "MemberId")
                 {
-                    <tr>
-                        @if (member.IsEditing)
-                        {
-                            <td><input type="text" @bind-value="@member.Name" /></td>
-                            <td><input type="text" @bind-value="@member.FirstName" /></td>
-                            <td><input type="text" @bind-value="@member.LastName" /></td>
-                            <td><input type="text" @bind-value="@member.Email" /></td>
-                            <td><input type="text" @bind-value="@member.Birthday" /></td>
-                            <td><input type="text" @bind-value="@member.Title" /></td>
-                            <td><input type="text" @bind-value="@member.Position" /></td>
-                            <td><input type="number" @bind-value="@member.WorkAssigned" /></td>
-                            <td><input type="text" @bind-value="@member.TimeZone" /></td>
-                            <td><input type="number" @bind-value="@member.TeamId" /></td>
-                            <td @onclick="()=>UpdateMember(member)">Save</td>
-                        }
-                        else
-                        {
-                            <td @onclick="() => MakeEditable(member)">@member.Name</td>
-                            <td @onclick="() => MakeEditable(member)">@member.FirstName</td>
-                            <td @onclick="() => MakeEditable(member)">@member.LastName</td>
-                            <td @onclick="() => MakeEditable(member)">@member.Email</td>
-                            <td @onclick="() => MakeEditable(member)">@member.Birthday</td>
-                            <td @onclick="() => MakeEditable(member)">@member.Title</td>
-                            <td @onclick="() => MakeEditable(member)">@member.Position</td>
-                            <td @onclick="() => MakeEditable(member)">@member.WorkAssigned</td>
-                            <td @onclick="() => MakeEditable(member)">@member.TimeZone</td>
-                            <td @onclick="() => MakeEditable(member)">@member.TeamId</td>
+                <th>@prop.Name</th>
 
-                        }
-                        <td @onclick="()=>DeleteMember(member.MemberId)" style="color: red">&#10006;</td>
-                    </tr>
-                    
                 }
-            </tbody>
-        </table>
-    }
+            }
+        <th>Delete</th>
+        </Header>
+        <Row>
+            @if (context.IsEditing)
+            {
+                <td><input type="text" @bind-value="@context.Name" /></td>
+                <td><input type="text" @bind-value="@context.FirstName" /></td>
+                <td><input type="text" @bind-value="@context.LastName" /></td>
+                <td><input type="text" @bind-value="@context.Email" /></td>
+                <td><input type="text" @bind-value="@context.Birthday" /></td>
+                <td><input type="text" @bind-value="@context.Title" /></td>
+                <td><input type="text" @bind-value="@context.Position" /></td>
+                <td><input type="number" @bind-value="@context.WorkAssigned" /></td>
+                <td><input type="text" @bind-value="@context.TimeZone" /></td>
+                <td><input type="number" @bind-value="@context.TeamId" /></td>
+                <td @onclick="()=>UpdateMember(context)">Save</td>
+            }
+            else
+            {
+                <td @onclick="() => MakeEditable(context)">@context.Name</td>
+                <td @onclick="() => MakeEditable(context)">@context.FirstName</td>
+                <td @onclick="() => MakeEditable(context)">@context.LastName</td>
+                <td @onclick="() => MakeEditable(context)">@context.Email</td>
+                <td @onclick="() => MakeEditable(context)">@context.Birthday</td>
+                <td @onclick="() => MakeEditable(context)">@context.Title</td>
+                <td @onclick="() => MakeEditable(context)">@context.Position</td>
+                <td @onclick="() => MakeEditable(context)">@context.WorkAssigned</td>
+                <td @onclick="() => MakeEditable(context)">@context.TimeZone</td>
+                <td @onclick="() => MakeEditable(context)">@context.TeamId</td>
+
+            }
+            <td @onclick="()=>DeleteMember(context.MemberId)" style="color: red">&#10006;</td>
+        </Row>
+    </ReusableTableComponent>
 
 
     <h4 class="mt-4">Add a New Team Member</h4>
     <EditForm Model="@newMember" OnValidSubmit="@AddMember">
         <DataAnnotationsValidator />
-        
+
         <div class="d-flex flex-column gap-1 col-lg-4 col-md-6 col-sm-12">
             <div class="form-group">
                 <label for="member-name">Name</label>

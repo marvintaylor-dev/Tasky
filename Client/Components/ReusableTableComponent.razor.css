@@ -1,0 +1,12 @@
+﻿.reusableTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 3rem;
+}
+
+.tableName{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+

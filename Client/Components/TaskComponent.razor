@@ -1,9 +1,16 @@
 ﻿@inject IJSRuntime JS
 @inject ITaskService taskService;
 
+<div 
+    class="dropzone @dragClass"
+    ondragover="event.preventDefault();"
+    @ondragstart="DragStart"
+    @ondragenter="DragEnter"
+    @ondragleave="DragLeave"
+    @ondrop="()=>HandleDrop(Task)"></div>
 
 
-<div class="d-flex align-items-center">
+<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center">
     <div class="idStyle @TaskOrSubtask">Id-@Task.TaskId</div>
     <div id="@Task.TaskId" class="taskContainer mud-elevation-1 py-2 px-5 rounded white">
         <div class="taskContainerLeft">
@@ -74,6 +81,44 @@
 
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
 
+    [Parameter]
+    public EventCallback<NoteModel> OnOrderUpdated { get; set; }
+
+    [Parameter]
+    public EventCallback<NoteModel> OnTaskDragged { get; set; }
+
+    public NoteModel Payload = new();
+
+
+    public void HandleDragStart(NoteModel selectedTask)
+    {
+        Payload = selectedTask;
+        OnTaskDragged.InvokeAsync(Payload);
+    }
+
+    public void HandleDrop(NoteModel targetTask)
+    {
+
+        OnOrderUpdated.InvokeAsync(targetTask);
+
+        //OnOrderUpdated.InvokeAsync(task);
+        //Task = null;
+    }
+
+    void DragEnter()
+    {
+        dragClass = "color";
+    }
+    void DragLeave()
+    {
+        dragClass = "";
+    }
+    void DragStart()
+    {
+        dragClass = "expand";
+    }
+
+    private string dragClass = string.Empty;
 
     [Parameter]
     public NoteModel Task { get; set; }
