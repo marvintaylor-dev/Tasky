@@ -437,6 +437,10 @@ max-width: 10rem;
     background: #FF4081;
 }
 
+/*.subtaskIndent{
+    transform: translateX(2rem);
+}*/
+
 .idStyle[b-nmzoxhkka9] {
     min-width: fit-content;
     padding: .5rem;
@@ -475,6 +479,10 @@ max-width: 10rem;
 
 .color[b-nmzoxhkka9]{
     border: 2px dashed green;
+}
+
+.no-drop[b-nmzoxhkka9] {
+    border: 2px dashed red;
 }
 /* /Components/TaskInputComponent3.razor.rz.scp.css */
 .taskName[b-3xaex4g1hg] {
