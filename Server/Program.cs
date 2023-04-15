@@ -5,6 +5,7 @@ global using Tasky.Server.Data.TaskRepository;
 global using Tasky.Server.Data.SectionRepository;
 global using Tasky.Server.Data.StatusRepository;
 global using Tasky.Server.Data.EstimationRepository;
+global using Tasky.Server.Data.SprintRepository;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Tasky.Server.Data;
@@ -21,6 +22,7 @@ builder.Services.AddTransient<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IEstimationRepository, EstimationRepository>();
+builder.Services.AddScoped<ISprintRepository,SprintRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

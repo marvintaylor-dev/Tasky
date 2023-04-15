@@ -1,0 +1,193 @@
+﻿@page "/sprints"
+@using Tasky.Shared.DTOs;
+
+@inject ISprintService sprintService
+@inject ITaskService taskService
+@inject IMemberService memberService
+@inject IStatusService statusService
+
+<h3>All Sprints</h3>
+
+<div class="d-flex flex">
+    @foreach (var sprint in sprintService.Sprints)
+    {
+        <div class="d-flex flex-column sprintsContainer">
+            <div>
+                <div>Sprint Id</div>
+                <div>@sprint.SprintId</div>
+            </div>
+            <div>
+                <div>Sprint Number</div>
+                <div>@sprint.SprintNumber</div>
+            </div>
+            <div>
+                <div>Assigned Tasks</div>
+                <div>@sprint.AssignedTasks.Count</div>
+            </div>
+            @if (Show)
+            {
+                <div>@sprint.StartDate</div>
+                <div>@sprint.EndDate</div>
+                <div>@sprint.CurrentMinCapacity</div>
+                <div>@sprint.CurrentMaxCapacity</div>
+                <div>@sprint.SprintBudget</div>
+                <div>@sprint.PlannedTraining</div>
+                <div>@sprint.PreviousVelocity</div>
+                <div>@sprint.Holidays</div>
+                <div>@sprint.MembersWithPlannedLeave.Count</div>
+            }
+            <div>
+                <button @onclick="()=>HandleDelete(sprint.SprintId)" class="btn btn-danger">Delete Sprint</button>
+            </div>
+        </div>
+
+    }
+</div>
+@if (Show)
+{
+    <button class="btn btn-outline-info" @onclick="ToggleShowMore">Show Less...</button>
+}
+else
+{
+    <button class="btn btn-info" @onclick="ToggleShowMore">Show More...</button>
+}
+
+
+
+<h4 class="mt-4">Add a New Sprint</h4>
+<EditForm Model="@NewSprint" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="d-flex flex-column gap-1 col-lg-3 col-md-6 col-sm-12">
+        <div class="form-group">
+            <label for="sprint-number">Sprint Number</label>
+            <InputNumber id="sprint-number" class="form-control" @bind-Value="NewSprint.SprintNumber" />
+        </div>
+        
+        <div class="form-group">
+            <label for="sprint-startDate">Start Date</label>
+            <InputDate id="sprint-startDate" class="form-control" @bind-Value="NewSprint.StartDate" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-endDate">End Date</label>
+            <InputDate id="sprint-endDate" class="form-control" @bind-Value="NewSprint.EndDate" />
+        </div>
+       @* <div class="form-group">
+            <label for="sprint-assignedTasks">Assigned Tasks</label>
+            <MudSelect T="NoteModel" ToStringFunc="@converter" id="sprint-assignedTasks" class="form-control" @bind-Value="@NewSprint.AssignedTasks" MultiSelection="true">
+                <option selected>Select Tasks to Assign</option>
+                @foreach (var task in Tasks)
+                {
+                    if (task.Status != lastStatus.StatusId)
+                    {
+                        <MudSelectItem T="NoteModel" Value="@task.TaskId">@task.TaskId, @task.Name</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </div>*@
+        <div class="form-group">
+            <label for="sprint-budget">Budget</label>
+            <InputNumber id="sprint-budget" class="form-control" @bind-Value="NewSprint.SprintBudget" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-previousVelocity">Previous Velocity</label>
+            <InputNumber id="sprint-previousVelocity" class="form-control" @bind-Value="NewSprint.PreviousVelocity" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-minimum">Minimum</label>
+            <InputNumber id="sprint-minimum" class="form-control" @bind-Value="NewSprint.CurrentMinCapacity" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-maximum">Maximum</label>
+            <InputNumber id="sprint-maximum" class="form-control" @bind-Value="NewSprint.CurrentMaxCapacity" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-teamId">Team Id</label>
+            <InputNumber id="sprint-teamId" class="form-control" @bind-Value="NewSprint.TeamId" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-holidays">Holidays</label>
+            <InputText id="sprint-holidays" class="form-control" @bind-Value="NewSprint.Holidays" />
+        </div>
+        @* <div class="form-group">
+        <label for="sprint-plannedLeave">Members with Planned Leave</label>
+        <InputSelect id="sprint-plannedLeave" class="form-control" @bind-Value="NewSprint.MembersWithPlannedLeave">
+        @foreach (var member in memberService.Members)
+        {
+
+        <option value="member.memberId">@member.Name</option>
+        }
+        </InputSelect>
+        </div>*@
+        <div class="form-group">
+            <label for="sprint-training">Planned Training</label>
+            <InputText id="sprint-training" class="form-control" @bind-Value="NewSprint.PlannedTraining" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-timeOnFeatures">Time for Features</label>
+            <InputNumber id="sprint-timeOnFeatures" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnFeatures" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-timeOnDebt">Time on Debt</label>
+            <InputNumber id="sprint-timeOnDebt" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnDebt" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-timeOnOther">Time on Other</label>
+            <InputNumber id="sprint-timeOnOther" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnOther" />
+        </div>
+        <div class="form-group">
+            <label for="sprint-bufferTime">Buffer Time</label>
+            <InputNumber id="sprint-bufferTime" class="form-control" @bind-Value="NewSprint.PercentOfTimeBuffer" />
+        </div>
+        <button type="submit" class="btn btn-warning">Add New sprint</button>
+
+    </div>
+</EditForm>
+
+
+@code {
+    private bool Show = false;
+    void ToggleShowMore()
+    {
+        Show = !Show;
+    }
+
+    async void HandleSubmit()
+    {
+        Console.WriteLine(selectedTaskIdsAsString);
+        Console.WriteLine(selectedTaskIds);
+        NewSprint.AssignedTasks = Tasks.Where(t => selectedTaskIds.Contains(t.TaskId)).ToList();
+        await sprintService.AddSprint(NewSprint);
+        await sprintService.GetSprints();
+        NewSprint = new();
+        StateHasChanged();
+    }
+
+    async void HandleDelete(int id)
+    {
+        await sprintService.DeleteSprint(id);
+        await sprintService.GetSprints();
+        StateHasChanged();
+    }
+
+    public List<NoteModel> Tasks = new();
+    public SprintModel NewSprint = new();
+    public StatusDTO lastStatus = new();
+    public List<int> selectedTaskIds = new();
+    private string selectedTaskIdsAsString
+    {
+        get => string.Join(",", selectedTaskIds);
+        set => selectedTaskIds = value.Split(",").Select(int.Parse).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await sprintService.GetSprints();
+        await memberService.GetMembers();
+        Tasks = await taskService.GetTasksInOrder();
+        lastStatus = await statusService.GetLastStatus();
+
+        await base.OnInitializedAsync();
+    }
+}

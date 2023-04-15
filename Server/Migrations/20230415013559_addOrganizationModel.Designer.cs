@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230415013559_addOrganizationModel")]
+    partial class addOrganizationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,9 +188,6 @@ namespace Tasky.Server.Migrations
                     b.Property<int?>("SizeEstimate")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SprintModelSprintId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -205,8 +204,6 @@ namespace Tasky.Server.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("TaskId");
-
-                    b.HasIndex("SprintModelSprintId");
 
                     b.ToTable("Tasks");
                 });
@@ -443,17 +440,8 @@ namespace Tasky.Server.Migrations
                         .HasForeignKey("SprintModelSprintId");
                 });
 
-            modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
-                {
-                    b.HasOne("Tasky.Shared.SprintModel", null)
-                        .WithMany("AssignedTasks")
-                        .HasForeignKey("SprintModelSprintId");
-                });
-
             modelBuilder.Entity("Tasky.Shared.SprintModel", b =>
                 {
-                    b.Navigation("AssignedTasks");
-
                     b.Navigation("MembersWithPlannedLeave");
                 });
 #pragma warning restore 612, 618

@@ -97,48 +97,87 @@
     [CascadingParameter]
     TaskContainer Container { get; set; }
 
-    public NoteModel lastMoved { get; set; }
-
     public TaskComponent taskComponent;
     public NoteModel Payload;
 
-    public List<NoteModel> TaskOrder { get; set; }
-
     void HandleTaskDragged(NoteModel payload)
     {
-        Console.WriteLine($"Received {payload.TaskId} in the index page");
+        //When the drag starts, pass the payload to the index page
         Payload = payload;
-        Console.WriteLine($"Payload is = to: {Payload.TaskId}");
     }
 
     public async Task UpdateTaskAsync(NoteModel targetTask)
     {
-
-
-        if (targetTask != null)
+        if (Payload.isSubTask == true)
         {
             if (targetTask != null && Payload != null && Payload != targetTask)
             {
-                var currentIndex = tasks.IndexOf(Payload);
+                var currentIndex = subtasks.IndexOf(Payload);
+                int targetIndex;
+                subtasks.RemoveAt(currentIndex);
 
-                var targetIndex = tasks.IndexOf(targetTask);
-
-                tasks.RemoveAt(currentIndex);
-
-                if (currentIndex < targetIndex)
+                if (targetTask.isSubTask == false)
                 {
-                    tasks.Insert(targetIndex - 1, Payload);
+                    //if target index is a task
+                    //reassign the subtask to that task, regardless of order
+                    Payload.LinkTo = targetTask.TaskId;
+                    await taskService.UpdateTask(Payload);
+                    RefreshList();
                 }
-                else
+                else if (targetTask.isSubTask == true)
                 {
-                    tasks.Insert(targetIndex, Payload); 
-                }
+                    //check if the target is a subtask
+                    if (targetTask.LinkTo == Payload.LinkTo)
+                    {
+                        //if the target it a subtask and the task they're linked to is the same then reorder
+                        targetIndex = subtasks.IndexOf(targetTask);
 
-                Payload.Order = targetTask.Order;
+                        if (currentIndex < targetIndex)
+                        {
+                            subtasks.Insert(targetIndex - 1, Payload);
+                            AutoOrderSubtaskSet((int)targetTask.LinkTo);
+                        }
+                        else
+                        {
+                            subtasks.Insert(targetIndex, Payload);
+                            AutoOrderSubtaskSet((int)targetTask.LinkTo);
+                        }
+                    }
+                    else
+                    {
+                        //if the linkto is different then change payload link to to the new id.
+                        Payload.LinkTo = targetTask.LinkTo;
+                        await taskService.UpdateTask(Payload);
+                        RefreshList();
+                    }
+                }
             }
         }
-        StateHasChanged();
-                AutoOrder();
+        else
+        {
+            if (targetTask != null)
+            {
+                if (targetTask != null && Payload != null && Payload != targetTask)
+                {
+                    var currentIndex = tasks.IndexOf(Payload);
+                    var targetIndex = tasks.IndexOf(targetTask);
+                    tasks.RemoveAt(currentIndex);
+
+                    if (currentIndex < targetIndex)
+                    {
+                        tasks.Insert(targetIndex - 1, Payload);
+                    }
+                    else
+                    {
+                        tasks.Insert(targetIndex, Payload);
+                    }
+
+                    Payload.Order = targetTask.Order;
+                }
+            }
+            StateHasChanged();
+            AutoOrder();
+        }
     }
 
 
@@ -163,6 +202,23 @@
                     await taskService.UpdateTask(task);
                     order++;
                 }
+            }
+
+        }
+        StateHasChanged();
+        order = 1;
+    }
+
+    async Task AutoOrderSubtaskSet(int linkedBy)
+    {
+        int order = 1;
+        foreach (var subtask in subtasks)
+        {
+            if (subtask.LinkTo == linkedBy)
+            {
+                subtask.Order = order;
+                await taskService.UpdateTask(subtask);
+                order++;
             }
 
         }
@@ -196,7 +252,6 @@
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasksInOrder();
-        TaskOrder = tasks;
         subtasks = await taskService.GetSubtasks();
         await memberService.GetMembers();
         StatusDTO lastStatusDTO = await statusService.GetLastStatus();
@@ -249,7 +304,6 @@
         isLoading = false;
         CompletedTasksComponent.ChangeState();
         StateHasChanged();
-        Console.WriteLine("RefreshList Has Been Called");
     }
 
     void RemoveTaskWithoutCallingDB()

@@ -34,7 +34,7 @@ namespace Tasky.Server.Data
         public DbSet<RelativeEstimation> RelativeEstimates { get; set; }
         public DbSet<EstimationGroup> EstimationGroups { get; set; }
         public DbSet<UserStory> UserStories { get; set; }
-
+        public DbSet<SprintModel> Sprints { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<sectionNoteModel> SectionNoteModels { get; set; }
 

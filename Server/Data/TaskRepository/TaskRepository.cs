@@ -75,7 +75,10 @@ namespace Tasky.Server.Data.TaskRepository
 
         public async Task<List<NoteModel>> GetAllSubtasks()
         {
-            var result = await _context.Tasks.Where(x => x.isSubTask == true).ToListAsync();
+            var result = await _context.Tasks
+                .Where(x => x.isSubTask == true)
+                .OrderBy(x => x.Order ?? x.TaskId)
+                .ToListAsync();
             if (result == null)
             {
                 throw new Exception("No Tasks were found");

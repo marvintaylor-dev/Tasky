@@ -1,16 +1,15 @@
 ﻿@inject IJSRuntime JS
 @inject ITaskService taskService;
 
-<div 
-    class="dropzone @dragClass"
-    ondragover="event.preventDefault();"
-    @ondragstart="DragStart"
-    @ondragenter="DragEnter"
-    @ondragleave="DragLeave"
-    @ondrop="()=>HandleDrop(Task)"></div>
+<div class="dropzone @dragClass"
+     ondragover="event.preventDefault();"
+     @ondragstart="DragStart"
+     @ondragenter="DragEnter"
+     @ondragleave="DragLeave"
+     @ondrop="()=>HandleDrop(Task)"></div>
 
 
-<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center">
+<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center @SubtaskCss">
     <div class="idStyle @TaskOrSubtask">Id-@Task.TaskId</div>
     <div id="@Task.TaskId" class="taskContainer mud-elevation-1 py-2 px-5 rounded white">
         <div class="taskContainerLeft">
@@ -98,8 +97,15 @@
 
     public void HandleDrop(NoteModel targetTask)
     {
-
-        OnOrderUpdated.InvokeAsync(targetTask);
+        dragClass = "";
+        if (Payload.isSubTask == false && targetTask.isSubTask == true)
+        {
+            return;
+        }
+        else
+        {
+            OnOrderUpdated.InvokeAsync(targetTask);
+        }
 
         //OnOrderUpdated.InvokeAsync(task);
         //Task = null;
@@ -107,6 +113,7 @@
 
     void DragEnter()
     {
+        
         dragClass = "color";
     }
     void DragLeave()

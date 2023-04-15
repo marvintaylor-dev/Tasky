@@ -1,12 +1,28 @@
 ﻿@inject ITaskService taskService
 
-<input type="number"
-       min="0"
-       style="width: 60px; border: 1px solid black; padding-left: 2%; border-radius: .3rem;"
-       @bind-value="Task.Order"
-       @bind-value:event="oninput"
-       @onchange="Activate"
-       @onkeydown="KeyPressed" />
+<div class="d-flex flex-column justify-content-center align-items-center">
+    @if (Task.Order == null)
+    {
+        <div @onclick="ToggleEditOrder" style="font-size: .7rem;">Order</div>
+
+    }
+
+    @if (!EditOrder)
+    {
+        <div @onclick="ToggleEditOrder">@Task.Order</div>
+    }
+    else
+    {
+        <input type="number"
+               min="0"
+               style="width: 60px; border: 1px solid black; padding-left: 2%; border-radius: .3rem;"
+           @onfocusout="ToggleEditOrder"
+           @bind-value="Task.Order"
+           @bind-value:event="oninput"
+           @onchange="Activate"
+           @onkeydown="KeyPressed" />
+    }
+</div>
 
 
 @code {
@@ -18,6 +34,13 @@
 
     [Parameter]
     public EventCallback<bool> RefreshList { get; set; }
+
+    private bool EditOrder = false;
+
+    void ToggleEditOrder()
+    {
+        EditOrder = !EditOrder;
+    }
 
     void Activate()
     {
