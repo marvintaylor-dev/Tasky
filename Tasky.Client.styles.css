@@ -151,6 +151,29 @@
 .show[b-4vhjiumjdo]{
     display: flex;
 }
+/* /Components/DropContainer.razor.rz.scp.css */
+.drop-container[b-8llf89d5nz]{
+    position: sticky;
+    top: 5rem;
+    width: 5rem;
+    height: 80vh;
+    border: 3px dashed lightgray;
+}
+
+.drop-container-text[b-8llf89d5nz] {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.color[b-8llf89d5nz]{
+    border: 3px dotted green;
+}
+
+.sprintTasks[b-8llf89d5nz] {
+    color: #2196f3ff;
+    font-size: 2rem;
+}
 /* /Components/MemberComponent.razor.rz.scp.css */
 .memberContainer[b-iim7n992ah]{
     position: relative;
