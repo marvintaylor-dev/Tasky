@@ -1,0 +1,99 @@
+﻿@using Tasky.Shared.DTOs;
+@inject ISprintService sprintService
+@inject ITaskService taskService
+
+<div class="d-flex flex-column">
+    <select @bind-value="sprintIdNumber" @bind-value:event="oninput" @onchange="UpdateSprintValue">
+        @foreach (var sprint in sprintService.Sprints)
+        {
+            <option value="@sprint.SprintId">Sprint #: @sprint.SprintNumber</option>
+        }
+    </select>
+    <div>Sprint Id #: @sprintIdNumber</div>
+
+    <div class="drop-container d-flex flex-column align-items-center justify-content-center @dragClass"
+         ondragover="event.preventDefault();"
+         @ondragstart="DragStart"
+         @ondragenter="DragEnter"
+         @ondragleave="DragLeave"
+         @ondrop="()=>HandleDrop(Payload)">
+        <div class="drop-container-text">
+            Add Task to Sprint
+        </div>
+
+        @if (sprintService.Sprint != null)
+        {
+            <div class="sprintTasks">
+                @sprintService.Sprint.AssignedTasks.Count
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public NoteModel? Payload { get; set; }
+
+    [Parameter]
+    public EventCallback OnDrop { get; set; }
+
+    [Parameter]
+    public EventCallback<int> IdNumber { get; set; }
+
+    SprintTaskDTO newLink = new();
+    public int sprintIdNumber;
+
+    public async Task HandleDrop(NoteModel item)
+    {
+        if (Payload != null)
+        {
+            await IdNumber.InvokeAsync();
+            newLink.SprintId = sprintService.Sprint.SprintId;
+            newLink.TaskId = item.TaskId;
+            await sprintService.LinkSprint(newLink);
+            await sprintService.GetSprintById(sprintIdNumber);
+            StateHasChanged();
+            newLink = new();
+            await OnDrop.InvokeAsync();
+            //var updateTask = await taskService.GetTaskById(item.TaskId);
+            //updateTask.AssignedToSprintId = sprintService.Sprint.SprintId;
+            //await taskService.UpdateTask(updateTask);
+            //sprintService.Sprint.AssignedTasks.Add(item);
+        }
+        dragClass = "";
+    }
+
+    async void UpdateSprintValue()
+    {
+        await sprintService.GetSprintById(sprintIdNumber);
+        StateHasChanged();
+    }
+
+    private string dragClass = string.Empty;
+
+    void DragEnter()
+    {
+        dragClass = "color";
+    }
+    void DragLeave()
+    {
+        dragClass = "";
+    }
+    void DragStart()
+    {
+        dragClass = "expand";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await sprintService.GetSprints();
+        if (sprintService.Sprints.Count > 0)
+        {
+            sprintIdNumber = sprintService.Sprints[0].SprintId;
+        }
+        await sprintService.GetSprintById(sprintIdNumber);
+        await base.OnInitializedAsync();
+    }
+
+}

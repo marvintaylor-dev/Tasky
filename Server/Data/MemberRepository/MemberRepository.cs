@@ -54,7 +54,7 @@ namespace Tasky.Server.Data.MemberRepository
 
         public async Task<ServiceResponse<Member>> GetMemberById(int id)
         {
-            var data = await _context.Members.FirstOrDefaultAsync(x => x.MemberId == id);
+            var data = await _context.Members.Include(x=>x.SprintsAssignedTo).FirstOrDefaultAsync(x => x.MemberId == id);
             var response = new ServiceResponse<Member>();
             if (data == null)
             {
@@ -76,7 +76,7 @@ namespace Tasky.Server.Data.MemberRepository
         {
             var response = new ServiceResponse<List<Member>>
             {
-                Data = await _context.Members.ToListAsync()
+                Data = await _context.Members.Include(x=>x.SprintsAssignedTo).ToListAsync()
             };
             return response;
         }

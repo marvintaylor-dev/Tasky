@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230419084030_updateNoteModel")]
+    partial class updateNoteModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,21 +37,6 @@ namespace Tasky.Server.Migrations
                     b.HasIndex("SprintsAssignedToSprintId");
 
                     b.ToTable("MemberSprintModel");
-                });
-
-            modelBuilder.Entity("NoteModelSprintModel", b =>
-                {
-                    b.Property<int>("AssignedTasksTaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AssignedToSprintSprintId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AssignedTasksTaskId", "AssignedToSprintSprintId");
-
-                    b.HasIndex("AssignedToSprintSprintId");
-
-                    b.ToTable("NoteModelSprintModel");
                 });
 
             modelBuilder.Entity("Tasky.Shared.EstimationGroup", b =>
@@ -186,6 +173,9 @@ namespace Tasky.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("AssignedToSprintId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Assignee")
                         .HasColumnType("int");
 
@@ -227,6 +217,8 @@ namespace Tasky.Server.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("TaskId");
+
+                    b.HasIndex("AssignedToSprintId");
 
                     b.ToTable("Tasks");
                 });
@@ -471,19 +463,18 @@ namespace Tasky.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NoteModelSprintModel", b =>
+            modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
                 {
-                    b.HasOne("Tasky.Shared.NoteModel", null)
-                        .WithMany()
-                        .HasForeignKey("AssignedTasksTaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Tasky.Shared.SprintModel", "AssignedToSprint")
+                        .WithMany("AssignedTasks")
+                        .HasForeignKey("AssignedToSprintId");
 
-                    b.HasOne("Tasky.Shared.SprintModel", null)
-                        .WithMany()
-                        .HasForeignKey("AssignedToSprintSprintId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("AssignedToSprint");
+                });
+
+            modelBuilder.Entity("Tasky.Shared.SprintModel", b =>
+                {
+                    b.Navigation("AssignedTasks");
                 });
 #pragma warning restore 612, 618
         }

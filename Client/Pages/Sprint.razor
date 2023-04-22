@@ -8,36 +8,68 @@
 
 <h3>All Sprints</h3>
 
-<div class="d-flex flex">
+<style>
+    
+</style>
+
+<div class="d-flex flex gap-5">
     @foreach (var sprint in sprintService.Sprints)
     {
         <div class="d-flex flex-column sprintsContainer">
             <div>
-                <div>Sprint Id</div>
+                <MudInputLabel for="sprintId">Sprint Id</MudInputLabel>
                 <div>@sprint.SprintId</div>
             </div>
             <div>
-                <div>Sprint Number</div>
-                <div>@sprint.SprintNumber</div>
+                <MudInputLabel>Sprint Number</MudInputLabel>
+                <MudInput Value="@sprint.SprintNumber">@sprint.SprintNumber</MudInput>
             </div>
             <div>
-                <div>Assigned Tasks</div>
+                <MudInputLabel>Assigned Tasks</MudInputLabel>
                 <div>@sprint.AssignedTasks.Count</div>
             </div>
             @if (Show)
             {
-                <div>@sprint.StartDate</div>
-                <div>@sprint.EndDate</div>
-                <div>@sprint.CurrentMinCapacity</div>
-                <div>@sprint.CurrentMaxCapacity</div>
-                <div>@sprint.SprintBudget</div>
-                <div>@sprint.PlannedTraining</div>
-                <div>@sprint.PreviousVelocity</div>
-                <div>@sprint.Holidays</div>
-                <div>@sprint.MembersWithPlannedLeave.Count</div>
+                <div class="sprintInfo">
+                    <MudInputLabel>Start Date</MudInputLabel>
+                    <div>@sprint.StartDate</div>
+                </div>
+                <div class="sprintInfo">
+                    <MudInputLabel>End Date</MudInputLabel>
+                    <div>@sprint.EndDate</div>
+                </div>
+                <div class="sprintInfo">
+                    <MudInputLabel>Current Min Capacity</MudInputLabel>
+                    <div>@sprint.CurrentMinCapacity</div>
+                </div>
+                <div class="sprintInfo">
+                    <MudInputLabel>Current Max Capacity</MudInputLabel>
+                    <div>@sprint.CurrentMaxCapacity</div>
+                </div>
+                <div class="sprintInfo">
+                    <MudInputLabel>Sprint Budget</MudInputLabel>
+                    <div>@sprint.SprintBudget</div>
+                </div>
+                <div class="sprintInfo">
+                    <MudInputLabel>Planned Training</MudInputLabel>
+                    <div>@sprint.PlannedTraining</div>
+                </div>
+                <div class="sprintInfo">
+                    <MudInputLabel>Previous Velocity</MudInputLabel>
+                    <div>@sprint.PreviousVelocity</div>
+                </div>
+                <div class="sprintInfo">
+                    <MudInputLabel>Holidays</MudInputLabel>
+                    <div>@sprint.Holidays</div>
+                </div>
+                <div class="sprintInfo">
+                    <MudInputLabel>Members with Planned Leave Count</MudInputLabel>
+                    <div>@sprint.MembersWithPlannedLeave.Count</div>
+                </div>
+
             }
             <div>
-                <button @onclick="()=>HandleDelete(sprint.SprintId)" class="btn btn-danger">Delete Sprint</button>
+                <button @onclick="()=>HandleDelete(sprint.SprintId)" class="btn btn-danger mb-3">Delete Sprint</button>
             </div>
         </div>
 
@@ -45,11 +77,11 @@
 </div>
 @if (Show)
 {
-    <button class="btn btn-outline-info" @onclick="ToggleShowMore">Show Less...</button>
+    <button class="btn btn-outline-primary" @onclick="ToggleShowMore">Show Less...</button>
 }
 else
 {
-    <button class="btn btn-info" @onclick="ToggleShowMore">Show More...</button>
+    <button class="btn btn-primary" @onclick="ToggleShowMore">Show More...</button>
 }
 
 

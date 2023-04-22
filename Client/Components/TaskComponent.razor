@@ -1,5 +1,7 @@
-﻿@inject IJSRuntime JS
+﻿@using Tasky.Shared.DTOs;
+@inject IJSRuntime JS
 @inject ITaskService taskService;
+@inject ISprintService sprintService;
 
 <div class="dropzone @dragClass"
      ondragover="event.preventDefault();"
@@ -11,9 +13,23 @@
 
 <div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center @SubtaskCss">
     <div class="idStyle @TaskOrSubtask">Id-@Task.TaskId</div>
+
+
     <div id="@Task.TaskId" class="taskContainer mud-elevation-1 py-2 px-5 rounded white">
         <div class="taskContainerLeft">
             <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
+
+            @*
+                Code to show which tasks have been assigned to a sprint. Commented out because of poor optimization 
+
+            @foreach (var assignments in sprintService.Sprint.AssignedTasks)
+            {
+                if (assignments.TaskId == Task.TaskId)
+                {
+                    <div>&#x2713;</div>
+                }
+
+            }*@
             <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
             <div class="containerLeftComponents">
                 @if (ShowOrHideCriteria)
@@ -98,14 +114,7 @@
     public void HandleDrop(NoteModel targetTask)
     {
         dragClass = "";
-        if (Payload.isSubTask == false && targetTask.isSubTask == true)
-        {
-            return;
-        }
-        else
-        {
-            OnOrderUpdated.InvokeAsync(targetTask);
-        }
+        OnOrderUpdated.InvokeAsync(targetTask);
 
         //OnOrderUpdated.InvokeAsync(task);
         //Task = null;
@@ -113,7 +122,6 @@
 
     void DragEnter()
     {
-        
         dragClass = "color";
     }
     void DragLeave()
@@ -158,10 +166,12 @@
     }
 
 
+
     protected override async Task OnParametersSetAsync()
     {
         //turn off adblocker in google chrome - else an error will be thrown
         //await JS.InvokeVoidAsync("preventTextAreaLineChange");
+
         tasks = await taskService.GetTasks();
         await base.OnParametersSetAsync();
     }

@@ -31,7 +31,7 @@ namespace Tasky.Server.Data.TaskRepository
 
         public async Task<NoteModel> DeleteTask(int id)
         {
-            NoteModel result = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == id) ?? throw new Exception("Could not find id");
+            NoteModel result = await _context.Tasks.Include(x=>x.AssignedToSprint).FirstOrDefaultAsync(t => t.TaskId == id) ?? throw new Exception("Could not find id");
 
             if (result != null)
             {
@@ -47,7 +47,7 @@ namespace Tasky.Server.Data.TaskRepository
 
         public async Task<List<NoteModel>> GetAllTasks()
         {
-            var result = await _context.Tasks.ToListAsync();
+            var result = await _context.Tasks.Include(x => x.AssignedToSprint).ToListAsync();
             if (result == null)
             {
                 throw new Exception("No Tasks were found");
@@ -61,7 +61,7 @@ namespace Tasky.Server.Data.TaskRepository
 
         public async Task<List<NoteModel>> GetAllTasksInOrder()
         {
-            var result = await _context.Tasks.OrderBy(x => x.Order ?? x.TaskId).ToListAsync();
+            var result = await _context.Tasks.Include(x=>x.AssignedToSprint).OrderBy(x => x.Order ?? x.TaskId).ToListAsync();
             if (result == null)
             {
                 throw new Exception("No Tasks were found");
@@ -76,6 +76,7 @@ namespace Tasky.Server.Data.TaskRepository
         public async Task<List<NoteModel>> GetAllSubtasks()
         {
             var result = await _context.Tasks
+                .Include(x => x.AssignedToSprint)
                 .Where(x => x.isSubTask == true)
                 .OrderBy(x => x.Order ?? x.TaskId)
                 .ToListAsync();
@@ -92,7 +93,7 @@ namespace Tasky.Server.Data.TaskRepository
 
         public async Task<NoteModel> GetTaskById(int id)
         {
-            NoteModel singleTask = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == id) ?? throw new Exception("Could not find id");
+            NoteModel singleTask = await _context.Tasks.Include(x => x.AssignedToSprint).FirstOrDefaultAsync(t => t.TaskId == id) ?? throw new Exception("Could not find id");
             if (singleTask != null)
             {
                 return singleTask;
@@ -105,7 +106,7 @@ namespace Tasky.Server.Data.TaskRepository
 
         public async Task<NoteModel> UpdateTask(NoteModel model)
         {
-            NoteModel result = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == model.TaskId) ?? throw new Exception("Could not find id");
+            NoteModel result = await _context.Tasks.Include(x => x.AssignedToSprint).FirstOrDefaultAsync(t => t.TaskId == model.TaskId) ?? throw new Exception("Could not find id");
             _mapper.Map(model, result);
 
             await _context.SaveChangesAsync();

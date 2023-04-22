@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Tasky.Shared;
+using Tasky.Shared.DTOs;
 
 namespace Tasky.Server.Data.SprintRepository
 {
@@ -17,13 +18,13 @@ namespace Tasky.Server.Data.SprintRepository
 
         public async Task<List<SprintModel>> GetSprints()
         {
-            var result = await _appDbContext.Sprints.ToListAsync();
+            var result = await _appDbContext.Sprints.Include(x => x.AssignedTasks).ToListAsync();
             return result;
         }
 
         public async Task<SprintModel> GetSprintById(int id)
         {
-            var result = await _appDbContext.Sprints.FirstOrDefaultAsync(x => x.SprintId == id);
+            var result = await _appDbContext.Sprints.Include(x=>x.AssignedTasks).FirstOrDefaultAsync(x => x.SprintId == id);
             if (result == null)
             {
                 throw new Exception($"Could not find sprint id of {id}");
@@ -73,7 +74,7 @@ namespace Tasky.Server.Data.SprintRepository
 
         public async Task<SprintModel> UpdateSprint(SprintModel updateSprint)
         {
-            var result = await _appDbContext.Sprints.FirstOrDefaultAsync(x => x.SprintId == updateSprint.SprintId);
+            var result = await _appDbContext.Sprints.Include(x=>x.AssignedTasks).FirstOrDefaultAsync(x => x.SprintId == updateSprint.SprintId);
             if (result == null)
             {
                 throw new Exception($"Could not update {updateSprint.SprintNumber}");
@@ -82,6 +83,30 @@ namespace Tasky.Server.Data.SprintRepository
             await _appDbContext.SaveChangesAsync();
             return updateSprint;
         }
+
+
+        public async Task<SprintModel> LinkSprint(SprintTaskDTO sprintUpdate)
+        {
+            var sprint = await _appDbContext.Sprints.Include(x=>x.AssignedTasks).FirstOrDefaultAsync(x=>x.SprintId == sprintUpdate.SprintId); 
+            if(sprint == null)
+            {
+                throw new Exception("Could not link sprint to task");
+            }
+
+            var task = await _appDbContext.Tasks.Include(x=>x.AssignedToSprint).FirstOrDefaultAsync(x=>x.TaskId == sprintUpdate.TaskId);
+            if(task == null)
+            {
+                throw new Exception("Could not link sprint to task");
+            }
+
+            sprint.AssignedTasks.Add(task);
+            task.AssignedToSprint.Add(sprint);
+            await _appDbContext.SaveChangesAsync();
+
+            return sprint;
+        }
+
+        
     }
     
 }

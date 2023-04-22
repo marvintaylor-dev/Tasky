@@ -1,4 +1,6 @@
-﻿namespace Tasky.Client.Services.SprintService
+﻿using Tasky.Shared.DTOs;
+
+namespace Tasky.Client.Services.SprintService
 {
     public class SprintService : ISprintService
     {
@@ -41,6 +43,7 @@
             Sprints = result;
         }
 
+
         public async Task<SprintModel> UpdateSprint(SprintModel sprintToUpdate)
         {
             var result = await _httpClient.PutAsJsonAsync<SprintModel>("api/sprint", sprintToUpdate);
@@ -48,5 +51,16 @@
             if (response == null) throw new Exception();
             return response;
         }
+
+
+        public async Task<SprintTaskDTO> LinkSprint(SprintTaskDTO sprintTask)
+        {
+            var result = await _httpClient.PostAsJsonAsync<SprintTaskDTO>("api/sprint/link", sprintTask);
+            var response = await result.Content.ReadFromJsonAsync<SprintTaskDTO>();
+            if (response == null) throw new Exception();
+            return response;
+        }
+
+      
     }
 }

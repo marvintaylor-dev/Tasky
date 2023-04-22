@@ -24,6 +24,8 @@ namespace Tasky.Shared
         //public List<DateTime>? VacationDates { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
+
+        public List<SprintModel>? SprintsAssignedTo { get; set; }
         public int WorkAssigned { get; set; } = 0;
         public string TimeZone { get; set; } = string.Empty;
         //public List<TimeSpan> ActiveTimes { get; set; }

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Tasky.Shared
@@ -30,6 +31,7 @@ namespace Tasky.Shared
         public int? TeamId { get; set; }
         public string Holidays { get; set; } = string.Empty;
         public List<Member> MembersWithPlannedLeave { get; set; } = new();
+        
         public List<NoteModel> AssignedTasks { get; set; } = new();
         public string PlannedTraining { get; set; } = string.Empty;
 

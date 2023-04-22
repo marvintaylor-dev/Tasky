@@ -1,0 +1,323 @@
+﻿@page "/backlog"
+@using Tasky.Shared.DTOs;
+@inject IJSRuntime JS
+@inject ITaskService taskService
+@inject IMemberService memberService
+@inject ISectionService sectionService
+@inject IStatusService statusService
+@inject ISprintService sprintService
+@attribute [Authorize]
+
+@if (message != string.Empty)
+{
+    <div style="position: sticky; top: 0; z-index: 1; background: pink;">@message <span @onclick="ResetMessage">Close</span></div>
+}
+
+
+<div class="d-flex justify-content-between mb-3" style="min-width: fit-content; max-width: 70%; margin: auto;">
+    @*
+    Removed Sections code for the time being. It doesn't work how it's supposed to anyway.
+    @foreach (Section sec in sections)
+    {
+    <SectionComponent sectionId="sec.SectionId" RefreshList="RefreshList" />
+    }
+    *@
+    <MudButton Color="Color.Secondary" @onclick="AutoOrder">Auto Order</MudButton>
+    @if (ShowOrHideAcceptanceCriteria == false)
+    {
+        <div @onclick="ToggleAcceptanceCriteriaVisibility" class="btn btn-outline-dark">
+            Show Acceptance Criteria
+        </div>
+    }
+    else
+    {
+        <div @onclick="ToggleAcceptanceCriteriaVisibility" class="btn btn-dark">
+            Hide Acceptance Criteria
+        </div>
+    }
+
+    <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" LastStatus="lastStatus" ListUpdated="RefreshList" />
+
+</div>
+
+@if (isLoading)
+{
+    <LoadingIndicatorComponent />
+}
+
+@if (isLoading == false && tasks.Count == 0)
+{
+    <div style="font-size: 1rem; font-weight: bold;">Click the button to add your first task!</div>
+}
+
+
+<div class="d-flex">
+
+    <DropContainer Payload="Payload"></DropContainer>
+
+
+    <div class="d-flex flex-column" style="min-width: fit-content; max-width: 70%; margin: auto">
+
+        <Virtualize Items="@tasks" Context="task">
+
+            @if (task.isSubTask == false)
+            {
+                if (task.Status != lastStatus)
+                {
+                    <TaskComponent @key="task.TaskId"
+                           ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria"
+                           Task="task"
+                           RefreshList="RefreshList"
+                           CallSubTask="() => AddNewSubTask(task.TaskId)"
+                           SimpleStateChange="RemoveTaskWithoutCallingDB"
+                           OnTaskDragged="HandleTaskDragged"
+                           OnOrderUpdated="UpdateTaskAsync" />
+                    @foreach (var t in subtasks)
+                    {
+                        if (t.LinkTo == task.TaskId)
+                        {
+                            <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria"
+                           Task="t"
+                           RefreshList="RefreshList"
+                           CallSubTask="() => AddNewSubTask(task.TaskId)"
+                           SimpleStateChange="RemoveTaskWithoutCallingDB"
+                           OnTaskDragged="HandleTaskDragged"
+                           OnOrderUpdated="UpdateTaskAsync" />
+                        }
+                    }
+                }
+            }
+        </Virtualize>
+    </div>
+</div>
+
+
+<div class="centerTask">
+    <MudFab Color="Color.Info" Style="margin-top: 2rem; margin-left: 10rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
+</div>
+
+
+
+@code {
+    private bool isLoading = true;
+    public bool ShowOrHideAcceptanceCriteria = false;
+    private string message = string.Empty;
+
+    public TaskComponent? taskComponent;
+    public NoteModel? Payload;
+
+    void HandleTaskDragged(NoteModel payload)
+    {
+        //When the drag starts, pass the payload to the index page
+        Payload = payload;
+    }
+
+
+
+    public async Task UpdateTaskAsync(NoteModel targetTask)
+    {
+        if (Payload.isSubTask == true)
+        {
+            if (targetTask != null && Payload != null && Payload != targetTask)
+            {
+                var currentIndex = subtasks.IndexOf(Payload);
+                int targetIndex;
+                subtasks.RemoveAt(currentIndex);
+
+                if (targetTask.isSubTask == false)
+                {
+                    //if target index is a task
+                    //reassign the subtask to that task, regardless of order
+                    Payload.LinkTo = targetTask.TaskId;
+                    await taskService.UpdateTask(Payload);
+                    RefreshList();
+                }
+                else if (targetTask.isSubTask == true)
+                {
+                    //check if the target is a subtask
+                    if (targetTask.LinkTo == Payload.LinkTo)
+                    {
+                        //if the target it a subtask and the task they're linked to is the same then reorder
+                        targetIndex = subtasks.IndexOf(targetTask);
+
+                        if (currentIndex < targetIndex)
+                        {
+                            subtasks.Insert(targetIndex - 1, Payload);
+                            AutoOrderSubtaskSet((int)targetTask.LinkTo);
+                        }
+                        else
+                        {
+                            subtasks.Insert(targetIndex, Payload);
+                            AutoOrderSubtaskSet((int)targetTask.LinkTo);
+                        }
+                    }
+                    else
+                    {
+                        //if the linkto is different then change payload link to to the new id.
+                        Payload.LinkTo = targetTask.LinkTo;
+                        await taskService.UpdateTask(Payload);
+                        RefreshList();
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (targetTask != null)
+            {
+                if (targetTask != null && Payload != null && Payload != targetTask)
+                {
+                    var currentIndex = tasks.IndexOf(Payload);
+                    var targetIndex = tasks.IndexOf(targetTask);
+                    tasks.RemoveAt(currentIndex);
+
+                    if (currentIndex < targetIndex)
+                    {
+                        tasks.Insert(targetIndex - 1, Payload);
+                    }
+                    else
+                    {
+                        tasks.Insert(targetIndex, Payload);
+                    }
+
+                    Payload.Order = targetTask.Order;
+                }
+            }
+            StateHasChanged();
+            AutoOrder();
+        }
+    }
+
+
+    //protected override void OnParametersSet()
+    //{
+    //    TaskOrder.Clear();
+    //    TaskOrder.AddRange(Container.Tasks.OrderBy(x => x.Order));
+    //}
+
+
+
+    async Task AutoOrder()
+    {
+        int order = 1;
+        foreach (var task in tasks)
+        {
+            if (task.isSubTask == false)
+            {
+                if (task.Status != lastStatus)
+                {
+                    task.Order = order;
+                    await taskService.UpdateTask(task);
+                    order++;
+                }
+            }
+
+        }
+        StateHasChanged();
+        order = 1;
+    }
+
+    async Task AutoOrderSubtaskSet(int linkedBy)
+    {
+        int order = 1;
+        foreach (var subtask in subtasks)
+        {
+            if (subtask.LinkTo == linkedBy)
+            {
+                subtask.Order = order;
+                await taskService.UpdateTask(subtask);
+                order++;
+            }
+
+        }
+        StateHasChanged();
+        order = 1;
+    }
+
+    void ToggleAcceptanceCriteriaVisibility()
+    {
+        ShowOrHideAcceptanceCriteria = !ShowOrHideAcceptanceCriteria;
+        StateHasChanged();
+    }
+
+    void ResetMessage()
+    {
+        message = string.Empty;
+    }
+
+
+    protected CompletedTasksComponent CompletedTasksComponent;
+
+    NoteModel newTask = new NoteModel();
+    List<NoteModel> tasks = new List<NoteModel>();
+    List<NoteModel> subtasks = new List<NoteModel>();
+    List<TaskComponent> taskComponents = new();
+    //List<Section> sections = new();
+
+    int lastStatus;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await taskService.GetTasksInOrder();
+        subtasks = await taskService.GetSubtasks();
+        await memberService.GetMembers();
+        StatusDTO lastStatusDTO = await statusService.GetLastStatus();
+        lastStatus = lastStatusDTO.StatusId;
+        isLoading = false;
+        await base.OnInitializedAsync();
+    }
+
+    void AddNewTask()
+    {
+        var nullSubtasks = subtasks.Find(x => x.TaskId == 0);
+        var taskWithIdOfZero = tasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null && nullSubtasks == null)
+        {
+            tasks.Add(newTask);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
+    }
+
+    void AddNewSubTask(int taskId)
+    {
+        var anyTaskWithZero = tasks.Find(x => x.TaskId == 0);
+        var taskWithIdOfZero = subtasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null && anyTaskWithZero == null)
+        {
+            newTask.isSubTask = true;
+            newTask.LinkTo = taskId;
+            subtasks.Add(newTask);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
+
+    }
+
+    public async Task RefreshList()
+    {
+        isLoading = true;
+        tasks = await taskService.GetTasksInOrder();
+        subtasks = await taskService.GetSubtasks();
+        //sections = await sectionService.GetSections();
+        isLoading = false;
+        CompletedTasksComponent.ChangeState();
+        StateHasChanged();
+    }
+
+    void RemoveTaskWithoutCallingDB()
+    {
+        tasks = tasks.FindAll(x => x.TaskId != 0);
+        subtasks = subtasks.FindAll(x => x.TaskId != 0);
+    }
+}

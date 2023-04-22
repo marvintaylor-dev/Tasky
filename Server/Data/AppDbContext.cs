@@ -21,6 +21,15 @@ namespace Tasky.Server.Data
         {
             builder.Entity<sectionNoteModel>().HasKey(x => new {x.TaskId, x.SectionId});
             base.OnModelCreating(builder);
+
+            //builder.Entity<SprintModel>()
+            //    .HasMany(x => x.AssignedTasks)
+            //    .WithMany(x => x.AssignedToSprint);
+
+            builder.Entity<SprintModel>()
+                .HasMany(s => s.MembersWithPlannedLeave)
+                .WithMany(s => s.SprintsAssignedTo);
+                 
         }
 
         public DbSet<NoteModel> Tasks { get; set; }

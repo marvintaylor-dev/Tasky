@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tasky.Shared;
+using Tasky.Shared.DTOs;
 
 namespace Tasky.Server.Controllers
 {
@@ -47,6 +48,14 @@ namespace Tasky.Server.Controllers
         public async Task<ActionResult<SprintModel>> UpdateSprint(SprintModel sprintToUpdate)
         {
             var result = await _sprintRepository.UpdateSprint(sprintToUpdate);
+            return Ok(result);
+        }
+
+
+        [HttpPost("link")]
+        public async Task<ActionResult<SprintModel>> LinkSprint(SprintTaskDTO updateSprint)
+        {
+            var result = await _sprintRepository.LinkSprint(updateSprint);
             return Ok(result);
         }
     }
