@@ -1,0 +1,32 @@
+﻿.sprintsContainer {
+    border: 2px solid #2196F3;
+    padding: 1rem;
+}
+
+.btn-container{
+    margin-top: 2rem;
+}
+
+.mybtn{
+    margin-top: 1rem;
+}
+
+.sprintLabel {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.sprintInfo {
+    font-size: 1rem;
+}
+
+.addSprintContainer {
+    border: 2px solid var(--mud-palette-secondary);
+    padding: 1rem;
+}
+
+@media (max-width: 1350px){
+    .sprintBody {
+        flex-direction: column;
+    }
+}

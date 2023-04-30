@@ -8,173 +8,177 @@
 
 <h3>All Sprints</h3>
 
-<style>
-    
-</style>
-
-<div class="d-flex flex gap-5">
-    @foreach (var sprint in sprintService.Sprints)
-    {
-        <div class="d-flex flex-column sprintsContainer">
-            <div>
-                <MudInputLabel for="sprintId">Sprint Id</MudInputLabel>
-                <div>@sprint.SprintId</div>
-            </div>
-            <div>
-                <MudInputLabel>Sprint Number</MudInputLabel>
-                <MudInput Value="@sprint.SprintNumber">@sprint.SprintNumber</MudInput>
-            </div>
-            <div>
-                <MudInputLabel>Assigned Tasks</MudInputLabel>
-                <div>@sprint.AssignedTasks.Count</div>
-            </div>
-            @if (Show)
+<div class="sprintBody d-flex gap-5">
+    <div>
+        <div class="d-flex flex gap-5">
+            @foreach (var sprint in sprintService.Sprints)
             {
-                <div class="sprintInfo">
-                    <MudInputLabel>Start Date</MudInputLabel>
-                    <div>@sprint.StartDate</div>
-                </div>
-                <div class="sprintInfo">
-                    <MudInputLabel>End Date</MudInputLabel>
-                    <div>@sprint.EndDate</div>
-                </div>
-                <div class="sprintInfo">
-                    <MudInputLabel>Current Min Capacity</MudInputLabel>
-                    <div>@sprint.CurrentMinCapacity</div>
-                </div>
-                <div class="sprintInfo">
-                    <MudInputLabel>Current Max Capacity</MudInputLabel>
-                    <div>@sprint.CurrentMaxCapacity</div>
-                </div>
-                <div class="sprintInfo">
-                    <MudInputLabel>Sprint Budget</MudInputLabel>
-                    <div>@sprint.SprintBudget</div>
-                </div>
-                <div class="sprintInfo">
-                    <MudInputLabel>Planned Training</MudInputLabel>
-                    <div>@sprint.PlannedTraining</div>
-                </div>
-                <div class="sprintInfo">
-                    <MudInputLabel>Previous Velocity</MudInputLabel>
-                    <div>@sprint.PreviousVelocity</div>
-                </div>
-                <div class="sprintInfo">
-                    <MudInputLabel>Holidays</MudInputLabel>
-                    <div>@sprint.Holidays</div>
-                </div>
-                <div class="sprintInfo">
-                    <MudInputLabel>Members with Planned Leave Count</MudInputLabel>
-                    <div>@sprint.MembersWithPlannedLeave.Count</div>
+                <div class="d-flex flex-column sprintsContainer">
+
+                    <div class="sprintInfo">
+                        <label class="col-form-label sprintLabel">Start Date</label>
+                        <div class="sprintInfo">@sprint.StartDate.ToShortDateString()</div>
+                    </div>
+                    <div class="sprintInfo">
+                        <label class="col-form-label sprintLabel">End Date</label>
+                        <div class="sprintInfo">@sprint.EndDate.ToShortDateString()</div>
+                    </div>
+
+                    <div class="sprintInfo d-flex flex-column">
+                        <label class="col-form-label sprintLabel">Sprint Number</label>
+                        <input type="number" value="@sprint.SprintNumber" />
+                    </div>
+                    <div class="sprintInfo">
+                        <label class="col-form-label sprintLabel">Assigned Tasks</label>
+                        <div class="sprintInfo">@sprint.AssignedTasks.Count</div>
+                    </div>
+                    @if (Show)
+                    {
+                        <div class="sprintInfo">
+                            <label class="col-form-label sprintLabel" for="sprintId">Sprint Id</label>
+                            <div class="sprintInfo">@sprint.SprintId</div>
+                        </div>
+
+                        <div class="sprintInfo">
+                            <label class="col-form-label sprintLabel">Current Min Capacity</label>
+                            <div class="sprintInfo">@sprint.CurrentMinCapacity</div>
+                        </div>
+                        <div class="sprintInfo">
+                            <label class="col-form-label sprintLabel">Current Max Capacity</label>
+                            <div class="sprintInfo">@sprint.CurrentMaxCapacity</div>
+                        </div>
+                        <div class="sprintInfo">
+                            <label class="col-form-label sprintLabel">Sprint Budget</label>
+                            <div class="sprintInfo">@sprint.SprintBudget</div>
+                        </div>
+                        <div class="sprintInfo">
+                            <label class="col-form-label sprintLabel">Planned Training</label>
+                            <div class="sprintInfo">@sprint.PlannedTraining</div>
+                        </div>
+                        <div class="sprintInfo">
+                            <label class="col-form-label sprintLabel">Previous Velocity</label>
+                            <div class="sprintInfo">@sprint.PreviousVelocity</div>
+                        </div>
+                        <div class="sprintInfo">
+                            <label class="col-form-label sprintLabel">Holidays</label>
+                            <div class="sprintInfo">@sprint.Holidays</div>
+                        </div>
+                        <div class="sprintInfo">
+                            <label class="col-form-label sprintLabel">Members with Planned Leave Count</label>
+                            <div class="sprintInfo">@sprint.MembersWithPlannedLeave.Count</div>
+                        </div>
+
+                    }
+                    <div class="btn-container">
+                        <button @onclick="()=>HandleDelete(sprint.SprintId)" class="btn btn-danger mb-3">Delete Sprint</button>
+                    </div>
                 </div>
 
             }
-            <div>
-                <button @onclick="()=>HandleDelete(sprint.SprintId)" class="btn btn-danger mb-3">Delete Sprint</button>
-            </div>
         </div>
-
-    }
-</div>
-@if (Show)
-{
-    <button class="btn btn-outline-primary" @onclick="ToggleShowMore">Show Less...</button>
-}
-else
-{
-    <button class="btn btn-primary" @onclick="ToggleShowMore">Show More...</button>
-}
+        @if (Show)
+        {
+            <button class="mybtn btn btn-outline-primary" @onclick="ToggleShowMore">Show Less...</button>
+        }
+        else
+        {
+            <button class="mybtn btn btn-primary" @onclick="ToggleShowMore">Show More...</button>
+        }
+    </div>
 
 
+    <div class="col-lg-6 col-md-12 addSprintContainer">
+        <h4>Add a New Sprint</h4>
+        <EditForm Model="@NewSprint" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
 
-<h4 class="mt-4">Add a New Sprint</h4>
-<EditForm Model="@NewSprint" OnValidSubmit="HandleSubmit">
-    <DataAnnotationsValidator />
+            <div class="d-flex flex-column gap-1 col-12">
+                <div class="form-group">
+                    <label for="sprint-number">Sprint Number</label>
+                    <InputNumber id="sprint-number" class="form-control" @bind-Value="NewSprint.SprintNumber" />
+                </div>
 
-    <div class="d-flex flex-column gap-1 col-lg-3 col-md-6 col-sm-12">
-        <div class="form-group">
-            <label for="sprint-number">Sprint Number</label>
-            <InputNumber id="sprint-number" class="form-control" @bind-Value="NewSprint.SprintNumber" />
-        </div>
-        
-        <div class="form-group">
-            <label for="sprint-startDate">Start Date</label>
-            <InputDate id="sprint-startDate" class="form-control" @bind-Value="NewSprint.StartDate" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-endDate">End Date</label>
-            <InputDate id="sprint-endDate" class="form-control" @bind-Value="NewSprint.EndDate" />
-        </div>
-       @* <div class="form-group">
-            <label for="sprint-assignedTasks">Assigned Tasks</label>
-            <MudSelect T="NoteModel" ToStringFunc="@converter" id="sprint-assignedTasks" class="form-control" @bind-Value="@NewSprint.AssignedTasks" MultiSelection="true">
+                <div class="form-group">
+                    <label for="sprint-startDate">Start Date</label>
+                    <InputDate id="sprint-startDate" class="form-control" @bind-Value="NewSprint.StartDate" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-endDate">End Date</label>
+                    <InputDate id="sprint-endDate" class="form-control" @bind-Value="NewSprint.EndDate" />
+                </div>
+                @* <div class="form-group">
+                <label for="sprint-assignedTasks">Assigned Tasks</label>
+                <MudSelect T="NoteModel" ToStringFunc="@converter" id="sprint-assignedTasks" class="form-control" @bind-Value="@NewSprint.AssignedTasks" MultiSelection="true">
                 <option selected>Select Tasks to Assign</option>
                 @foreach (var task in Tasks)
                 {
-                    if (task.Status != lastStatus.StatusId)
-                    {
-                        <MudSelectItem T="NoteModel" Value="@task.TaskId">@task.TaskId, @task.Name</MudSelectItem>
-                    }
+                if (task.Status != lastStatus.StatusId)
+                {
+                <MudSelectItem T="NoteModel" Value="@task.TaskId">@task.TaskId, @task.Name</MudSelectItem>
                 }
-            </MudSelect>
-        </div>*@
-        <div class="form-group">
-            <label for="sprint-budget">Budget</label>
-            <InputNumber id="sprint-budget" class="form-control" @bind-Value="NewSprint.SprintBudget" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-previousVelocity">Previous Velocity</label>
-            <InputNumber id="sprint-previousVelocity" class="form-control" @bind-Value="NewSprint.PreviousVelocity" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-minimum">Minimum</label>
-            <InputNumber id="sprint-minimum" class="form-control" @bind-Value="NewSprint.CurrentMinCapacity" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-maximum">Maximum</label>
-            <InputNumber id="sprint-maximum" class="form-control" @bind-Value="NewSprint.CurrentMaxCapacity" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-teamId">Team Id</label>
-            <InputNumber id="sprint-teamId" class="form-control" @bind-Value="NewSprint.TeamId" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-holidays">Holidays</label>
-            <InputText id="sprint-holidays" class="form-control" @bind-Value="NewSprint.Holidays" />
-        </div>
-        @* <div class="form-group">
-        <label for="sprint-plannedLeave">Members with Planned Leave</label>
-        <InputSelect id="sprint-plannedLeave" class="form-control" @bind-Value="NewSprint.MembersWithPlannedLeave">
-        @foreach (var member in memberService.Members)
-        {
+                }
+                </MudSelect>
+                </div>*@
+                <div class="form-group">
+                    <label for="sprint-budget">Budget</label>
+                    <InputNumber id="sprint-budget" class="form-control" @bind-Value="NewSprint.SprintBudget" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-previousVelocity">Previous Velocity</label>
+                    <InputNumber id="sprint-previousVelocity" class="form-control" @bind-Value="NewSprint.PreviousVelocity" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-minimum">Minimum</label>
+                    <InputNumber id="sprint-minimum" class="form-control" @bind-Value="NewSprint.CurrentMinCapacity" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-maximum">Maximum</label>
+                    <InputNumber id="sprint-maximum" class="form-control" @bind-Value="NewSprint.CurrentMaxCapacity" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-teamId">Team Id</label>
+                    <InputNumber id="sprint-teamId" class="form-control" @bind-Value="NewSprint.TeamId" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-holidays">Holidays</label>
+                    <InputText id="sprint-holidays" class="form-control" @bind-Value="NewSprint.Holidays" />
+                </div>
+                @* <div class="form-group">
+                <label for="sprint-plannedLeave">Members with Planned Leave</label>
+                <InputSelect id="sprint-plannedLeave" class="form-control" @bind-Value="NewSprint.MembersWithPlannedLeave">
+                @foreach (var member in memberService.Members)
+                {
 
-        <option value="member.memberId">@member.Name</option>
-        }
-        </InputSelect>
-        </div>*@
-        <div class="form-group">
-            <label for="sprint-training">Planned Training</label>
-            <InputText id="sprint-training" class="form-control" @bind-Value="NewSprint.PlannedTraining" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-timeOnFeatures">Time for Features</label>
-            <InputNumber id="sprint-timeOnFeatures" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnFeatures" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-timeOnDebt">Time on Debt</label>
-            <InputNumber id="sprint-timeOnDebt" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnDebt" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-timeOnOther">Time on Other</label>
-            <InputNumber id="sprint-timeOnOther" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnOther" />
-        </div>
-        <div class="form-group">
-            <label for="sprint-bufferTime">Buffer Time</label>
-            <InputNumber id="sprint-bufferTime" class="form-control" @bind-Value="NewSprint.PercentOfTimeBuffer" />
-        </div>
-        <button type="submit" class="btn btn-warning">Add New sprint</button>
+                <option value="member.memberId">@member.Name</option>
+                }
+                </InputSelect>
+                </div>*@
+                <div class="form-group">
+                    <label for="sprint-training">Planned Training</label>
+                    <InputText id="sprint-training" class="form-control" @bind-Value="NewSprint.PlannedTraining" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-timeOnFeatures">Time for Features</label>
+                    <InputNumber id="sprint-timeOnFeatures" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnFeatures" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-timeOnDebt">Time on Debt</label>
+                    <InputNumber id="sprint-timeOnDebt" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnDebt" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-timeOnOther">Time on Other</label>
+                    <InputNumber id="sprint-timeOnOther" class="form-control" @bind-Value="NewSprint.PercentOfTimeOnOther" />
+                </div>
+                <div class="form-group">
+                    <label for="sprint-bufferTime">Buffer Time</label>
+                    <InputNumber id="sprint-bufferTime" class="form-control" @bind-Value="NewSprint.PercentOfTimeBuffer" />
+                </div>
+                <button type="submit" class="btn btn-warning">Add New sprint</button>
 
+            </div>
+        </EditForm>
     </div>
-</EditForm>
+</div>
 
 
 @code {
