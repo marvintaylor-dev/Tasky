@@ -574,6 +574,39 @@ max-width: 10rem;
 .message-success[b-pxdctww0bs]{
     color: green;
 }
+/* /Pages/Sprint.razor.rz.scp.css */
+.sprintsContainer[b-9d8tn0m5n5] {
+    border: 2px solid #2196F3;
+    padding: 1rem;
+}
+
+.btn-container[b-9d8tn0m5n5]{
+    margin-top: 2rem;
+}
+
+.mybtn[b-9d8tn0m5n5]{
+    margin-top: 1rem;
+}
+
+.sprintLabel[b-9d8tn0m5n5] {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.sprintInfo[b-9d8tn0m5n5] {
+    font-size: 1rem;
+}
+
+.addSprintContainer[b-9d8tn0m5n5] {
+    border: 2px solid var(--mud-palette-secondary);
+    padding: 1rem;
+}
+
+@media (max-width: 1350px){
+    .sprintBody[b-9d8tn0m5n5] {
+        flex-direction: column;
+    }
+}
 /* /Pages/TableView.razor.rz.scp.css */
 .tableViewRow[b-2ijobpjosd]{
     margin-bottom: 0rem;
