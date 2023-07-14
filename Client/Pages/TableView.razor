@@ -25,6 +25,7 @@
             }
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -35,11 +36,11 @@
                 <tr class="tableViewRow mud-elevation-1 py-2 px-5 rounded white">
                     @if (task.isSubTask == false)
                     {
-                        <td class="tableViewItem" style="border-left: 5px solid rgb(33, 150, 243);"><TaskInputComponent3 Task="task"/></td>
+                        <td class="tableViewItem" style="border-left: 5px solid rgb(33, 150, 243);"><TaskInputComponent3 Task="task" /></td>
                     }
                     else
                     {
-                        <td class="tableViewItem" style="border-left: 5px solid var(--mud-palette-secondary);"><TaskInputComponent3 Task="task"  /></td>
+                        <td class="tableViewItem" style="border-left: 5px solid var(--mud-palette-secondary);"><TaskInputComponent3 Task="task" /></td>
                     }
                     <td class="tableViewItem"><MemberComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></MemberComponent></td>
                     <td class="tableViewItem"><TagComponent Task="task" OnClick="Activate" RefreshList="RefreshList"></TagComponent></td>
@@ -47,7 +48,7 @@
                     <td class="tableViewItem">@task.EndDate.GetValueOrDefault().ToLongDateString()</td>
                     <td class="tableViewItem"><NewStatusComponent Task="task" OnClick="Activate"></NewStatusComponent></td>
                     <td class="tableViewItem"><EditSaveComponent Task="task" RefreshList="RefreshList" OnClick="Activate"></EditSaveComponent></td>
-                    <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>          
+                    <td class="tableViewItem"><DeleteTaskComponent Task="task" RefreshList="RefreshList"></DeleteTaskComponent></td>
                 </tr>
             }
         }
@@ -60,6 +61,7 @@
 
 <table class="tableView">
     <thead>
+        
         <tr class="tableViewHeader">
             @foreach (PropertyInfo property in properties)
             {
@@ -70,7 +72,9 @@
             }
             <th class="completeHeader"></th>
             <th class="completeHeader"></th>
-           
+            <th class="completeHeader"></th>
+            <th class="completeHeader"></th>
+
         </tr>
     </thead>
     <tbody>

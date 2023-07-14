@@ -1,7 +1,16 @@
 ﻿@page "/registration"
+@using Microsoft.AspNetCore.WebUtilities;
 @inject IAuthService authService;
+@inject NavigationManager navigationManager;
 
 <h3>Registration</h3>
+
+<style>
+    /*    Hides the navmenu on this page    */
+    .navmenu {
+        display: none;
+    }
+</style>
 
 <EditForm Model="user" OnValidSubmit="HandleRegistration">
     <DataAnnotationsValidator />
@@ -32,6 +41,8 @@
     string Message = string.Empty;
     string MessageCssClass = string.Empty;
 
+
+
     async Task HandleRegistration()
     {
         var result = await authService.Register(user);
@@ -43,6 +54,8 @@
         else
         {
             MessageCssClass = "message-success";
+            navigationManager.NavigateTo("/organization-selection");
+            StateHasChanged();
         }
     }
 }

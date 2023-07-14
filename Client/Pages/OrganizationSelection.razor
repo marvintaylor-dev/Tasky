@@ -1,0 +1,44 @@
+﻿@page "/organization-selection"
+
+<h3>Organization Selection</h3>
+
+<style>
+    /*    Hides the navmenu on this page    */
+    .navmenu {
+        display: none;
+    }
+</style>
+
+<AuthorizeView>
+    
+    <style>
+        /*    Shows the navmenu when signed in   */
+        /*    Need to implement logic: Must also be part of an organization  */
+        .navmenu {
+            display: block;
+        }
+    </style>
+</AuthorizeView>
+
+<MudItem xs="12" sm="6" md="4">
+    <MudAutocomplete T="string" Label="US States" Variant="Variant.Outlined" />
+</MudItem>
+
+<button type="button" style="padding: 2rem 6rem; margin: 2rem; border: 2px solid blue; border-radius: 1rem; font-size: 2rem;">+</button>
+
+@for (var i = 0; i <= 20; i++)
+{
+    <button type="button" style="padding: 3rem; margin: 2rem; border: 2px solid black; border-radius: 1rem; background: lightgray;">Join Organization</button>
+}
+
+
+@code {
+    //search to find your organization
+    //search by org name/search by name of owner
+
+    //call public organizations
+    //list public organizations
+
+    //click to add your own organization
+
+}

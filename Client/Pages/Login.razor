@@ -8,6 +8,13 @@
 
 <h3>Login</h3>
 
+<style>
+    /*    Hides the navmenu on this page    */
+    .navmenu {
+        display: hide;
+    }
+</style>
+
 <EditForm Model="user" OnValidSubmit="HandleLogin">
     <DataAnnotationsValidator />
     <div class="mb-3 col-3">
