@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace Tasky.Shared
 {
-    public class OrganizationModel
+    public class Project
     {
         [Key]
+        public int ProjectId { get; set; }
         public int OrganizationId { get; set; }
-        //[Required]
-        public int? OwnerId { get; set; }
-        //public List<Member> OrganizationMembers { get; set; } = new();
-        //public List<User> OrganizationUsers { get; set; } = new();
-        public string OrganizationName { get; set; } = string.Empty;
-        public string OrganizationDescription { get; set; } = string.Empty;
-        
+        public string ProjectName { get; set; } = string.Empty;
+        public string ProjectDescription { get; set; } = string.Empty;
+        [Column(TypeName = "decimal(13,4)")]
+        public decimal ProjectBudget { get; set; } = decimal.Zero;
+        public int? CurrentProductGoal { get; set; }
+        public List<ProductGoal>? ProductGoalHistory { get; set; } = new();
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set;} = DateTime.Now;
     }

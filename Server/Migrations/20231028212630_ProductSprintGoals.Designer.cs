@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231028212630_ProductSprintGoals")]
+    partial class ProductSprintGoals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,53 +284,12 @@ namespace Tasky.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ProductGoalId");
 
-                    b.HasIndex("ProjectId");
-
                     b.ToTable("ProductGoalModels");
-                });
-
-            modelBuilder.Entity("Tasky.Shared.Project", b =>
-                {
-                    b.Property<int>("ProjectId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("CurrentProductGoal")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrganizationId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ProjectBudget")
-                        .HasColumnType("decimal(13,4)");
-
-                    b.Property<string>("ProjectDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProjectName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ProjectId");
-
-                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Tasky.Shared.RelativeEstimation", b =>
@@ -616,18 +577,6 @@ namespace Tasky.Server.Migrations
                         .HasForeignKey("AssignedToSprintSprintId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Tasky.Shared.ProductGoal", b =>
-                {
-                    b.HasOne("Tasky.Shared.Project", null)
-                        .WithMany("ProductGoalHistory")
-                        .HasForeignKey("ProjectId");
-                });
-
-            modelBuilder.Entity("Tasky.Shared.Project", b =>
-                {
-                    b.Navigation("ProductGoalHistory");
                 });
 #pragma warning restore 612, 618
         }

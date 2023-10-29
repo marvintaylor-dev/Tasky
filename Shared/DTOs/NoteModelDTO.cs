@@ -15,7 +15,7 @@ namespace Tasky.Shared.DTOs
        public int TaskId { get; set; }
         [Required]
         public string Name { get; set; } = string.Empty;
-
+        
         public int? Order { get; set; }
 
         [ForeignKey("StoryId")]
