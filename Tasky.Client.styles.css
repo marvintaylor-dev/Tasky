@@ -717,6 +717,10 @@ main[b-4rpfrvb4au] {
     }
 }
 /* /Shared/NavMenu.razor.rz.scp.css */
+.hide[b-6eihwtngyi]{
+    display: none;
+}
+
 .navbar-toggler[b-6eihwtngyi] {
     background-color: rgba(255, 255, 255, 0.1);
 }
