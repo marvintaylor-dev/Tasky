@@ -4,6 +4,7 @@
     width: 5rem;
     height: 80vh;
     border: 3px dashed lightgray;
+    z-index: 1;
 }
 
 .drop-container-text {
@@ -19,4 +20,18 @@
 .sprintTasks {
     color: #2196f3ff;
     font-size: 2rem;
+}
+
+.sprintList {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 300px;
+    background: white;
+    border: 3px dashed lightgray;
+    padding: .5rem;
+}
+
+.hide {
+    display: none;
 }

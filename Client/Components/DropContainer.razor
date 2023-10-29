@@ -2,7 +2,8 @@
 @inject ISprintService sprintService
 @inject ITaskService taskService
 
-<div class="d-flex flex-column">
+<div class="d-flex flex-column" @onclick="GetTaskList">
+    
     <select @bind-value="sprintIdNumber" @bind-value:event="oninput" @onchange="UpdateSprintValue">
         @foreach (var sprint in sprintService.Sprints)
         {
@@ -27,8 +28,26 @@
                 @sprintService.Sprint.AssignedTasks.Count
             </div>
         }
+
+
+        <div class="sprintList @displaySprintItems">
+            <p style="font-weight: bold;">Sprint Items</p>
+            <ol>
+                @if (Sprint != null)
+                {
+                    @foreach (var task in Sprint.AssignedTasks)
+                    {
+                        <li>@task.Name <button style="color: red; margin-left: 1rem;" @onclick="() => RemoveTaskFromSprint(task)">Remove</button></li>
+                    }
+                }
+            </ol>
+        </div>
     </div>
+
+    
 </div>
+
+
 
 @code {
 
@@ -41,8 +60,10 @@
     [Parameter]
     public EventCallback<int> IdNumber { get; set; }
 
+    SprintModel Sprint = new();
     SprintTaskDTO newLink = new();
     public int sprintIdNumber;
+    public string displaySprintItems = "hide";
 
     public async Task HandleDrop(NoteModel item)
     {
@@ -62,6 +83,32 @@
             //sprintService.Sprint.AssignedTasks.Add(item);
         }
         dragClass = "";
+    }
+
+
+    async Task GetTaskList()
+    {
+        if(displaySprintItems == "show")
+        {
+            displaySprintItems = "hide";
+        }
+        else
+        {
+            displaySprintItems = "show";
+        }
+        await sprintService.GetSprintById(sprintIdNumber);
+        Sprint = sprintService.Sprint;
+        StateHasChanged();   
+    }
+
+    async void RemoveTaskFromSprint(NoteModel task)
+    {
+        task.AssignedToSprint = null;
+        await taskService.UpdateTask(task);
+        await sprintService.GetSprintById(sprintIdNumber);
+        Sprint = sprintService.Sprint;
+        StateHasChanged();
+        //refresh the container
     }
 
     async void UpdateSprintValue()
