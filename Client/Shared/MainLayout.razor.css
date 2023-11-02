@@ -61,6 +61,7 @@ main {
         height: 100vh;
         position: sticky;
         top: 0;
+        transition: width .5s ease-in-out;
     }
 
     .top-row {
@@ -79,4 +80,21 @@ main {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+}
+
+@media (max-width: 1200px) {
+    .sidebar {
+        width: fit-content;
+        
+    }
+}
+
+@media (max-width: 641px) {
+    .sidebar {
+        width: 100%;
+    }
+    .hide {
+        display: none !important;
+    }
+    
 }
