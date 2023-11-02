@@ -176,6 +176,24 @@
     font-size: 2rem;
 }
 
+@media(max-width: 500px) {
+    .drop-container[b-8llf89d5nz] {
+        height: 5vh;
+        width: 100%;
+    }
+
+    .drop-container-text[b-8llf89d5nz] {
+        text-align: start;
+        font-weight: bold;
+        margin-bottom: 0rem;
+    }
+
+    .sprintTasks[b-8llf89d5nz] {
+        color: #2196f3ff;
+        font-size: 1rem;
+    }
+}
+
 .sprintList[b-8llf89d5nz] {
     position: absolute;
     top: -5px;
@@ -480,22 +498,26 @@ max-width: 10rem;
 }*/
 
 .idStyle[b-nmzoxhkka9] {
-    min-width: fit-content;
-    padding: .5rem;
+    width: 30px;
+    height: 50px;
+    font-size: .8rem;
     color: white;
-    border-radius: 1rem 1rem 0rem 0rem;
-    transform: translateX(20px) rotate(-90deg);    
-    transition: .5s ease-in-out;
+    border-radius: 1rem 0rem 0rem 1rem;
 }
 
     .idStyle:hover[b-nmzoxhkka9] {
         transform: rotate(0deg);
-        
     }
 
     .idStyle:focus[b-nmzoxhkka9] {
         transform: rotate(0deg);
     }
+
+
+.RotateIdNumber[b-nmzoxhkka9] {
+    transform: translateX(10%) translateY(80%) rotate(-90deg);
+    transition: .5s ease-in-out;
+}
 
 .taskDropdown[b-nmzoxhkka9] {
     display: flex;
@@ -514,6 +536,7 @@ max-width: 10rem;
 .dropzone[b-nmzoxhkka9]{
     height: .5rem;
 }
+
 
 .color[b-nmzoxhkka9]{
     border: 2px dashed green;
@@ -737,7 +760,11 @@ main[b-4rpfrvb4au] {
 }
 
 .navbar-toggler[b-6eihwtngyi] {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.navbar-toggler-icon[b-6eihwtngyi]{
+    color: black;
 }
 
 .iconLink[b-6eihwtngyi]{
