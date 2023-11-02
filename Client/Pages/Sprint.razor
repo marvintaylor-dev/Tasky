@@ -36,6 +36,15 @@
                     <div class="sprintInfo">
                         <label class="col-form-label sprintLabel">Assigned Tasks</label>
                         <div class="sprintInfo">@sprint.AssignedTasks.Count</div>
+                        @if(sprint.AssignedTasks.Count > 0)
+                        {
+                            <ol>
+                                @foreach(var task in sprint.AssignedTasks)
+                                {
+                                    <li>@task.Name <button style="color: red; margin-left: 1rem;" @onclick="() => RemoveTaskFromSprint(task, sprint)">Remove</button></li>
+                                }
+                            </ol>
+                        }
                     </div>
                     @if (Show)
                     {
@@ -219,6 +228,16 @@
     {
         get => string.Join(",", selectedTaskIds);
         set => selectedTaskIds = value.Split(",").Select(int.Parse).ToList();
+    }
+
+    async void RemoveTaskFromSprint(NoteModel task, SprintModel sprint)
+    {
+        
+        task.AssignedToSprint = null;
+        await taskService.UpdateTask(task);
+        await sprintService.GetSprints();
+        StateHasChanged();
+        //refresh the container
     }
 
     protected override async Task OnInitializedAsync()

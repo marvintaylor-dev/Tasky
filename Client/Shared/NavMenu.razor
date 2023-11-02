@@ -1,64 +1,68 @@
-﻿    <div class="top-row ps-3 navbar navbar-dark">
-        <div>
-            <a class="navbar-brand" href="/"><span class="titleName titleCorner">T</span><MudIcon Color="Color.Secondary" Style="font-size: 1.5rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName titleCorner">sky</span></a>
-            <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
+﻿<div class="top-row ps-3 navbar navbar-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/"><span class="titleName titleCorner">T</span><MudIcon Color="Color.Secondary" Style="font-size: 1.5rem;" Icon="@Icons.Outlined.AlternateEmail" /><span class="titleName titleCorner">sky</span></a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
     </div>
+</div>
 
-    <div class="@NavMenuCssClass mt-5" @onclick="ToggleNavMenu">
-        <nav class="flex-column">
-            <div class="nav-item px-3">
-                <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/" Match="NavLinkMatch.All">
-                    <MudIcon Icon="@Icons.Outlined.Home"  Style="font-size: 1.5rem;" />
-                    <div class="iconLink">Home</div>
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/backlog" Match="NavLinkMatch.All">
-                    <MudIcon Icon="@Icons.Outlined.List" Style="font-size: 1.5rem;" />
-                    <div class="iconLink">Backlog View</div>
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/list" Match="NavLinkMatch.All">
-                    <MudIcon Icon="@Icons.Outlined.PeopleOutline"  Style="font-size: 1.5rem;" />
-                    <div class="iconLink">Assignee View</div>
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/board" Match="NavLinkMatch.All">
-                    <MudIcon Icon="@Icons.Outlined.ViewKanban"  Style="font-size: 1.5rem;" /> 
-                    <div class="iconLink">Board View</div>
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/table" Match="NavLinkMatch.All">
-                    <MudIcon Icon="@Icons.Outlined.TableRows"  Style="font-size: 1.5rem;" /> 
-                    <div class="iconLink">Table View</div>
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/sprints" Match="NavLinkMatch.All">
-                    <MudIcon Icon="@Icons.Outlined.AccessTime" Style="font-size: 1.5rem;" />
-                    <div class="iconLink">Sprints</div>
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/settings" Match="NavLinkMatch.All">
-                    <MudIcon Icon="@Icons.Outlined.Settings" Style="font-size: 1.5rem;" />
-                    <div class="iconLink">Settings</div>
-                </NavLink>
-            </div>
+
+
+
+
+<div class="@NavMenuCssClass mt-5" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/" Match="NavLinkMatch.All">
+                <MudIcon Icon="@Icons.Outlined.Home" Style="font-size: 1.5rem;" />
+                <div class="iconLink">Home</div>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/backlog" Match="NavLinkMatch.All">
+                <MudIcon Icon="@Icons.Outlined.List" Style="font-size: 1.5rem;" />
+                <div class="iconLink">Backlog View</div>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/list" Match="NavLinkMatch.All">
+                <MudIcon Icon="@Icons.Outlined.PeopleOutline" Style="font-size: 1.5rem;" />
+                <div class="iconLink">Assignee View</div>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/board" Match="NavLinkMatch.All">
+                <MudIcon Icon="@Icons.Outlined.ViewKanban" Style="font-size: 1.5rem;" />
+                <div class="iconLink">Board View</div>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/table" Match="NavLinkMatch.All">
+                <MudIcon Icon="@Icons.Outlined.TableRows" Style="font-size: 1.5rem;" />
+                <div class="iconLink">Table View</div>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/sprints" Match="NavLinkMatch.All">
+                <MudIcon Icon="@Icons.Outlined.AccessTime" Style="font-size: 1.5rem;" />
+                <div class="iconLink">Sprints</div>
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/settings" Match="NavLinkMatch.All">
+                <MudIcon Icon="@Icons.Outlined.Settings" Style="font-size: 1.5rem;" />
+                <div class="iconLink">Settings</div>
+            </NavLink>
+        </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link d-flex flex-wrap align-items-center justify-content-start" href="/organization-selection" Match="NavLinkMatch.All">
                 <MudIcon Icon="@Icons.Outlined.GroupWork" Style="font-size: 1.5rem;" />
                 <div class="iconLink">Organizations</div>
             </NavLink>
         </div>
-        </nav>
-    </div>
+    </nav>
+</div>
 }
 
 @code {

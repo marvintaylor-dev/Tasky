@@ -29,7 +29,6 @@
             </div>
         }
 
-
         <div class="sprintList @displaySprintItems">
             <p style="font-weight: bold;">Sprint Items</p>
             <ol>
@@ -85,10 +84,9 @@
         dragClass = "";
     }
 
-
-    async Task GetTaskList()
+    void ToggleListVisibility()
     {
-        if(displaySprintItems == "show")
+        if (displaySprintItems == "show")
         {
             displaySprintItems = "hide";
         }
@@ -96,6 +94,11 @@
         {
             displaySprintItems = "show";
         }
+    }
+
+    async Task GetTaskList()
+    {
+        ToggleListVisibility();
         await sprintService.GetSprintById(sprintIdNumber);
         Sprint = sprintService.Sprint;
         StateHasChanged();   

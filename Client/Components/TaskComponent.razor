@@ -9,69 +9,66 @@
      @ondragstart="DragStart"
      @ondragenter="DragEnter"
      @ondragleave="DragLeave"
-     @ondrop="()=>HandleDrop(Task)"></div>
+     @ondrop="()=>HandleDrop(Task)">
+</div>
 
-<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center @SubtaskCss">
-    <div class="idStyle @TaskOrSubtask">Id-@Task.TaskId</div>
-
+<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center task-container @SubtaskCss">
+    <div class="idStyle @TaskOrSubtask">
+        <p class="mb-0 RotateIdNumber">
+            @Task.TaskId
+        </p>
+    </div>
 
     <div id="@Task.TaskId" class="taskContainer mud-elevation-1 py-2 px-5 rounded white">
-        <div class="taskContainerLeft">
-            <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
-            <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
-            <div class="containerLeftComponents">
-                @if (ShowOrHideCriteria)
-                {
-                    <textarea cols="40" rows="4" @bind-value="Task.AcceptanceCriteria" @bind-value:event="oninput"></textarea>
-                }
-                else
-                {
-                    <AcceptanceCriteriaComponent Task="Task" />
-                }
-                @if (Task.isSubTask == false && Task.TaskId > 0)
-                {
-                    <MudIconButton Icon="@Icons.Material.Filled.Link"
-                               Variant="Variant.Outlined"
-                               Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}; padding: 2px;")"
-                               Size="Size.Small" @onclick="AddSubTask" />
-                }
-                else if (Task.isSubTask == true)
-                {
-                    <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
-                }
-                <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
-            </div>
+        <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
+        <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
+        @if (ShowOrHideCriteria)
+        {
+            <textarea cols="40" rows="4" @bind-value="Task.AcceptanceCriteria" @bind-value:event="oninput"></textarea>
+        }
+        else
+        {
+            <AcceptanceCriteriaComponent Task="Task" />
+        }
+        @if (Task.isSubTask == false && Task.TaskId > 0)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Link"
+                       Variant="Variant.Outlined"
+                       Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}; padding: 2px;")"
+                       Size="Size.Small" @onclick="AddSubTask" />
+        }
+        else if (Task.isSubTask == true)
+        {
+            <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
+        }
+        <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
+
+
+        <div class="singleComponentRight">
+            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+        </div>
+        <div class="singleComponentRight">
+            <PriorityComponent OnClick="Activate" Task="Task" />
+        </div>
+        <div class="singleComponentRight">
+            <NewStatusComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+        </div>
+        <div class="singleComponentRight">
+            <EstimationComponent Task="Task" />
+        </div>
+        <div class="singleComponentRight">
+            <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+        </div>
+        <div class="singleComponentRight">
+            <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
+        </div>
+        <div class="singleComponentRight">
+            @if (IsClicked)
+            {
+                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
+            }
         </div>
 
-        <div class="taskContainerRight">
-            <div class="taskComponentsContainer">
-                <div class="singleComponentRight">
-                    <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-                </div>
-                <div class="singleComponentRight">
-                    <PriorityComponent OnClick="Activate" Task="Task" />
-                </div>
-                <div class="singleComponentRight">
-                    <NewStatusComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-                </div>
-                <div class="singleComponentRight">
-                    <EstimationComponent Task="Task" />
-                </div>
-                <div class="singleComponentRight">
-                    <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-                </div>
-                <div class="singleComponentRight">
-                    <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
-                </div>
-                <div class="singleComponentRight">
-                    @if (IsClicked)
-                    {
-                        <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
-                    }
-                </div>
-
-            </div>
-        </div>
     </div>
 </div>
 

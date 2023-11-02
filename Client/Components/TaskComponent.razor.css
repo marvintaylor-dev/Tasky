@@ -11,22 +11,26 @@
 }*/
 
 .idStyle {
-    min-width: fit-content;
-    padding: .5rem;
+    width: 30px;
+    height: 50px;
+    font-size: .8rem;
     color: white;
-    border-radius: 1rem 1rem 0rem 0rem;
-    transform: translateX(20px) rotate(-90deg);    
-    transition: .5s ease-in-out;
+    border-radius: 1rem 0rem 0rem 1rem;
 }
 
     .idStyle:hover {
         transform: rotate(0deg);
-        
     }
 
     .idStyle:focus {
         transform: rotate(0deg);
     }
+
+
+.RotateIdNumber {
+    transform: translateX(10%) translateY(80%) rotate(-90deg);
+    transition: .5s ease-in-out;
+}
 
 .taskDropdown {
     display: flex;
@@ -45,6 +49,7 @@
 .dropzone{
     height: .5rem;
 }
+
 
 .color{
     border: 2px dashed green;
