@@ -53,6 +53,7 @@ article {
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    position: relative;
 }
 
 /*.taskContainer > * {
@@ -140,3 +141,4 @@ article {
     color: red;
     font-weight: bold;
 }
+

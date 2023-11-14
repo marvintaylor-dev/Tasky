@@ -12,7 +12,7 @@
      @ondrop="()=>HandleDrop(Task)">
 </div>
 
-<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center task-container @SubtaskCss">
+<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center @SubtaskCss">
     <div class="idStyle @TaskOrSubtask">
         <p class="mb-0 RotateIdNumber">
             @Task.TaskId
@@ -44,25 +44,30 @@
         <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
 
 
-        <div class="singleComponentRight">
+        <div >
             <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
         </div>
-        <div class="singleComponentRight">
-            <PriorityComponent OnClick="Activate" Task="Task" />
+
+
+        <div class="moreBtn" @onclick="showOptions">More...</div>
+        <div class="moreComponents mud-elevation-1 py-2 px-5 rounded white @displayNone ">
+            <div >
+                <PriorityComponent OnClick="Activate" Task="Task" />
+            </div>
+            <div >
+                <NewStatusComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            </div>
+            <div >
+                <EstimationComponent Task="Task" />
+            </div>
+            <div >
+                <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            </div>
+            <div >
+                <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
+            </div>
         </div>
-        <div class="singleComponentRight">
-            <NewStatusComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-        </div>
-        <div class="singleComponentRight">
-            <EstimationComponent Task="Task" />
-        </div>
-        <div class="singleComponentRight">
-            <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-        </div>
-        <div class="singleComponentRight">
-            <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
-        </div>
-        <div class="singleComponentRight">
+        <div >
             @if (IsClicked)
             {
                 <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
@@ -82,6 +87,21 @@
     public NoteModel newSubTask = new NoteModel();
 
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
+
+    void showOptions()
+    {
+        display = !display;
+        if (display == true)
+        {
+            displayNone = "";
+        }
+        else
+        {
+            displayNone = "none";
+        }
+    }
+    public bool display = false;
+    public string displayNone = "none";
 
     [Parameter]
     public EventCallback<NoteModel> OnOrderUpdated { get; set; }

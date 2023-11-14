@@ -58,3 +58,23 @@
 .no-drop {
     border: 2px dashed red;
 }
+
+.moreComponents {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-content: start;
+    gap: 1rem;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    z-index: 2;
+}
+
+.moreBtn:hover{
+    cursor: pointer;
+}
+
+.none {
+    display: none;
+}
