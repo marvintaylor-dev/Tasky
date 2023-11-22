@@ -21,6 +21,7 @@
     <ChildContent>
         @foreach (var item in _sections)
         {
+
             <MudPaper Elevation="0" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column rounded-lg mud-background-gray kanbanSections">
                 <MudToolBar Class="d-flex justify-content-between align-items-center" DisableGutters="true">
                     <MudText Typo="Typo.subtitle1"><b>@item.Name</b></MudText>
@@ -55,7 +56,19 @@
                         }
                     }
                 </MudToolBar>
-                <MudDropZone T="KanbanTaskItem" Identifier="@item.Name" Class="mud-height-full" />
+                @if (item.NewTaskOpen)
+                {
+                    <MudPaper Elevation="25" Class="pa-2 rounded-lg">
+                        <MudTextField @bind-Value="item.NewTaskName" Placeholder="New Task" DisableUnderLine="true" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                        <MudButton OnClick="@(() => AddTask(item))" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Task</MudButton>
+                    </MudPaper>
+                }
+                else
+                {
+                    <MudButton OnClick="@(() => item.NewTaskOpen = !item.NewTaskOpen)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add Task</MudButton>
+                }
+                <MudDropZone T="KanbanTaskItem" Identifier="@item.Name" AllowReorder="true" Class="mud-height-full" />
+
             </MudPaper>
         }
     </ChildContent>
@@ -110,6 +123,8 @@
                     }
                 }
             </MudPaper>
+
+
         }
     </ItemRenderer>
 </MudDropContainer>
@@ -127,7 +142,6 @@
     private bool WipActiveShowSaveButton = false;
 
     private string WipLimitExceeded = string.Empty;
-
 
     async void RefreshInfo()
     {
@@ -175,7 +189,7 @@
                     {
                         taskToUpdate.EndDate = DateTime.Now;
                     }
-                    if(taskToUpdate.Status == secondStatus.StatusId && taskToUpdate.StartDate == null)
+                    if (taskToUpdate.Status == secondStatus.StatusId && taskToUpdate.StartDate == null)
                     {
                         taskToUpdate.StartDate = DateTime.Now;
                     }
@@ -210,7 +224,6 @@
         await base.OnInitializedAsync();
     }
 
-
     public class KanBanSections
     {
         public string Name { get; init; }
@@ -223,6 +236,52 @@
             Name = name;
             NewTaskOpen = newTaskOpen;
             NewTaskName = newTaskName;
+        }
+    }
+
+    public NoteModel newTask = new();
+
+    public async void AddTask(KanBanSections section)
+    {
+      
+        //if the task name is empty do not add task to kanban board
+        if (section.NewTaskName == "")
+        {
+            section.NewTaskName = string.Empty;
+            section.NewTaskOpen = false;
+        }
+        else
+        {
+
+            //set the name
+            newTask.Name = section.NewTaskName;
+            MatchNameOfStatusToStatusID(section);
+            //save task to DB
+            await taskService.AddTask(newTask);
+            tasks = await taskService.GetTasksInOrder();
+            //reset the inputs
+            section.NewTaskName = string.Empty;
+            section.NewTaskOpen = false;
+            //set the board but still need an ID
+            NoteModel newlyAdded = tasks.Last();
+            _tasks.Add(new KanbanTaskItem(newlyAdded.TaskId, newlyAdded.Name, section.Name, newlyAdded.isSubTask, newlyAdded.Assignee, newlyAdded.StartDate, newlyAdded.EndDate));
+            StateHasChanged();
+            _dropContainer.Refresh();
+
+            //cleat the newTask to be reused again
+            newTask = new();
+        }
+
+    }
+
+    public void MatchNameOfStatusToStatusID(KanBanSections section)
+    {
+        foreach (var status in statuses)
+        {
+            if (status.StatusName == section.Name)
+            {
+                newTask.Status = status.StatusId;
+            }
         }
     }
 
