@@ -82,6 +82,7 @@
                     {
                         if (task.TaskId == context.ItemId)
                         {
+
                             <div>
                                 @if (task.StartDate != null)
                                 {
@@ -100,8 +101,10 @@
                                     <div><b>End Date:</b></div>
                                 }
                             </div>
-
-                            <DateComponent Task="task" RefreshList="RefreshInfo" />
+                            <div class="d-flex flex-column">
+                                <DateComponent Task="task" RefreshList="RefreshInfo" />
+                                <DeleteTaskComponent Task="task" IdNumber="HandleDeletedId" RefreshList="RefreshTaskList"></DeleteTaskComponent>
+                            </div>
                         }
                     }
                 </div>
@@ -243,7 +246,7 @@
 
     public async void AddTask(KanBanSections section)
     {
-      
+
         //if the task name is empty do not add task to kanban board
         if (section.NewTaskName == "")
         {
@@ -258,11 +261,12 @@
             MatchNameOfStatusToStatusID(section);
             //save task to DB
             await taskService.AddTask(newTask);
+            //Get task list
             tasks = await taskService.GetTasksInOrder();
             //reset the inputs
             section.NewTaskName = string.Empty;
             section.NewTaskOpen = false;
-            //set the board but still need an ID
+            //get last task in the task list. This is needed so that we have a task ID
             NoteModel newlyAdded = tasks.Last();
             _tasks.Add(new KanbanTaskItem(newlyAdded.TaskId, newlyAdded.Name, section.Name, newlyAdded.isSubTask, newlyAdded.Assignee, newlyAdded.StartDate, newlyAdded.EndDate));
             StateHasChanged();
@@ -338,4 +342,23 @@
         await statusService.UpdateStatus(updateStatus);
     }
 
+
+
+    void HandleDeletedId(int id)
+    {
+        KanbanTaskItem itemToDelete = _tasks.Find(x => x.ItemId == id);
+        if (itemToDelete != null)
+        {
+            _tasks.Remove(itemToDelete);
+        }
+        else
+        {
+            Console.WriteLine("No task found which can be deleted.");
+        }
+    }
+
+    public async void RefreshTaskList()
+    {
+        _dropContainer.Refresh();
+    }
 }

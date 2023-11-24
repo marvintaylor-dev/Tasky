@@ -31,6 +31,9 @@ else
     [Parameter]
     public EventCallback SimpleStateChange { get; set; }
 
+    [Parameter]
+    public EventCallback<int> IdNumber { get; set; }
+
     public List<NoteModel> tasks = new List<NoteModel>();
 
     protected override async Task OnInitializedAsync()
@@ -58,6 +61,7 @@ else
 
     async void DeleteTask(int id)
     {
+        await IdNumber.InvokeAsync(id);
         await taskService.DeleteTask(id);
         Clicked = false;
         await RefreshList.InvokeAsync();
