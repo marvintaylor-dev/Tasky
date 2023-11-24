@@ -5,6 +5,7 @@
 @inject IJSRuntime JS
 @inject ITaskService taskService
 @inject IMemberService memberService
+@inject IStatusService statusService
 @attribute [Authorize]
 
 @if (message != string.Empty)
@@ -48,7 +49,7 @@
                 </div>
                 @foreach (NoteModel task in tasks)
                 {
-                    if (task.Assignee == member.MemberId)
+                    if (task.Assignee == member.MemberId && task.Status != lastStatus)
                     {
                         <TaskComponent Task="task"
                    RefreshList="RefreshList"
@@ -86,7 +87,7 @@
             </div>
             @foreach (NoteModel task in tasks)
             {
-                if (task.Assignee == member.MemberId)
+                if (task.Assignee == member.MemberId && task.Status != lastStatus)
                 {
                     <TaskComponent Task="task"
                    RefreshList="RefreshList"
@@ -110,9 +111,11 @@
 
 <div class="centerTask mt-5">
     <h3>Unassigned Tasks</h3>
+    <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" LastStatus="lastStatus" ListUpdated="RefreshList" />
+    
     @foreach (NoteModel task in tasks)
     {
-        if (task.Assignee == 0 && task.isSubTask == false)
+        if (task.Assignee == 0 && task.Status != lastStatus && task.isSubTask == false)
         {
             <TaskComponent Task="task"
                    RefreshList="RefreshList"
@@ -142,7 +145,9 @@
 
 
 
+
 @code {
+    protected CompletedTasksComponent? CompletedTasksComponent;
     private bool isLoading = true;
 
     [Parameter]
@@ -159,10 +164,14 @@
         message = string.Empty;
     }
 
+    int lastStatus;
+
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasksInOrder();
         subtasks = tasks.FindAll(x => x.isSubTask == true);
+        StatusDTO lastStatusDTO = await statusService.GetLastStatus();
+        lastStatus = lastStatusDTO.StatusId;
         await memberService.GetMembers();
         isLoading = false;
         await base.OnInitializedAsync();
@@ -243,6 +252,7 @@
         isLoading = true;
         tasks = await taskService.GetTasksInOrder();
         isLoading = false;
+        CompletedTasksComponent.ChangeState();
         StateHasChanged();
         Console.WriteLine("RefreshList Has Been Called");
     }
