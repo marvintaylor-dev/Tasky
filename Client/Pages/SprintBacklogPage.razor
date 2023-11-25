@@ -1,0 +1,42 @@
+﻿@page "/sprintbacklog"
+
+<h1>Sprint Backlog</h1>
+
+<label for="views">Select a View</label>
+<select name="views" id="views" @bind="selectedView">
+    <option value="1">List View</option>
+    <option value="2">Board View</option>
+    <option value="3">Table View</option>
+</select>
+
+<MudButton Color="Color.Secondary" @onclick="ToggleStatusSettings">Manage Sprints</MudButton>
+
+@if (ShowStatus)
+{
+    <ManageSprintsComponent />
+}
+
+@if (selectedView == 1)
+{
+    <AssigneeListComponent />
+}
+else if (selectedView == 2)
+{
+    @*Pass in which sprint I'm showing. Pass in who's board it is. Pass in how many projects I want to show or which project I want to show.*@
+    <BoardViewComponent />
+}
+else if (selectedView == 3)
+{
+    <TableViewComponent />
+}
+
+@code {
+    private int selectedView = 1;
+
+    private bool ShowStatus = false;
+    void ToggleStatusSettings()
+    {
+        ShowStatus = !ShowStatus;
+    }
+
+}
