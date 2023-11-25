@@ -19,6 +19,14 @@ namespace Tasky.Server.Data.EstimationRepository
             return result;
         }
 
+        public async Task<RelativeEstimation> GetSingleEstimate(int id)
+        {
+            var result = await _context.RelativeEstimates.FirstOrDefaultAsync(x => x.EstimationId == id);
+            return result;
+        }
+
+
+
         public async Task<List<EstimationGroup>> GetEstimationGroups()
         {
             var result = await _context.EstimationGroups.ToListAsync();

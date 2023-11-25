@@ -42,6 +42,8 @@
         }
         else if (Task.TaskId > 0)
         {
+            await estimationService.GetEstimateById((int)Task.SizeEstimate);
+            Task.VisualHeightOfTask = estimationService.Estimate.VisualHeight;
             await taskService.UpdateTask(Task);
             await OnClick.InvokeAsync(false);
             await RefreshList.InvokeAsync(true);

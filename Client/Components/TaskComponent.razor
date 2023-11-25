@@ -2,6 +2,7 @@
 @inject IJSRuntime JS
 @inject ITaskService taskService;
 @inject ISprintService sprintService;
+@inject IEstimationService estimationService;
 
 
 <div class="dropzone @dragClass"
@@ -19,7 +20,7 @@
         </p>
     </div>
 
-    <div id="@Task.TaskId" class="taskContainer mud-elevation-1 py-2 px-5 rounded white">
+    <div id="@Task.TaskId" class="taskContainer mud-elevation-1 py-2 px-5 rounded white @heightOfTask">
         <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
         <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
         @if (ShowOrHideCriteria)
@@ -43,31 +44,30 @@
         }
         <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
 
-
-        <div >
-            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+       
+        <div>
+            <NewStatusComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
         </div>
-
+        <div>
+            <EstimationComponent Task="Task" RefreshList="StateHasChanged" />
+        </div>
 
         <div class="moreBtn" @onclick="showOptions">More...</div>
         <div class="moreComponents mud-elevation-1 py-2 px-5 rounded white @displayNone ">
-            <div >
+            <div>
                 <PriorityComponent OnClick="Activate" Task="Task" />
             </div>
-            <div >
-                <NewStatusComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            <div>
+                <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
             </div>
-            <div >
-                <EstimationComponent Task="Task" />
-            </div>
-            <div >
+            <div>
                 <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
             </div>
-            <div >
+            <div>
                 <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
             </div>
         </div>
-        <div >
+        <div>
             @if (IsClicked)
             {
                 <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
@@ -87,6 +87,7 @@
     public NoteModel newSubTask = new NoteModel();
 
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
+
 
     void showOptions()
     {
@@ -172,7 +173,7 @@
         IsClicked = false;
     }
 
-
+    List<RelativeEstimation> Estimates = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -180,8 +181,20 @@
         //await JS.InvokeVoidAsync("preventTextAreaLineChange");
 
         tasks = await taskService.GetTasks();
+        
         await base.OnParametersSetAsync();
     }
+
+    public string heightOfTask => Task.VisualHeightOfTask switch
+    {
+        0 => "",
+        1 => "xs-height",
+        2 => "s-height",
+        3 => "m-height",
+        4 => "l-height",
+        5 => "xl-height",
+        _ => ""
+    };
 
     async void AddSubTask()
     {

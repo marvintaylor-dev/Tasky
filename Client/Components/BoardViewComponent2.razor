@@ -233,6 +233,8 @@
                     //    }
                     //}
 
+
+                    //This task throws an error and the code above is slow. Still need to figure this out.
                     await statusService.GetStatusById2((int)task.Status);
                     StatusName = statusService.Status.StatusName;
 

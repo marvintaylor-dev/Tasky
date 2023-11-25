@@ -69,6 +69,7 @@
     left: 100%;
     top: 0;
     z-index: 2;
+    border: .5px solid lightgray;
 }
 
 .moreBtn:hover{
@@ -78,3 +79,4 @@
 .none {
     display: none;
 }
+

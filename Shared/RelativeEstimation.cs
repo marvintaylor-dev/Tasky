@@ -17,6 +17,8 @@ namespace Tasky.Shared
         //Estimation group is for creating different sets of estimation for different scenarios. Ex: T-shirt sizing, Fib numbers
         [ForeignKey("EstimationGroupId")]
         public int EstimationGroup { get; set; }
+
+        public int VisualHeight { get; set; } = 0;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public DateTime UpdatedOn { get; set;} = DateTime.Now;
     }

@@ -2,49 +2,77 @@
 @inject ISprintService sprintService
 @inject ITaskService taskService
 
-<div class="d-flex flex-column" @onclick="GetTaskList">
-    
-    <select @bind-value="sprintIdNumber" @bind-value:event="oninput" @onchange="UpdateSprintValue">
-        @foreach (var sprint in sprintService.Sprints)
-        {
-            <option value="@sprint.SprintId">Sprint #: @sprint.SprintNumber</option>
-        }
-    </select>
-    <div>Sprint Id #: @sprintIdNumber</div>
 
-    <div class="drop-container d-flex flex-column align-items-center justify-content-center @dragClass"
-         ondragover="event.preventDefault();"
+@if (sprintService.Sprints.Count > 0)
+{
+    <div class="d-flex flex-column" @onclick="GetTaskList">
+
+        <label for="sprints">Change Sprints:</label>
+        <select name="sprints" style="margin-bottom: 1rem; margin-right: 1rem;" @bind-value="sprintIdNumber" @bind-value:event="oninput" @onchange="UpdateSprintValue">
+            @foreach (var sprint in sprintService.Sprints)
+            {
+                <option value="@sprint.SprintId">@sprint.StartDate.ToShortDateString()</option>
+            }
+        </select>
+
+@*
+        Display Sprint Id Number
+        <div>Sprint Id #: @sprintIdNumber</div>
+*@
+
+        <div class="drop-container d-flex flex-column align-items-center justify-content-center @dragClass"
+             ondragover="event.preventDefault();"
          @ondragstart="DragStart"
          @ondragenter="DragEnter"
          @ondragleave="DragLeave"
          @ondrop="()=>HandleDrop(Payload)">
-        <div class="drop-container-text">
-            Add Task to Sprint
-        </div>
-
-        @if (sprintService.Sprint != null)
-        {
-            <div class="sprintTasks">
-                @sprintService.Sprint.AssignedTasks.Count
+            <div class="drop-container-text">
+                Drag and Drop Tasks Here to Add to Sprint
             </div>
-        }
 
-        <div class="sprintList @displaySprintItems">
-            <p style="font-weight: bold;">Sprint Items</p>
-            <ol>
-                @if (Sprint != null)
-                {
-                    @foreach (var task in Sprint.AssignedTasks)
+            @if (sprintService.Sprint != null)
+            {
+                <div class="sprintTasks">
+                    @sprintService.Sprint.AssignedTasks.Count
+                </div>
+            }
+
+            <div class="sprintList @displaySprintItems">
+                <p style="font-weight: bold;">Sprint Items</p>
+                <ol>
+                    @if (Sprint != null)
                     {
-                        <li>@task.Name <button style="color: red; margin-left: 1rem;" @onclick="() => RemoveTaskFromSprint(task)">Remove</button></li>
+                        @foreach (var task in Sprint.AssignedTasks)
+                        {
+                            <li>@task.Name <button style="color: red; margin-left: 1rem;" @onclick="() => RemoveTaskFromSprint(task)">Remove</button></li>
+                        }
                     }
-                }
-            </ol>
+                </ol>
+            </div>
         </div>
     </div>
+}
+else
+{
+    <div class="d-flex flex-column" @onclick="ShowInfo">
 
-    
-</div>
+        <div class="drop-container d-flex flex-column align-items-center justify-content-center">
+            <a class="drop-container-text" href="/sprintbacklog">Create a Sprint</a>
+
+        
+            <div class="sprintList @displaySprintItems">
+                <p style="font-weight: bold;">Start Creating your sprint</p>
+                <ol>
+                    <li>Click Create a Sprint or go to the Sprint Backlog.</li>
+                    <li>Click <b>Manage Sprints</b>.</li>
+                    <li>Enter the appropriate information for your sprint.</li>
+                    <li>Return to your backlog page and drag and drop into your sprint!</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+}
+
 
 
 
@@ -101,7 +129,13 @@
         ToggleListVisibility();
         await sprintService.GetSprintById(sprintIdNumber);
         Sprint = sprintService.Sprint;
-        StateHasChanged();   
+        StateHasChanged();
+    }
+
+    async Task ShowInfo()
+    {
+        ToggleListVisibility();
+        StateHasChanged();
     }
 
     async void RemoveTaskFromSprint(NoteModel task)
@@ -140,9 +174,10 @@
         await sprintService.GetSprints();
         if (sprintService.Sprints.Count > 0)
         {
+            //Needs to be adjusted to the last sprint instead of the first sprint.
             sprintIdNumber = sprintService.Sprints[0].SprintId;
+            await sprintService.GetSprintById(sprintIdNumber);
         }
-        await sprintService.GetSprintById(sprintIdNumber);
         await base.OnInitializedAsync();
     }
 

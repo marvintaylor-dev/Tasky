@@ -11,6 +11,8 @@
         public List<EstimationGroup> EstimationGroups { get; set; } = new();
         public List<RelativeEstimation> AllEstimationValues { get; set; } = new();  
         public List<RelativeEstimation> EstimationValuesByGroup { get; set; } = new();
+
+        public RelativeEstimation Estimate { get; set; } = new();
         public EstimationGroup EstimationGroup { get; set;} = new();
 
         public async Task GetAllEstimationValues()
@@ -21,6 +23,16 @@
                 throw new Exception("Null response");
             }
             AllEstimationValues = result.ToList(); 
+        }
+
+        public async Task GetEstimateById(int id)
+        {
+            var result = await _httpClient.GetFromJsonAsync<RelativeEstimation>($"api/relativeestimation/single-estimate/{id}");
+            if (result == null)
+            {
+                throw new Exception("Null response");
+            }
+            Estimate = result;
         }
 
         public async Task GetEstimationGroupById(int id)

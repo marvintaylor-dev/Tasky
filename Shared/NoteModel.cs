@@ -41,6 +41,8 @@ namespace Tasky.Shared
         [ForeignKey("EstimationId")]
         public int? SizeEstimate { get; set; }
 
+        public int VisualHeightOfTask { get; set; } = 0;
+
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 

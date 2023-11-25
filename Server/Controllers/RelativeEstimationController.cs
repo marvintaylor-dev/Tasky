@@ -42,6 +42,15 @@ namespace Tasky.Server.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("single-estimate/{id}")]
+        public async Task<ActionResult<List<RelativeEstimation>>> GetEstimateById(int id)
+        {
+
+            var result = await _estimationRepository.GetSingleEstimate(id);
+            return Ok(result);
+        }
+
 
         [HttpGet]
         [Route("values")]
