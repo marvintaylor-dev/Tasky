@@ -54,6 +54,7 @@ article {
     flex-wrap: wrap;
     gap: 1rem;
     position: relative;
+    border: .5px solid lightgray;
 }
 
 /*.taskContainer > * {
@@ -142,3 +143,22 @@ article {
     font-weight: bold;
 }
 
+.xs-height {
+    height: 3rem;
+}
+
+.s-height {
+    height: 4rem;
+}
+
+.m-height {
+    height: 5rem;
+}
+
+.l-height {
+    height: 6rem;
+}
+
+.xl-height {
+    height: 7rem;
+}

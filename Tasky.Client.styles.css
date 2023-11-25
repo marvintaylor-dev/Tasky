@@ -663,6 +663,7 @@ max-width: 10rem;
     left: 100%;
     top: 0;
     z-index: 2;
+    border: .5px solid lightgray;
 }
 
 .moreBtn:hover[b-nmzoxhkka9]{
@@ -672,6 +673,7 @@ max-width: 10rem;
 .none[b-nmzoxhkka9] {
     display: none;
 }
+
 /* /Components/TaskInputComponent3.razor.rz.scp.css */
 .taskName[b-3xaex4g1hg] {
     width: 200px;
