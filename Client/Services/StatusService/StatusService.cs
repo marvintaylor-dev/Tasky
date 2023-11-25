@@ -7,6 +7,7 @@ namespace Tasky.Client.Services.StatusService
     public class StatusService : IStatusService
     {
         private readonly HttpClient _httpClient;
+        public StatusDTO Status { get; set; } = new();
 
         public StatusService(HttpClient httpClient)
         {
@@ -56,6 +57,17 @@ namespace Tasky.Client.Services.StatusService
             }
             return result;
         }
+
+        public async Task GetStatusById2(int id)
+        {
+            var result = await _httpClient.GetFromJsonAsync<StatusDTO>($"api/status/{id}");
+            if (result == null)
+            {
+                throw new Exception($"No status by id of {id} were found.");
+            }
+            Status = result;
+        }
+
 
         public async Task<StatusDTO> UpdateStatus(StatusDTO status)
         {

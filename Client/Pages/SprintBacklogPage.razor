@@ -1,13 +1,30 @@
 ﻿@page "/sprintbacklog"
 
-<h1>Sprint Backlog</h1>
+@inject ISprintService sprintService;
+@inject ITaskService taskService;
 
-<label for="views">Select a View</label>
-<select name="views" id="views" @bind="selectedView">
-    <option value="1">List View</option>
-    <option value="2">Board View</option>
-    <option value="3">Table View</option>
-</select>
+<div class="d-flex gap-5 align-items-center">
+
+    <h1 style="margin: 0; padding: 0;">Sprint Backlog</h1>
+    <div>
+        <label for="views">Select a View</label>
+        <select name="views" id="views" @bind="selectedView">
+            <option value="1">List View</option>
+            <option value="2">Board View</option>
+            <option value="3">Table View</option>
+        </select>
+    </div>
+    <div>
+        <label for="sprints">Select Sprint</label>
+        <select name="sprints" id="sprints" @bind-value="selectedSprint" @bind-value:event="oninput" @onchange="updateList">
+            <option value="0" selected>Choose a Sprint</option>
+            @foreach (SprintModel sprint in sprintService.Sprints)
+            {
+                <option value="@sprint.SprintId">@sprint.StartDate.ToShortDateString()</option>
+            }
+        </select>
+    </div>
+</div>
 
 <MudButton Color="Color.Secondary" @onclick="ToggleStatusSettings">Manage Sprints</MudButton>
 
@@ -16,14 +33,15 @@
     <ManageSprintsComponent />
 }
 
+
 @if (selectedView == 1)
 {
-    <AssigneeListComponent />
+    <AssigneeListComponent2 tasks="Tasks" SprintId="selectedSprint" />
 }
 else if (selectedView == 2)
 {
     @*Pass in which sprint I'm showing. Pass in who's board it is. Pass in how many projects I want to show or which project I want to show.*@
-    <BoardViewComponent />
+    <BoardViewComponent2 tasks="Tasks" SprintId="selectedSprint" />
 }
 else if (selectedView == 3)
 {
@@ -32,6 +50,7 @@ else if (selectedView == 3)
 
 @code {
     private int selectedView = 1;
+    private int selectedSprint = 0;
 
     private bool ShowStatus = false;
     void ToggleStatusSettings()
@@ -39,4 +58,37 @@ else if (selectedView == 3)
         ShowStatus = !ShowStatus;
     }
 
+    public List<NoteModel> Tasks = new();
+
+
+    async void updateList()
+    {
+
+        if (selectedSprint != 0)
+        {
+            Tasks.Clear();
+            await sprintService.GetSprintById(selectedSprint);
+            foreach (var task in sprintService.Sprint.AssignedTasks)
+            {
+                Tasks.Add(task);
+            }
+        }
+        else
+        {
+            Tasks.Clear();
+            Tasks = await taskService.GetTasksInOrder();
+        }
+
+
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await sprintService.GetSprints();
+        Tasks = await taskService.GetTasksInOrder();
+
+
+        await base.OnInitializedAsync();
+    }
 }
