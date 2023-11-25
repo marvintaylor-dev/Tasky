@@ -40,6 +40,30 @@
 .closeButton:hover[b-8lf05c6pvd]{
     cursor:pointer;
 }
+/* /Components/BoardViewComponent.razor.rz.scp.css */
+.itemAge[b-mz9trbcva9] {
+    background: #F2E33A;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: black;
+    font-weight: bold;
+}
+
+.wipLimitNumber[b-mz9trbcva9]{
+    font-size: 1rem;
+    background: gray;
+    padding: .25rem .6rem;
+    color: white;
+}
+
+.wipButton[b-mz9trbcva9]{
+    font-size: 1rem;
+    width: 1rem;
+}
 /* /Components/CompletedTasksComponent.razor.rz.scp.css */
 .completedTasksContainer[b-l9431jssyu] {
     display: flex;
@@ -206,6 +230,39 @@
 
 .hide[b-8llf89d5nz] {
     display: none;
+}
+/* /Components/ManageSprintsComponent.razor.rz.scp.css */
+.sprintsContainer[b-kqbkwvnfhf] {
+    border: 2px solid #2196F3;
+    padding: 1rem;
+}
+
+.btn-container[b-kqbkwvnfhf]{
+    margin-top: 2rem;
+}
+
+.mybtn[b-kqbkwvnfhf]{
+    margin-top: 1rem;
+}
+
+.sprintLabel[b-kqbkwvnfhf] {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.sprintInfo[b-kqbkwvnfhf] {
+    font-size: 1rem;
+}
+
+.addSprintContainer[b-kqbkwvnfhf] {
+    border: 2px solid var(--mud-palette-secondary);
+    padding: 1rem;
+}
+
+@media (max-width: 1350px){
+    .sprintBody[b-kqbkwvnfhf] {
+        flex-direction: column;
+    }
 }
 /* /Components/MemberComponent.razor.rz.scp.css */
 .memberContainer[b-iim7n992ah]{
@@ -404,6 +461,32 @@ max-width: 10rem;
 
 .subtaskInfo:last-of-type[b-b5ndk2yh7k]{
     margin-bottom: 0;
+}
+/* /Components/TableViewComponent.razor.rz.scp.css */
+.tableViewRow[b-osn3cx1hwu]{
+    margin-bottom: 0rem;
+    border: 1px solid lightgray;
+}
+
+.tableViewItem[b-osn3cx1hwu]{
+    
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.tableViewHeader[b-osn3cx1hwu] {
+    background: rgb(33, 150, 243);
+    color: aliceblue;
+}
+
+.completeHeader[b-osn3cx1hwu] {
+    background: #50F216;
+    color: #333333;
+}
+
+.tableViewHeaderItem:hover[b-osn3cx1hwu]{
+    cursor: pointer;
+    filter: brightness(1.1);
 }
 /* /Components/TagComponent.razor.rz.scp.css */
 .tagContainer[b-fybdqig5hx]{
@@ -631,39 +714,6 @@ max-width: 10rem;
 
 .message-success[b-pxdctww0bs]{
     color: green;
-}
-/* /Pages/Sprint.razor.rz.scp.css */
-.sprintsContainer[b-9d8tn0m5n5] {
-    border: 2px solid #2196F3;
-    padding: 1rem;
-}
-
-.btn-container[b-9d8tn0m5n5]{
-    margin-top: 2rem;
-}
-
-.mybtn[b-9d8tn0m5n5]{
-    margin-top: 1rem;
-}
-
-.sprintLabel[b-9d8tn0m5n5] {
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-.sprintInfo[b-9d8tn0m5n5] {
-    font-size: 1rem;
-}
-
-.addSprintContainer[b-9d8tn0m5n5] {
-    border: 2px solid var(--mud-palette-secondary);
-    padding: 1rem;
-}
-
-@media (max-width: 1350px){
-    .sprintBody[b-9d8tn0m5n5] {
-        flex-direction: column;
-    }
 }
 /* /Pages/TableView.razor.rz.scp.css */
 .tableViewRow[b-2ijobpjosd]{
