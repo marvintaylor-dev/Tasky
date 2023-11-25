@@ -64,6 +64,30 @@
     font-size: 1rem;
     width: 1rem;
 }
+/* /Components/BoardViewComponent2.razor.rz.scp.css */
+.itemAge[b-h2dkydk1cb] {
+    background: #F2E33A;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: black;
+    font-weight: bold;
+}
+
+.wipLimitNumber[b-h2dkydk1cb]{
+    font-size: 1rem;
+    background: gray;
+    padding: .25rem .6rem;
+    color: white;
+}
+
+.wipButton[b-h2dkydk1cb]{
+    font-size: 1rem;
+    width: 1rem;
+}
 /* /Components/CompletedTasksComponent.razor.rz.scp.css */
 .completedTasksContainer[b-l9431jssyu] {
     display: flex;
