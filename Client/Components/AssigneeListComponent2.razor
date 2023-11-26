@@ -270,7 +270,7 @@
     public async Task RefreshList()
     {
         isLoading = true;
-        tasks = await taskService.GetTasksInOrder();
+       // tasks = await taskService.GetTasksInOrder();
         isLoading = false;
         CompletedTasksComponent.ChangeState();
         StateHasChanged();
@@ -280,7 +280,7 @@
     public async void RefreshSubTasks()
     {
         isLoading = true;
-        tasks = await taskService.GetTasksInOrder();
+        //tasks = await taskService.GetTasksInOrder();
         isLoading = false;
         StateHasChanged();
         Console.WriteLine("Refresh SubTasks Has Been Called");

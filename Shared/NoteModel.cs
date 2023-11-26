@@ -54,6 +54,7 @@ namespace Tasky.Shared
 
         [JsonIgnore]
         public List<SprintModel>? AssignedToSprint { get; set; }
+        public List<TasksSprints>? TasksSprints { get; set; }
 
         public bool? isSubTask { get; set; } = false;
 

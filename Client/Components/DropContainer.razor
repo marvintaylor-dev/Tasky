@@ -5,7 +5,7 @@
 
 @if (sprintService.Sprints.Count > 0)
 {
-    <div class="d-flex flex-column" @onclick="GetTaskList">
+    <div class="d-flex flex-column" >
 
         <label for="sprints">Change Sprints:</label>
         <select name="sprints" style="margin-bottom: 1rem; margin-right: 1rem;" @bind-value="sprintIdNumber" @bind-value:event="oninput" @onchange="UpdateSprintValue">
@@ -15,17 +15,17 @@
             }
         </select>
 
-@*
-        Display Sprint Id Number
-        <div>Sprint Id #: @sprintIdNumber</div>
-*@
+        @*
+    Display Sprint Id Number
+    <div>Sprint Id #: @sprintIdNumber</div>
+    *@
 
-        <div class="drop-container d-flex flex-column align-items-center justify-content-center @dragClass"
+        <div @onclick="GetTaskList" class="drop-container d-flex flex-column align-items-center justify-content-center @dragClass"
              ondragover="event.preventDefault();"
          @ondragstart="DragStart"
          @ondragenter="DragEnter"
          @ondragleave="DragLeave"
-         @ondrop="()=>HandleDrop(Payload)">
+         @ondrop="()=>HandleDrop(Payload.TaskId)">
             <div class="drop-container-text">
                 Drag and Drop Tasks Here to Add to Sprint
             </div>
@@ -33,7 +33,7 @@
             @if (sprintService.Sprint != null)
             {
                 <div class="sprintTasks">
-                    @sprintService.Sprint.AssignedTasks.Count
+                    @sprintService.Sprint.TasksSprints.Count
                 </div>
             }
 
@@ -42,9 +42,10 @@
                 <ol>
                     @if (Sprint != null)
                     {
-                        @foreach (var task in Sprint.AssignedTasks)
+                        @foreach (var link in sprintService.Sprint.TasksSprints)
                         {
-                            <li>@task.Name <button style="color: red; margin-left: 1rem;" @onclick="() => RemoveTaskFromSprint(task)">Remove</button></li>
+                         
+                            <li>@link.TaskId <button style="color: red; margin-left: 1rem;" @onclick="() => RemoveTaskFromSprint(link.TaskId, sprintIdNumber)">Remove</button></li>
                         }
                     }
                 </ol>
@@ -59,7 +60,7 @@ else
         <div class="drop-container d-flex flex-column align-items-center justify-content-center">
             <a class="drop-container-text" href="/sprintbacklog">Create a Sprint</a>
 
-        
+
             <div class="sprintList @displaySprintItems">
                 <p style="font-weight: bold;">Start Creating your sprint</p>
                 <ol>
@@ -92,13 +93,13 @@ else
     public int sprintIdNumber;
     public string displaySprintItems = "hide";
 
-    public async Task HandleDrop(NoteModel item)
+    public async Task HandleDrop(int taskId)
     {
         if (Payload != null)
         {
-            await IdNumber.InvokeAsync();
+            await IdNumber.InvokeAsync(sprintIdNumber);
             newLink.SprintId = sprintService.Sprint.SprintId;
-            newLink.TaskId = item.TaskId;
+            newLink.TaskId = taskId;
             await sprintService.LinkSprint(newLink);
             await sprintService.GetSprintById(sprintIdNumber);
             StateHasChanged();
@@ -122,6 +123,7 @@ else
         {
             displaySprintItems = "show";
         }
+
     }
 
     async Task GetTaskList()
@@ -138,10 +140,12 @@ else
         StateHasChanged();
     }
 
-    async void RemoveTaskFromSprint(NoteModel task)
+    async void RemoveTaskFromSprint(int taskId, int sprintId)
     {
-        task.AssignedToSprint = null;
-        await taskService.UpdateTask(task);
+        //do not have to remove from sprint, only update because the AssignedToSprint property will always be null until the [JsonIgnore] is removed.
+        //NoteModel task = await taskService.GetTaskById(taskId);
+        await sprintService.DeleteSprintTaskRelationship(taskId, sprintId);
+        //await taskService.UpdateTask(task);
         await sprintService.GetSprintById(sprintIdNumber);
         Sprint = sprintService.Sprint;
         StateHasChanged();
@@ -151,6 +155,7 @@ else
     async void UpdateSprintValue()
     {
         await sprintService.GetSprintById(sprintIdNumber);
+        await IdNumber.InvokeAsync(sprintIdNumber);
         StateHasChanged();
     }
 
@@ -175,7 +180,7 @@ else
         if (sprintService.Sprints.Count > 0)
         {
             //Needs to be adjusted to the last sprint instead of the first sprint.
-            sprintIdNumber = sprintService.Sprints[0].SprintId;
+            sprintIdNumber = sprintService.Sprints.Last().SprintId;
             await sprintService.GetSprintById(sprintIdNumber);
         }
         await base.OnInitializedAsync();

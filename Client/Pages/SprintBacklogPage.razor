@@ -2,29 +2,32 @@
 
 @inject ISprintService sprintService;
 @inject ITaskService taskService;
+@inject IJSRuntime js;
 
 <div class="d-flex gap-5 align-items-center">
 
     <h1 style="margin: 0; padding: 0;">Sprint Backlog</h1>
     <div>
         <label for="views">Select a View</label>
-        <select name="views" id="views" @bind="selectedView">
-            <option value="1">List View</option>
-            <option value="2">Board View</option>
-            <option value="3">Table View</option>
+        <select name="views" id="views" @bind-value="selectedView" @bind-value:event="oninput" @onchange="SaveView" >
+            <option value="0">List View</option>
+            <option value="1">Board View</option>
+            <option value="2">Table View</option>
         </select>
     </div>
     <div>
         <label for="sprints">Select Sprint</label>
         <select name="sprints" id="sprints" @bind-value="selectedSprint" @bind-value:event="oninput" @onchange="updateList">
-            <option value="0" selected>Choose a Sprint</option>
+            <option value="0">Choose a Sprint</option>
             @foreach (SprintModel sprint in sprintService.Sprints)
             {
                 <option value="@sprint.SprintId">@sprint.StartDate.ToShortDateString()</option>
             }
         </select>
     </div>
-</div>
+
+@*    <div @onclick="ClearSelectedSprintAndView">Clear Storage</div>
+*@</div>
 
 <MudButton Color="Color.Secondary" @onclick="ToggleStatusSettings">Manage Sprints</MudButton>
 
@@ -34,23 +37,23 @@
 }
 
 
-@if (selectedView == 1)
+@if (selectedView == 0)
 {
     <AssigneeListComponent2 tasks="Tasks" SprintId="selectedSprint" />
 }
-else if (selectedView == 2)
+else if (selectedView == 1)
 {
     @*Pass in which sprint I'm showing. Pass in who's board it is. Pass in how many projects I want to show or which project I want to show.*@
     <BoardViewComponent2 tasks="Tasks" SprintId="selectedSprint" />
 }
-else if (selectedView == 3)
+else if (selectedView == 2)
 {
     <TableViewComponent tasks="Tasks" SprintId="selectedSprint" />
 }
 
 @code {
-    private int selectedView = 1;
-    private int selectedSprint = 0;
+    private int selectedView;
+    private int selectedSprint;
 
     private bool ShowStatus = false;
     void ToggleStatusSettings()
@@ -60,16 +63,21 @@ else if (selectedView == 3)
 
     public List<NoteModel> Tasks = new();
 
+    void SaveView()
+    {
+        SaveSelectedView(selectedView);
+    }
 
     async void updateList()
     {
-
+        SaveSelectedSprint(selectedSprint);
         if (selectedSprint != 0)
         {
             Tasks.Clear();
             await sprintService.GetSprintById(selectedSprint);
-            foreach (var task in sprintService.Sprint.AssignedTasks)
+            foreach (TasksSprints link in sprintService.Sprint.TasksSprints)
             {
+                NoteModel task = await taskService.GetTaskById(link.TaskId);
                 Tasks.Add(task);
             }
         }
@@ -83,10 +91,86 @@ else if (selectedView == 3)
         StateHasChanged();
     }
 
+    // Save the selected value to localStorage
+    private async Task SaveSelectedSprint(int sprintId)
+    {
+        if(sprintId != null)
+        {
+            selectedSprint = sprintId;
+            await SetSavedValue("selectedSprint", selectedSprint);
+        }
+        else
+        {
+            selectedSprint = 0;
+        }
+    }
+
+    private async Task SaveSelectedView(int viewId)
+    {
+        if (viewId != null)
+        {
+            selectedView = viewId;
+            await SetSavedValue("selectedView", selectedView);
+        }
+        else
+        {
+            selectedView = 0;
+        }
+    }
+
+
+    private async Task SetSavedValue(string key, int value)
+    {
+        await js.InvokeAsync<int>("localStorage.setItem", key, value);
+    }
+
+    private async Task<int> GetSavedValue(string key)
+    {
+        int id = 0;
+
+        string storedValue = await js.InvokeAsync<string>("localStorage.getItem", key);
+
+        if (!string.IsNullOrWhiteSpace(storedValue) && int.TryParse(storedValue, out int newId))
+        {
+            id = newId;
+        }
+
+        return id;
+    }
+
+
+
+
+    private void ClearSelectedSprintAndView()
+    {
+        js.InvokeVoidAsync("localStorage.removeItem", "selectedSprint");
+        js.InvokeVoidAsync("localStorage.removeItem", "selectedView");
+        StateHasChanged();
+    }
+
+
     protected override async Task OnInitializedAsync()
     {
         await sprintService.GetSprints();
-        Tasks = await taskService.GetTasksInOrder();
+
+        selectedSprint = await GetSavedValue("selectedSprint");
+        selectedView = await GetSavedValue("selectedView");
+
+
+        if (selectedSprint == 0)
+        {
+            Tasks = await taskService.GetTasksInOrder();
+        }
+        else
+        {
+            await sprintService.GetSprintById(selectedSprint);
+            foreach (TasksSprints link in sprintService.Sprint.TasksSprints)
+            {
+                NoteModel task = await taskService.GetTaskById(link.TaskId);
+                Tasks.Add(task);
+            }
+        }
+
 
 
         await base.OnInitializedAsync();

@@ -31,13 +31,13 @@
                     </div>
                     <div class="sprintInfo">
                         <label class="col-form-label sprintLabel">Assigned Tasks</label>
-                        <div class="sprintInfo">@sprint.AssignedTasks.Count</div>
-                        @if(sprint.AssignedTasks.Count > 0)
+                        <div class="sprintInfo">@sprint.TasksSprints.Count</div>
+                        @if(sprint.TasksSprints.Count > 0)
                         {
                             <ol>
-                                @foreach(var task in sprint.AssignedTasks)
+                                @foreach(var link in sprint.TasksSprints)
                                 {
-                                    <li>@task.Name <button style="color: red; margin-left: 1rem;" @onclick="() => RemoveTaskFromSprint(task, sprint)">Remove</button></li>
+                                    <li>@link.TaskId <button style="color: red; margin-left: 1rem;" @onclick="() => RemoveTaskFromSprint(link.TaskId, link.SprintId)">Remove</button></li>
                                 }
                             </ol>
                         }
@@ -226,11 +226,9 @@
         set => selectedTaskIds = value.Split(",").Select(int.Parse).ToList();
     }
 
-    async void RemoveTaskFromSprint(NoteModel task, SprintModel sprint)
+    async void RemoveTaskFromSprint(int taskId, int sprintId)
     {
-        
-        task.AssignedToSprint = null;
-        await taskService.UpdateTask(task);
+        await sprintService.DeleteSprintTaskRelationship(taskId, sprintId);
         await sprintService.GetSprints();
         StateHasChanged();
         //refresh the container

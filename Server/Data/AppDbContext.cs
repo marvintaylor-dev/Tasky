@@ -29,6 +29,10 @@ namespace Tasky.Server.Data
             builder.Entity<SprintModel>()
                 .HasMany(s => s.MembersWithPlannedLeave)
                 .WithMany(s => s.SprintsAssignedTo);
+
+            builder.Entity<TasksSprints>()
+                .HasKey(x => new { x.TaskId, x.SprintId });
+                
         }
 
         public DbSet<NoteModel> Tasks { get; set; }
@@ -49,5 +53,6 @@ namespace Tasky.Server.Data
         public DbSet<ProductGoal> ProductGoalModels { get; set; }
         public DbSet<SprintGoal> SprintGoalModels { get; set; }
         public DbSet<OrganizationModel> Organizations { get; set; }
+        public DbSet<TasksSprints> TasksSprints { get; set; }
     }
 }

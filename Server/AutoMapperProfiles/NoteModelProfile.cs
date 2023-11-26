@@ -10,6 +10,7 @@ namespace Tasky.Server.AutoMapperProfiles
         public NoteModelProfile()
         {
             CreateMap<NoteModel, NoteModel>();
+                //.ForMember(dest => dest.AssignedToSprint, opt => opt.Ignore());
         }
     }
 }

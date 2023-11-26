@@ -18,9 +18,22 @@
         <p class="mb-0 RotateIdNumber">
             @Task.TaskId
         </p>
+       
     </div>
 
     <div id="@Task.TaskId" class="taskContainer mud-elevation-1 py-2 px-5 rounded white @heightOfTask">
+        <div>
+            @if (CurrentSprint?.AssignedTasks.Count > 0)
+            {
+                foreach (var task in CurrentSprint.AssignedTasks)
+                {
+                    if (task.TaskId == Task.TaskId)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"></MudIcon>
+                    }
+                }
+            }
+        </div>
         <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
         <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
         @if (ShowOrHideCriteria)
@@ -44,7 +57,7 @@
         }
         <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
 
-       
+
         <div>
             <NewStatusComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
         </div>
@@ -111,6 +124,9 @@
     public EventCallback<NoteModel> OnTaskDragged { get; set; }
 
     public NoteModel Payload = new();
+
+    [Parameter]
+    public SprintModel CurrentSprint { get; set; }
 
 
     public void HandleDragStart(NoteModel selectedTask)
@@ -181,7 +197,6 @@
         //await JS.InvokeVoidAsync("preventTextAreaLineChange");
 
         tasks = await taskService.GetTasks();
-        
         await base.OnParametersSetAsync();
     }
 

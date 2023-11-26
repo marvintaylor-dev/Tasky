@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231126070413_AdjustManyToManyTasksSprintsRelationship")]
+    partial class AdjustManyToManyTasksSprintsRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("SprintsAssignedToSprintId");
 
-                    b.ToTable("MemberSprintModel", (string)null);
+                    b.ToTable("MemberSprintModel");
                 });
 
             modelBuilder.Entity("NoteModelSprintModel", b =>
@@ -49,7 +51,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("AssignedToSprintSprintId");
 
-                    b.ToTable("NoteModelSprintModel", (string)null);
+                    b.ToTable("NoteModelSprintModel");
                 });
 
             modelBuilder.Entity("Tasky.Shared.EstimationGroup", b =>
@@ -75,7 +77,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("EstimationGroupId");
 
-                    b.ToTable("EstimationGroups", (string)null);
+                    b.ToTable("EstimationGroups");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Guest", b =>
@@ -92,7 +94,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Guests", (string)null);
+                    b.ToTable("Guests");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Member", b =>
@@ -145,7 +147,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("MemberId");
 
-                    b.ToTable("Members", (string)null);
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Note", b =>
@@ -171,7 +173,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("NoteId");
 
-                    b.ToTable("Notes", (string)null);
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
@@ -231,7 +233,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("TaskId");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Tasky.Shared.NoteModelSprintModel", b =>
@@ -248,7 +250,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("SprintId");
 
-                    b.ToTable("TasksSprints", (string)null);
+                    b.ToTable("TasksSprints");
                 });
 
             modelBuilder.Entity("Tasky.Shared.OrganizationModel", b =>
@@ -278,7 +280,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("OrganizationId");
 
-                    b.ToTable("Organizations", (string)null);
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("Tasky.Shared.ProductGoal", b =>
@@ -312,7 +314,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProductGoalModels", (string)null);
+                    b.ToTable("ProductGoalModels");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Project", b =>
@@ -348,7 +350,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("ProjectId");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Tasky.Shared.RelativeEstimation", b =>
@@ -380,7 +382,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("EstimationId");
 
-                    b.ToTable("RelativeEstimates", (string)null);
+                    b.ToTable("RelativeEstimates");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Section", b =>
@@ -397,7 +399,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("SectionId");
 
-                    b.ToTable("Sections", (string)null);
+                    b.ToTable("Sections");
                 });
 
             modelBuilder.Entity("Tasky.Shared.sectionNoteModel", b =>
@@ -410,7 +412,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("TaskId", "SectionId");
 
-                    b.ToTable("SectionNoteModels", (string)null);
+                    b.ToTable("SectionNoteModels");
                 });
 
             modelBuilder.Entity("Tasky.Shared.SprintGoal", b =>
@@ -439,7 +441,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("SprintGoalId");
 
-                    b.ToTable("SprintGoalModels", (string)null);
+                    b.ToTable("SprintGoalModels");
                 });
 
             modelBuilder.Entity("Tasky.Shared.SprintModel", b =>
@@ -502,7 +504,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("SprintId");
 
-                    b.ToTable("Sprints", (string)null);
+                    b.ToTable("Sprints");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Status", b =>
@@ -533,7 +535,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("Statuses", (string)null);
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Tag", b =>
@@ -552,7 +554,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("TagId");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Tasky.Shared.User", b =>
@@ -580,7 +582,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Tasky.Shared.UserStory", b =>
@@ -608,7 +610,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("StoryId");
 
-                    b.ToTable("UserStories", (string)null);
+                    b.ToTable("UserStories");
                 });
 
             modelBuilder.Entity("MemberSprintModel", b =>

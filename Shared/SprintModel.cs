@@ -31,8 +31,11 @@ namespace Tasky.Shared
         public int? TeamId { get; set; }
         public string Holidays { get; set; } = string.Empty;
         public List<Member> MembersWithPlannedLeave { get; set; } = new();
-        
+
+
         public List<NoteModel> AssignedTasks { get; set; } = new();
+        public List<TasksSprints>? TasksSprints { get; set; }
+
         public string PlannedTraining { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(8, 2)")]

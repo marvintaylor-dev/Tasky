@@ -65,7 +65,7 @@
 
 
 <div class="backlog-page-container">
-    <DropContainer Payload="Payload"></DropContainer>
+    <DropContainer IdNumber="@IdNumberHandler" Payload="Payload"></DropContainer>
 
     <div class="d-flex flex-column">
 
@@ -78,6 +78,7 @@
                     <TaskComponent @key="task.TaskId"
                        ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria"
                        Task="task"
+                       CurrentSprint="CurrentSprint"
                        RefreshList="RefreshList"
                        CallSubTask="() => AddNewSubTask(task.TaskId)"
                        SimpleStateChange="RemoveTaskWithoutCallingDB"
@@ -269,13 +270,16 @@
 
     int lastStatus;
 
-
+    SprintModel CurrentSprint = new();
 
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasksInOrder();
         subtasks = await taskService.GetSubtasks();
         await memberService.GetMembers();
+        await sprintService.GetSprints();
+        CurrentSprint = sprintService.Sprints.Last();
+
         StatusDTO lastStatusDTO = await statusService.GetLastStatus();
         lastStatus = lastStatusDTO.StatusId;
         isLoading = false;
@@ -316,6 +320,16 @@
             message = "Save your newly created task or subtask before creating another.";
         }
 
+    }
+
+    public int sprintIdNumber;
+
+    async Task IdNumberHandler(int idNumber)
+    {
+        sprintIdNumber = idNumber;
+        await sprintService.GetSprintById(sprintIdNumber);
+        CurrentSprint = sprintService.Sprint;
+        StateHasChanged();
     }
 
     public async Task RefreshList()

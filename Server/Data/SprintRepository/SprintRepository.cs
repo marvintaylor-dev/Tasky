@@ -18,13 +18,13 @@ namespace Tasky.Server.Data.SprintRepository
 
         public async Task<List<SprintModel>> GetSprints()
         {
-            var result = await _appDbContext.Sprints.Include(x => x.AssignedTasks).ToListAsync();
+            var result = await _appDbContext.Sprints.Include(x => x.TasksSprints).ToListAsync();
             return result;
         }
 
         public async Task<SprintModel> GetSprintById(int id)
         {
-            var result = await _appDbContext.Sprints.Include(x=>x.AssignedTasks).FirstOrDefaultAsync(x => x.SprintId == id);
+            var result = await _appDbContext.Sprints.Include(x => x.TasksSprints).FirstOrDefaultAsync(x => x.SprintId == id);
             if (result == null)
             {
                 throw new Exception($"Could not find sprint id of {id}");
@@ -74,7 +74,7 @@ namespace Tasky.Server.Data.SprintRepository
 
         public async Task<SprintModel> UpdateSprint(SprintModel updateSprint)
         {
-            var result = await _appDbContext.Sprints.Include(x=>x.AssignedTasks).FirstOrDefaultAsync(x => x.SprintId == updateSprint.SprintId);
+            var result = await _appDbContext.Sprints.Include(x => x.TasksSprints).FirstOrDefaultAsync(x => x.SprintId == updateSprint.SprintId);
             if (result == null)
             {
                 throw new Exception($"Could not update {updateSprint.SprintNumber}");
@@ -87,26 +87,52 @@ namespace Tasky.Server.Data.SprintRepository
 
         public async Task<SprintModel> LinkSprint(SprintTaskDTO sprintUpdate)
         {
-            var sprint = await _appDbContext.Sprints.Include(x=>x.AssignedTasks).FirstOrDefaultAsync(x=>x.SprintId == sprintUpdate.SprintId); 
-            if(sprint == null)
+            var sprint = await _appDbContext.Sprints.Include(x => x.TasksSprints).FirstOrDefaultAsync(x => x.SprintId == sprintUpdate.SprintId);
+            TasksSprints taskSprint = new();
+            if (sprint == null)
             {
                 throw new Exception("Could not link sprint to task");
             }
 
-            var task = await _appDbContext.Tasks.Include(x=>x.AssignedToSprint).FirstOrDefaultAsync(x=>x.TaskId == sprintUpdate.TaskId);
-            if(task == null)
+            var task = await _appDbContext.Tasks.Include(x => x.TasksSprints).FirstOrDefaultAsync(x => x.TaskId == sprintUpdate.TaskId);
+            if (task == null)
             {
                 throw new Exception("Could not link sprint to task");
             }
 
-            sprint.AssignedTasks.Add(task);
-            task.AssignedToSprint.Add(sprint);
+            //sprint.AssignedTasks.Add(task);
+            //task.AssignedToSprint.Add(sprint);
+            taskSprint.SprintId = sprint.SprintId;
+            taskSprint.TaskId = task.TaskId;
+            sprint.TasksSprints.Add(taskSprint);
+            task.TasksSprints.Add(taskSprint);
             await _appDbContext.SaveChangesAsync();
 
             return sprint;
         }
 
-        
+        public async Task<SprintTaskDTO> DeleteSprintTaskRelationship(int taskId, int sprintId)
+        {
+            var relationship = await _appDbContext.TasksSprints.SingleOrDefaultAsync(x => x.TaskId == taskId && x.SprintId == sprintId);
+
+            if(relationship != null)
+            {
+                _appDbContext.TasksSprints.Remove(relationship);
+                _appDbContext.SaveChanges();
+            }
+            else
+            {
+                throw new Exception("Could not delete relationship.");
+            }
+
+            SprintTaskDTO sprintTask = new();
+            sprintTask.TaskId = relationship.TaskId;
+            sprintTask.SprintId = relationship.SprintId;
+
+            return sprintTask;
+        }
+
+
     }
-    
+
 }

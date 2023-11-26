@@ -16,5 +16,7 @@ namespace Tasky.Client.Services.SprintService
 
         Task<SprintTaskDTO> LinkSprint(SprintTaskDTO sprintTask);
 
+        Task<SprintTaskDTO> DeleteSprintTaskRelationship(int taskId, int sprintId);
+
     }
 }

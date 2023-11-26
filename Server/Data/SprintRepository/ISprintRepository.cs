@@ -11,5 +11,7 @@ namespace Tasky.Server.Data.SprintRepository
         Task<SprintModel> DeleteSprintById(int id);
         Task<SprintModel> UpdateSprint(SprintModel updateSprint);
         Task<SprintModel> LinkSprint(SprintTaskDTO sprintUpdate);
+
+        Task<SprintTaskDTO> DeleteSprintTaskRelationship(int taskId, int sprintId);
     }
 }

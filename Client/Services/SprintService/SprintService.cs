@@ -61,6 +61,14 @@ namespace Tasky.Client.Services.SprintService
             return response;
         }
 
-      
+        public async Task<SprintTaskDTO> DeleteSprintTaskRelationship(int taskId, int sprintId)
+        {
+            var result = await _httpClient.DeleteAsync($"api/sprint/link/{taskId}/{sprintId}");
+            var response = await result.Content.ReadFromJsonAsync<SprintTaskDTO>();
+            if (response == null) throw new Exception();
+            return response;
+        }
+
+
     }
 }

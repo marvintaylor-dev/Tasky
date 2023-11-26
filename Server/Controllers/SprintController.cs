@@ -58,5 +58,12 @@ namespace Tasky.Server.Controllers
             var result = await _sprintRepository.LinkSprint(updateSprint);
             return Ok(result);
         }
+
+        [HttpDelete("link/{taskId}/{sprintId}")]
+        public async Task<ActionResult<SprintTaskDTO>> DeleteTaskSprintLink(int taskId, int sprintId)
+        {
+            var result = await _sprintRepository.DeleteSprintTaskRelationship(taskId, sprintId);
+            return Ok(result);
+        }
     }
 }
