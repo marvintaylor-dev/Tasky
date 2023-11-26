@@ -52,7 +52,7 @@
       "System.Collections.Immutable.dll": "sha256-UCKOFYDZ1qnLUZG8jQLiF54vnN+FUG9+PJTQky0GNDI=",
       "System.Collections.NonGeneric.dll": "sha256-OL0xDOT2aQ6UO9ju+VTsP4Mf\/7nzgqBeZxhH1AVOhNs=",
       "System.Collections.Specialized.dll": "sha256-qkrTrb7kVrvcWrqrW74fXWYH18u\/kgR4f8Lw4AcsTEA=",
-      "System.ComponentModel.Annotations.dll": "sha256-qF68wzmwfO+UA9cl4Pw9cZGWxDn4JO1UyueR0zSAOu8=",
+      "System.ComponentModel.Annotations.dll": "sha256-UGBp2WI+APs1DxuxjhN6u26JNYzuOWHpFfLAW0p2jho=",
       "System.ComponentModel.dll": "sha256-QRYBhXPNcJ+vegFpkMeHuZ1vfQlA247IUrfNedpENBk=",
       "System.ComponentModel.EventBasedAsync.dll": "sha256-PRdas2\/xmuN5N+BBV3F4e8x\/Namn6wlQBHX9CHu40Ws=",
       "System.ComponentModel.Primitives.dll": "sha256-8u6FFycseLlbdssw5\/B1u9zh5rLbdqJb7uZn6QFlTA8=",
@@ -126,8 +126,8 @@
       "System.Windows.Extensions.dll": "sha256-q76BRvo\/Y47p9aquhRgtct54B8nwoGMR7xTrTl88s7A=",
       "System.Xml.ReaderWriter.dll": "sha256-M50DxcP+IHIwTjR4HSKfxqbNb4yfvrPIJzvtd8fGJj4=",
       "System.Xml.XDocument.dll": "sha256-6r\/KACLlEnT2\/gUPYPSR6lEFOSRv6SZ9JTgFVE0tj1A=",
-      "Tasky.Client.dll": "sha256-WcqwyYHAR52d6Lnnd4jrGeJYvFWo80jI57K3OGR6kBo=",
-      "Tasky.Shared.dll": "sha256-NsPBAEkrQwRJMEcYoZdlVgNyZbRrDYyxMdgSBjHfeqk="
+      "Tasky.Client.dll": "sha256-6NuPQkloWNu5PTXwuvWR9XR\/0\/qE8+BXDh3nRky9\/sY=",
+      "Tasky.Shared.dll": "sha256-7s\/r4hZY9SjRBxKPs47hdsqxDy9sAUGMvV3TTx+L3CQ="
     },
     "extensions": null,
     "lazyAssembly": null,

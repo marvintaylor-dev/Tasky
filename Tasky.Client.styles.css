@@ -244,12 +244,15 @@
 
 .sprintList[b-8llf89d5nz] {
     position: absolute;
+    z-index: 2;
     top: -5px;
     left: -5px;
     width: 300px;
+    height: auto;
     background: white;
     border: 3px dashed lightgray;
     padding: .5rem;
+    cursor: pointer;
 }
 
 .hide[b-8llf89d5nz] {
@@ -682,6 +685,7 @@ max-width: 10rem;
 #taskInput[b-3xaex4g1hg] {
     padding: .2rem .5rem;
     resize: none;
+    scroll-behavior: smooth;
 }
 
 
