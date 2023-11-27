@@ -608,26 +608,19 @@ max-width: 10rem;
 }*/
 
 .idStyle[b-nmzoxhkka9] {
-    width: 30px;
-    height: 50px;
+    
+    padding: 2px 8px 2px 8px;
+    width: auto;
+    height: 100%;
     font-size: .8rem;
     color: white;
-    border-radius: 1rem 0rem 0rem 1rem;
+    border-radius: .4rem 0rem 0em .4rem;
 }
 
-    .idStyle:hover[b-nmzoxhkka9] {
-        transform: rotate(0deg);
-    }
-
-    .idStyle:focus[b-nmzoxhkka9] {
-        transform: rotate(0deg);
-    }
-
-
-.RotateIdNumber[b-nmzoxhkka9] {
+/*.RotateIdNumber {
     transform: translateX(10%) translateY(80%) rotate(-90deg);
     transition: .5s ease-in-out;
-}
+}*/
 
 .taskDropdown[b-nmzoxhkka9] {
     display: flex;
@@ -663,10 +656,18 @@ max-width: 10rem;
     align-content: start;
     gap: 1rem;
     position: absolute;
-    left: 100%;
+    right: 0;
     top: 0;
     z-index: 2;
     border: .5px solid lightgray;
+}
+
+.moreComponentItem[b-nmzoxhkka9] {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: .5rem;
+    
 }
 
 .moreBtn:hover[b-nmzoxhkka9]{
