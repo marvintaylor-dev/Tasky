@@ -88,8 +88,12 @@ else
     [Parameter]
     public EventCallback<int> IdNumber { get; set; }
 
+    [Parameter]
+    public EventCallback RemoveFromSprint { get; set; }
+
     SprintModel Sprint = new();
     SprintTaskDTO newLink = new();
+    TasksSprints taskSprintLink = new();
     public int sprintIdNumber;
     public string displaySprintItems = "hide";
 
@@ -97,18 +101,15 @@ else
     {
         if (Payload != null)
         {
-            await IdNumber.InvokeAsync(sprintIdNumber);
             newLink.SprintId = sprintService.Sprint.SprintId;
             newLink.TaskId = taskId;
+            taskSprintLink.TaskId = newLink.TaskId;
+            taskSprintLink.SprintId = newLink.SprintId;
             await sprintService.LinkSprint(newLink);
             await sprintService.GetSprintById(sprintIdNumber);
             StateHasChanged();
             newLink = new();
             await OnDrop.InvokeAsync();
-            //var updateTask = await taskService.GetTaskById(item.TaskId);
-            //updateTask.AssignedToSprintId = sprintService.Sprint.SprintId;
-            //await taskService.UpdateTask(updateTask);
-            //sprintService.Sprint.AssignedTasks.Add(item);
         }
         dragClass = "";
     }
@@ -147,6 +148,7 @@ else
         await sprintService.DeleteSprintTaskRelationship(taskId, sprintId);
         //await taskService.UpdateTask(task);
         await sprintService.GetSprintById(sprintIdNumber);
+        await RemoveFromSprint.InvokeAsync(taskId);
         Sprint = sprintService.Sprint;
         StateHasChanged();
         //refresh the container

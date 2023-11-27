@@ -14,26 +14,28 @@
 </div>
 
 <div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center @SubtaskCss">
-    <div class="idStyle @TaskOrSubtask">
+
+    <div class="idStyle mud-elevation-1 @TaskOrSubtask d-flex gap-1 flex-column align-items-center justify-content-center">
         <p class="mb-0 RotateIdNumber">
             @Task.TaskId
         </p>
-       
-    </div>
-
-    <div id="@Task.TaskId" class="taskContainer mud-elevation-1 py-2 px-5 rounded white @heightOfTask">
         <div>
-            @if (CurrentSprint?.AssignedTasks.Count > 0)
+            @if (Task.TasksSprints != null && Task.TasksSprints.Count > 0)
             {
-                foreach (var task in CurrentSprint.AssignedTasks)
+                @foreach (var link in Task.TasksSprints)
                 {
-                    if (task.TaskId == Task.TaskId)
+                    if (link.SprintId == CurrentSprintId)
                     {
-                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"></MudIcon>
+                        <MudIcon Icon="@Icons.Material.Filled.DirectionsRun" Color="Color.Surface"></MudIcon>
                     }
                 }
             }
         </div>
+    </div>
+
+    <div id="@Task.TaskId" class="taskContainer mud-elevation-1 px-5  white @heightOfTask">
+
+
         <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
         <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
         @if (ShowOrHideCriteria)
@@ -66,18 +68,29 @@
         </div>
 
         <div class="moreBtn" @onclick="showOptions">More...</div>
-        <div class="moreComponents mud-elevation-1 py-2 px-5 rounded white @displayNone ">
-            <div>
+        <div class="moreComponents mud-elevation-1 py-2 px-2 rounded white @displayNone ">
+            <div class="d-flex justify-content-end">
+                <span style="cursor: pointer;">
+
+                    <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="showOptions"></MudIcon>
+                </span>
+            </div>
+
+            <div class="moreComponentItem">
                 <PriorityComponent OnClick="Activate" Task="Task" />
+                <p>Set Priority Level</p>
             </div>
-            <div>
+            <div class="moreComponentItem">
                 <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+                <p>Assign Task</p>
             </div>
-            <div>
+            <div class="moreComponentItem">
                 <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+                <p>Set Start/End Dates</p>
             </div>
-            <div>
+            <div class="moreComponentItem">
                 <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
+                <p>Delete This Task</p>
             </div>
         </div>
         <div>
@@ -126,7 +139,7 @@
     public NoteModel Payload = new();
 
     [Parameter]
-    public SprintModel CurrentSprint { get; set; }
+    public int CurrentSprintId { get; set; }
 
 
     public void HandleDragStart(NoteModel selectedTask)
