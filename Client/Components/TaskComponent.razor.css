@@ -6,9 +6,9 @@
     background: #FF4081;
 }
 
-/*.subtaskIndent{
-    transform: translateX(2rem);
-}*/
+.subtaskIndent{
+    transform: translateX(5%);
+}
 
 .idStyle {
     padding: 2px 8px 2px 8px;
