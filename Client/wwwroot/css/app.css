@@ -55,8 +55,10 @@ article {
     gap: 1rem;
     position: relative;
     border: .5px solid lightgray;
-    border-radius: 0px 4px 4px 0px;
+  
 }
+
+
 
 /*.taskContainer > * {
     flex: 1;
@@ -117,10 +119,6 @@ article {
     }
 
 
-.centerTask {
-    margin: auto;
-    width: contain;
-}
 
 .wideCenter {
     max-width: 90%;
@@ -162,4 +160,44 @@ article {
 
 .xl-height {
     height: 8rem;
+}
+
+.mud-Primary {
+    color: #594ae2ff;
+    Background: #594ae2ff;
+}
+
+.mud-Secondary {
+    color: #ff4081ff;
+    background: #ff4081ff;
+}
+
+.mud-Tertiary {
+    color: #594ae2ff;
+    Background: #594ae2ff;
+}
+
+.mud-Info {
+    color: #2196f3ff;
+    Background: #2196f3ff;
+}
+
+.mud-Success {
+    color: #00c853ff;
+    Background: #00c853ff;
+}
+
+.mud-Warning {
+    color: #ff9800ff;
+    Background: #ff9800ff;
+}
+
+.mud-Error {
+    color: #f44336ff;
+    Background: #f44336ff;
+}
+
+.mud-Dark {
+    color: #424242ff;
+    Background: #424242ff;
 }

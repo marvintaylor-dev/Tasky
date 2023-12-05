@@ -11,13 +11,24 @@
 }*/
 
 .idStyle {
-    
     padding: 2px 8px 2px 8px;
     width: auto;
     height: 100%;
     font-size: .8rem;
     color: white;
     border-radius: .4rem 0rem 0em .4rem;
+}
+
+.epicStyle {
+    width: 1rem;
+    height: 100%;
+    font-size: .5rem;
+    color: white;
+    border-radius: 0rem .4rem .4em 0rem;
+}
+
+.rotate90 {
+    transform: translateX(0%) translateY(80%) rotate(-90deg);
 }
 
 /*.RotateIdNumber {

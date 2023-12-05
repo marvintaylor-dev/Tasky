@@ -12,6 +12,7 @@ namespace Tasky.Shared
         Default,
         Primary,
         Secondary,
+        Tertiary,
         Info,
         Success, 
         Warning,

@@ -54,5 +54,6 @@ namespace Tasky.Server.Data
         public DbSet<SprintGoal> SprintGoalModels { get; set; }
         public DbSet<OrganizationModel> Organizations { get; set; }
         public DbSet<TasksSprints> TasksSprints { get; set; }
+        public DbSet<Epic> Epics { get; set; }
     }
 }

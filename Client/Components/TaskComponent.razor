@@ -3,6 +3,7 @@
 @inject ITaskService taskService;
 @inject ISprintService sprintService;
 @inject IEstimationService estimationService;
+@inject IEpicService epicService;
 
 
 <div class="dropzone @dragClass"
@@ -13,7 +14,7 @@
      @ondrop="()=>HandleDrop(Task)">
 </div>
 
-<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center @SubtaskCss">
+<div draggable="true" @ondragstart="@(()=>HandleDragStart(Task))" class="d-flex align-items-center @SubtaskCss @heightOfTask">
 
     <div class="idStyle mud-elevation-1 @TaskOrSubtask d-flex gap-1 flex-column align-items-center justify-content-center">
         <p class="mb-0 RotateIdNumber">
@@ -34,7 +35,6 @@
     </div>
 
     <div id="@Task.TaskId" class="taskContainer mud-elevation-1 px-5  white @heightOfTask">
-
 
         <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
         <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
@@ -67,10 +67,16 @@
             <EstimationComponent Task="Task" RefreshList="StateHasChanged" />
         </div>
 
+     
+
         <div class="moreBtn" @onclick="showOptions">More...</div>
+
+       
+       
+
         <div class="moreComponents mud-elevation-1 py-2 px-2 rounded white @displayNone ">
             <div class="d-flex justify-content-end">
-                <span style="cursor: pointer;">
+                <span>
 
                     <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="showOptions"></MudIcon>
                 </span>
@@ -101,7 +107,24 @@
         </div>
 
     </div>
+
+    @if (Task.EpicId != 0)
+    {
+        foreach (var epic in epics)
+        {
+            if (epic.EpicId == Task.EpicId)
+            {
+                <div class="epicStyle mud-@epic.EpicColor.ToString().ToLower() mud-elevation-1 d-flex flex-column align-items-center justify-content-center">
+                    <p class="rotate90">@epic.EpicName</p>
+                </div>
+            }
+        }
+    }
+
+    
 </div>
+
+
 
 
 
@@ -111,6 +134,7 @@
 @code {
     public List<NoteModel> tasks = new List<NoteModel>();
     public NoteModel newSubTask = new NoteModel();
+    public List<Epic> epics = new();
 
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
 
@@ -210,6 +234,7 @@
         //await JS.InvokeVoidAsync("preventTextAreaLineChange");
 
         tasks = await taskService.GetTasks();
+        epics = await epicService.GetAllEpics();
         await base.OnParametersSetAsync();
     }
 

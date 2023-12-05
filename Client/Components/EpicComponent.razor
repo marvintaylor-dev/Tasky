@@ -1,0 +1,188 @@
+﻿@inject IEpicService epicService;
+@inject ITaskService taskService;
+
+
+
+<div class="d-flex gap-3">
+    <MudButton Variant="Variant.Text" Color="Color.Secondary" @onclick="ToggleInput">Add an Epic</MudButton>
+
+    @if (ShowInput)
+    {
+        <div class="d-flex justify-content-end flex-wrap align-items-end gap-2">
+
+            <div class="d-flex flex-column">
+                <label for="EpicName">Epic Name</label>
+                <input type="text" name="EpicName" placeholder="Enter Epic Name" @bind-value="newEpic.EpicName" @bind-value:event="oninput" />
+            </div>
+            <div class="d-flex flex-column">
+                <label for="EpicCategory">Epic Category</label>
+                <input type="text" name="EpicCategory" placeholder="Enter Category" @bind-value="newEpic.EpicCategory" @bind-value:event="oninput" />
+            </div>
+            <div class="d-flex flex-column">
+                <label for="EpicBudget">Epic Budget</label>
+                <input type="text" name="EpicBudget" placeholder="Enter Budget" @bind-value="newEpic.EpicBudget" @bind-value:event="oninput" />
+            </div>
+            <div class="colorContainer mb-3">
+                @foreach (MudBlazor.Color color in Enum.GetValues(typeof(TagColor)))
+                {
+                    <MudIcon Class="colorIcon" Icon="@Icons.Filled.Circle" Color="color" @onclick="(() => UseThisColor(color))">@newEpic.EpicName</MudIcon>
+                }
+            </div>
+            <MudChip Variant="Variant.Filled" Size="Size.Small" Color="(MudBlazor.Color)newEpic.EpicColor">@newEpic.EpicColor</MudChip>
+
+
+            <MudButton Color="MudBlazor.Color.Success" @onclick="SaveEpic">Save</MudButton>
+        </div>
+    }
+</div>
+
+@if (epics.Count > 0)
+{
+    @foreach (var epic in epics)
+    {
+        <MudChip Variant="Variant.Filled" Color="(MudBlazor.Color)epic.EpicColor" OnClose="()=>DeleteEpic(epic)" Size="Size.Small" @onclick="() => HandleToggleDropdown(epic.EpicId)">@epic.EpicName</MudChip>
+
+        if (toggler.Show && toggler.EpicId == epic.EpicId)
+        {
+            @* <div class="d-flex flex-column">
+                @foreach (var task in epic.UserStoriesInEpic)
+                {
+                    <div class="d-flex gap-2">
+                        <p>@task.Order, </p>
+                        @DisplayText(task.Name, 20)
+                        <div style="color: red;" @onclick="() => RemoveTaskFromEpic(task, epic)">Remove</div>
+                    </div>
+                }
+            </div>*@
+
+            <label for="taskList">Add Tasks to @epic.EpicName :</label>
+            <select name="taskList" @bind-value="placeholderTaskId" @bind-value:event="onchange">
+                @foreach (var task in Tasks)
+                {
+                    <option value="@task.TaskId">
+                        <p>@task.Order, </p>
+                        @DisplayText(task.Name, 20)
+                    </option>
+                }
+            </select>
+
+            <MudButton OnClick="() => SaveToEpic(placeholderTaskId, epic)">Save to Epic</MudButton>
+
+        }
+    }
+}
+
+
+@code {
+
+    Epic newEpic = new();
+    //EpicNoteModel newLink = new EpicNoteModel();
+    List<Epic> epics = new();
+    List<int> taskList = new();
+    public ToggleDropdown toggler = new();
+    int placeholderTaskId;
+
+    public MudBlazor.Color ColorIs { get; set; } = Color.Default;
+
+    public bool Dropdown;
+
+    [Parameter]
+    public EventCallback<int> RefreshList { get; set; }
+
+    [Parameter]
+    public List<NoteModel> Tasks { get; set; }
+
+    public bool ShowInput = false;
+    public bool ShowOrHideAcceptanceCriteria = false;
+
+    public void ToggleInput()
+    {
+        ShowInput = !ShowInput;
+    }
+
+    async void SaveEpic()
+    {
+        await epicService.CreateEpic(newEpic);
+        epics = await epicService.GetAllEpics();
+        ShowInput = false;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        epics = await epicService.GetAllEpics();
+        await base.OnInitializedAsync();
+    }
+
+    public void HandleToggleDropdown(int epicId)
+    {
+        toggler.EpicId = epicId;
+        toggler.Show = !toggler.Show;
+    }
+
+
+    public class ToggleDropdown
+    {
+        public int EpicId { get; set; } = 0;
+        public bool Show { get; set; } = false;
+    }
+
+    public async Task SaveToEpic(int placeholderTaskId, Epic epic)
+    {
+        NoteModel actualTask = await taskService.GetTaskById(placeholderTaskId);
+        actualTask.EpicId = epic.EpicId;
+        //epic.UserStoriesInEpic.Add(actualTask);
+        //await epicService.UpdateEpic(epic);
+        await taskService.UpdateTask(actualTask);
+        //StateHasChanged();
+        toggler = new();
+        placeholderTaskId = 0;
+
+        await RefreshList.InvokeAsync(actualTask.TaskId);
+    }
+
+
+    public async void UseThisColor(MudBlazor.Color color)
+    {
+        ColorIs = color;
+        newEpic.EpicColor = (TagColor)color;
+    }
+
+    async void DeleteEpic(Epic Epic)
+    {
+
+        foreach (var task in Tasks)
+        {
+            if (task.EpicId == Epic.EpicId)
+            {
+                task.EpicId = null;
+                await taskService.UpdateTask(task);
+            }
+        }
+        await epicService.DeleteEpic(Epic.EpicId);
+
+
+        await RefreshList.InvokeAsync();
+
+    }
+
+    async void RemoveTaskFromEpic(NoteModel task, Epic epic)
+    {
+        // epic.UserStoriesInEpic.Remove(task);
+        task.EpicId = 0;
+        await taskService.UpdateTask(task);
+        await epicService.UpdateEpic(epic);
+
+        await RefreshList.InvokeAsync();
+    }
+
+
+    public string DisplayText(string str, int charallowed)
+    {
+        if (str.Length > charallowed)
+            return str.Substring(0, charallowed) + " ....";
+        return str;
+    }
+
+
+}

@@ -35,7 +35,7 @@
 
 @if (Id > 0)
 {
-    <div class="centerTask">
+    <div d-flex flex-column>
         @foreach (var member in memberService.Members)
         {
             if (member.MemberId == Id)
@@ -52,27 +52,29 @@
                        Size="Size.Small" @onclick="(() => AddNewTask(member.MemberId))" />
                     }
                 </div>
-                @foreach (NoteModel task in tasks)
-                {
-
-                    if (task.Assignee == member.MemberId && task.Status != lastStatus)
+                <div class="d-flex flex-column">
+                    @foreach (NoteModel task in tasks)
                     {
-                        <TaskComponent Task="task"
-                   RefreshList="RefreshList"
-                   CallSubTask="() => AddNewSubTask(member.MemberId,task.TaskId)"
-                   SimpleStateChange="RemoveTaskWithoutCallingDB" />
+
+                        if (task.Assignee == member.MemberId && task.Status != lastStatus)
+                        {
+                            <TaskComponent Task="task"
+                       RefreshList="RefreshList"
+                       CallSubTask="() => AddNewSubTask(member.MemberId,task.TaskId)"
+                       SimpleStateChange="RemoveTaskWithoutCallingDB" />
+
+                        }
+                        else if (task.TaskId == 0 && task.Assignee == member.MemberId)
+                        {
+                            <TaskComponent Task="task"
+                       RefreshList="RefreshList"
+                       CallSubTask="() => AddNewSubTask(member.MemberId,task.TaskId)"
+                       SimpleStateChange="RemoveTaskWithoutCallingDB" />
+
+                        }
 
                     }
-                    else if (task.TaskId == 0 && task.Assignee == member.MemberId)
-                    {
-                        <TaskComponent Task="task"
-                   RefreshList="RefreshList"
-                   CallSubTask="() => AddNewSubTask(member.MemberId,task.TaskId)"
-                   SimpleStateChange="RemoveTaskWithoutCallingDB" />
-
-                    }
-
-                }
+                </div>
 
             }
         }
@@ -81,7 +83,7 @@
 
 @if (Id == 0)
 {
-    <div class="centerTask">
+    <div d-flex flex-column>
         @foreach (var member in memberService.Members)
         {
             <div class="d-flex align-content-center align-items-center gap-3">
@@ -96,61 +98,64 @@
                        Size="Size.Small" @onclick="(() => AddNewTask(member.MemberId))" />
                 }
             </div>
-            @foreach (NoteModel task in tasks)
-            {
-                if (task.Assignee == member.MemberId && task.Status != lastStatus)
+            <div class="d-flex flex-column">
+                @foreach (NoteModel task in tasks)
                 {
-                    <TaskComponent Task="task"
-                   RefreshList="RefreshList"
-                   CallSubTask="() => AddNewSubTask(member.MemberId, task.TaskId)"
-                   SimpleStateChange="RemoveTaskWithoutCallingDB">
-                    </TaskComponent>
+                    if (task.Assignee == member.MemberId && task.Status != lastStatus)
+                    {
+                        <TaskComponent Task="task"
+                       RefreshList="RefreshList"
+                       CallSubTask="() => AddNewSubTask(member.MemberId, task.TaskId)"
+                       SimpleStateChange="RemoveTaskWithoutCallingDB">
+                        </TaskComponent>
+                    }
+                    else if (task.TaskId == 0 && task.Assignee == member.MemberId)
+                    {
+                        <TaskComponent Task="task"
+                       RefreshList="RefreshList"
+                       CallSubTask="() => AddNewSubTask(member.MemberId, task.TaskId)"
+                       SimpleStateChange="RemoveTaskWithoutCallingDB">
+                        </TaskComponent>
+                    }
                 }
-                else if (task.TaskId == 0 && task.Assignee == member.MemberId)
-                {
-                    <TaskComponent Task="task"
-                   RefreshList="RefreshList"
-                   CallSubTask="() => AddNewSubTask(member.MemberId, task.TaskId)"
-                   SimpleStateChange="RemoveTaskWithoutCallingDB">
-                    </TaskComponent>
-                }
-            }
+            </div>
 
         }
     </div>
 }
 
-<div class="centerTask mt-5">
+<div class="d-flex flex-column mt-5">
     <h3>Unassigned Tasks</h3>
     <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" LastStatus="lastStatus" ListUpdated="RefreshList" />
-
-    @foreach (NoteModel task in tasks)
-    {
-        if (task.Assignee == 0 && task.Status != lastStatus && task.isSubTask == false)
+    <div class="d-flex flex-column">
+        @foreach (NoteModel task in tasks)
         {
-            <TaskComponent Task="task"
-                   RefreshList="RefreshList"
-                   CallSubTask="() => AddNewSubTask(task.TaskId)"
-                   SimpleStateChange="RemoveTaskWithoutCallingDB">
-            </TaskComponent>
-        }
-        if (task.isSubTask == true && task.Assignee == 0)
-        {
-            NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
-            if (isTaskAvailable == null)
+            if (task.Assignee == 0 && task.Status != lastStatus && task.isSubTask == false)
             {
                 <TaskComponent Task="task"
-                   RefreshList="RefreshList"
-                   CallSubTask="() => AddNewSubTask(task.TaskId)"
-                   SimpleStateChange="RemoveTaskWithoutCallingDB">
+                       RefreshList="RefreshList"
+                       CallSubTask="() => AddNewSubTask(task.TaskId)"
+                       SimpleStateChange="RemoveTaskWithoutCallingDB">
                 </TaskComponent>
             }
-            else
+            if (task.isSubTask == true && task.Assignee == 0)
             {
-                Console.WriteLine(isTaskAvailable);
+                NoteModel isTaskAvailable = tasks.FirstOrDefault(t => t.TaskId == task.LinkTo);
+                if (isTaskAvailable == null)
+                {
+                    <TaskComponent Task="task"
+                       RefreshList="RefreshList"
+                       CallSubTask="() => AddNewSubTask(task.TaskId)"
+                       SimpleStateChange="RemoveTaskWithoutCallingDB">
+                    </TaskComponent>
+                }
+                else
+                {
+                    Console.WriteLine(isTaskAvailable);
+                }
             }
         }
-    }
+    </div>
     @if (SprintId == 0)
     {
         <MudFab Color="Color.Info" Style="margin-top: 2rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" @onclick="AddNewTask" />
@@ -270,7 +275,7 @@
     public async Task RefreshList()
     {
         isLoading = true;
-       // tasks = await taskService.GetTasksInOrder();
+        // tasks = await taskService.GetTasksInOrder();
         isLoading = false;
         CompletedTasksComponent.ChangeState();
         StateHasChanged();

@@ -3,7 +3,6 @@
 @inject IJSRuntime JS
 @inject ITaskService taskService
 @inject IMemberService memberService
-@inject ISectionService sectionService
 @inject IStatusService statusService
 @inject ISprintService sprintService
 @attribute [Authorize]
@@ -13,45 +12,31 @@
     <div style="position: sticky; top: 0; z-index: 1; background: pink;">@message <span @onclick="ResetMessage">Close</span></div>
 }
 
-<section class="d-flex flex-column gap-3">
-    <div class="d-flex flex-column justify-content-start">
-        <h5 class="mb-0">Product Goal:</h5>
-        <p class="mb-0">Create a product uniquely qualified to meet the needs of individuals and companies who use scrum and kanban to deliver projects in an agile environment.</p>
+@if (!isLoading)
+{
+    <div class="d-flex gap-5 flex-wrap ">
+        <MudButton @onclick="AutoOrder">Auto Order Backlog</MudButton>
+        @if (ShowOrHideAcceptanceCriteria == false)
+        {
+            <MudButton @onclick="ToggleAcceptanceCriteriaVisibility">
+                Show Acceptance Criteria
+            </MudButton>
+        }
+        else
+        {
+            <MudButton @onclick="ToggleAcceptanceCriteriaVisibility">
+                Hide Acceptance Criteria
+            </MudButton>
+        }
+
+        <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" LastStatus="lastStatus" ListUpdated="RefreshList" />
+        <ProductGoalComponent />
     </div>
-    <ol>
-        <li>Delivers features unique and consistent with Scrum and kanban</li>
-        <li>Deliver a minimum viable product which feels safe and intuitive to use</li>
-        <li>Unique value propositions with high risk are tested to ensure their viability</li>
-    </ol>
-</section>
+    <EpicComponent Tasks="tasks" RefreshList="HandleEpicChange"></EpicComponent>
+}
 
 
 
-<div class="d-flex justify-content-between mb-3" style="min-width: fit-content; max-width: 70%; margin: auto;">
-    @*
-    Removed Sections code for the time being. It doesn't work how it's supposed to anyway.
-    @foreach (Section sec in sections)
-    {
-    <SectionComponent sectionId="sec.SectionId" RefreshList="RefreshList" />
-    }
-    *@
-    <MudButton Color="Color.Secondary" @onclick="AutoOrder">Auto Order</MudButton>
-    @if (ShowOrHideAcceptanceCriteria == false)
-    {
-        <div @onclick="ToggleAcceptanceCriteriaVisibility" class="btn btn-outline-dark">
-            Show Acceptance Criteria
-        </div>
-    }
-    else
-    {
-        <div @onclick="ToggleAcceptanceCriteriaVisibility" class="btn btn-dark">
-            Hide Acceptance Criteria
-        </div>
-    }
-
-    <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" LastStatus="lastStatus" ListUpdated="RefreshList" />
-
-</div>
 
 @if (isLoading)
 {
@@ -64,7 +49,7 @@
 }
 
 
-<div class="backlog-page-container">
+<div class="backlog-page-container" style="margin-top: 2rem;">
     <DropContainer IdNumber="HandleSprintChange" Payload="Payload" RemoveFromSprint="HandleRefresh" OnDrop="HandleRefresh"></DropContainer>
 
     <div class="d-flex flex-column">
@@ -130,6 +115,15 @@
     {
         await sprintService.GetSprintById(sprintId);
         CurrentSprint = sprintService.Sprint;
+        StateHasChanged();
+    }
+
+    async void HandleEpicChange(int taskId)
+    {
+        var updatedTask = await taskService.GetTaskById(taskId);
+        var taskToUpdate = tasks.Find(x => x.TaskId == taskId);
+
+        taskToUpdate.EpicId = updatedTask.EpicId;
         StateHasChanged();
     }
 
@@ -277,7 +271,9 @@
     List<NoteModel> tasks = new List<NoteModel>();
     List<NoteModel> subtasks = new List<NoteModel>();
     List<TaskComponent> taskComponents = new();
-    //List<Section> sections = new();
+
+
+    List<Epic> epics = new();
 
     int lastStatus;
 
@@ -286,23 +282,11 @@
     protected override async Task OnInitializedAsync()
     {
         tasks = await taskService.GetTasksInOrder();
-        foreach (var task in tasks)
-        {
-            if (task.TasksSprints != null && task.TasksSprints.Count > 0)
-            {
-                Console.WriteLine($"{task.TasksSprints.Count} for {task.TaskId}");
-            }
-        }
+
         subtasks = await taskService.GetSubtasks();
         await memberService.GetMembers();
         await sprintService.GetSprints();
-        foreach (var sprint in sprintService.Sprints)
-        {
-            if (sprint.TasksSprints != null && sprint.TasksSprints.Count > 0)
-            {
-                Console.WriteLine($"{sprint.TasksSprints.Count} for {sprint.SprintId}");
-            }
-        }
+
         CurrentSprint = sprintService.Sprints.Last();
 
         StatusDTO lastStatusDTO = await statusService.GetLastStatus();
@@ -355,7 +339,6 @@
         isLoading = true;
         tasks = await taskService.GetTasksInOrder();
         subtasks = await taskService.GetSubtasks();
-        //sections = await sectionService.GetSections();
         isLoading = false;
         CompletedTasksComponent.ChangeState();
         StateHasChanged();

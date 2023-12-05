@@ -1,29 +1,30 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Tasky.Server.Data.SectionRepository;
+using Tasky.Client.Services.TaskService;
+using Tasky.Server.Data.EpicRepository;
 using Tasky.Shared;
 
 namespace Tasky.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SectionsController : ControllerBase
+    public class EpicController : ControllerBase
     {
 
-        private readonly ISectionRepository _repository;
+        private readonly IEpicRepository _repository;
 
-        public SectionsController(ISectionRepository repo)
+        public EpicController(IEpicRepository repo)
         {
             _repository = repo;
         }
 
 
         [HttpGet]
-        public async Task<ActionResult<List<Section>>> GetSections()
+        public async Task<ActionResult<List<Epic>>> GetEpics()
         {
             try
             {
-                var result = await _repository.GetSections();
+                var result = await _repository.GetAllEpics();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -32,12 +33,12 @@ namespace Tasky.Server.Controllers
             }
         }
 
-        [HttpGet("{sectionId:int}")]
-        public async Task<ActionResult<Section>> GetSection(int sectionId)
+        [HttpGet("{EpicId:int}")]
+        public async Task<ActionResult<Epic>> GetEpic(int EpicId)
         {
             try
             {
-                var result = await _repository.GetSectionById(sectionId);
+                var result = await _repository.GetEpicById(EpicId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -47,11 +48,11 @@ namespace Tasky.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Section>> CreateSection(Section section)
+        public async Task<ActionResult<Epic>> CreateEpic(Epic Epic)
         {
             try
             {
-                var result = await _repository.CreateSection(section);
+                var result = await _repository.CreateEpic(Epic);
                 if (result == null)
                 {
                     return BadRequest();
@@ -65,19 +66,19 @@ namespace Tasky.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Section>> UpdateSection(Section section)
+        public async Task<ActionResult<Epic>> UpdateEpic(Epic Epic)
         {
             try
             {
-                var result = await _repository.GetSectionById(section.SectionId);
+                var findEpic = await _repository.GetEpicById(Epic.EpicId);
 
-                if (result == null)
+                if (findEpic == null)
                 {
-                    return NotFound($"Could not find section.");
+                    return NotFound($"Could not find Epic.");
                 }
 
-                await _repository.UpdateSection(section);
-                return Ok(section);
+                var result = await _repository.UpdateEpic(Epic);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -86,19 +87,18 @@ namespace Tasky.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Section>> DeleteSection(int Id)
+        public async Task<ActionResult<Epic>> DeleteEpic(int Id)
         {
             try
             {
-
-                var FindDeletedSection = await _repository.GetSectionById(Id);
-                if (FindDeletedSection == null)
+                var FindDeletedEpic = await _repository.GetEpicById(Id);
+                if (FindDeletedEpic == null)
                 {
                     return NotFound($"Cannot delete task with an id of {Id}, as it was not found");
                 }
-
-                Section deletedSection = await _repository.DeleteSection(Id);
-                return Ok(deletedSection);
+               
+                Epic deletedEpic = await _repository.DeleteEpic(Id);
+                return Ok(deletedEpic);
 
             }
             catch (Exception)

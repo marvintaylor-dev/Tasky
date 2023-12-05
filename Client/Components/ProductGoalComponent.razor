@@ -1,0 +1,29 @@
+﻿<MudButton Variant="Variant.Text" Color="Color.Secondary" @onclick="ToggleInput">Product Goal</MudButton>
+@if (ShowInput)
+{
+    <section class="d-flex flex-column gap-3">
+        <div class="d-flex flex-column justify-content-start">
+            <div>
+                <h2>Product Goal:</h2>
+                <p class="mb-0">Create a product uniquely qualified to meet the needs of individuals and companies who use scrum and kanban to deliver projects in an agile environment.</p>
+            </div>
+            <ol>
+                <li>Delivers features unique and consistent with Scrum and kanban</li>
+                <li>Deliver a minimum viable product which feels safe and intuitive to use</li>
+                <li>Unique value propositions with high risk are tested to ensure their viability</li>
+            </ol>
+        </div>
+    </section>
+
+}
+
+
+
+@code {
+    public bool ShowInput = false;
+
+    public void ToggleInput()
+    {
+        ShowInput = !ShowInput;
+    }
+}

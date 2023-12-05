@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Shared\Tasky.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\sectionNoteModelService\" />
-  </ItemGroup>
-
 </Project>

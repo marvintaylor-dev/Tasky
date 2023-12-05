@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231204011334_updateEpicModel")]
+    partial class updateEpicModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -221,6 +223,9 @@ namespace Tasky.Server.Migrations
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Epic")
+                        .HasColumnType("int");
 
                     b.Property<int?>("EpicId")
                         .HasColumnType("int");
@@ -675,11 +680,9 @@ namespace Tasky.Server.Migrations
 
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
                 {
-                    b.HasOne("Tasky.Shared.Epic", "Epic")
-                        .WithMany()
+                    b.HasOne("Tasky.Shared.Epic", null)
+                        .WithMany("UserStoriesInEpic")
                         .HasForeignKey("EpicId");
-
-                    b.Navigation("Epic");
                 });
 
             modelBuilder.Entity("Tasky.Shared.ProductGoal", b =>
@@ -702,6 +705,11 @@ namespace Tasky.Server.Migrations
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Tasky.Shared.Epic", b =>
+                {
+                    b.Navigation("UserStoriesInEpic");
                 });
 
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
