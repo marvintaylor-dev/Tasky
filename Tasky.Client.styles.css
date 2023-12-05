@@ -19,7 +19,7 @@
     z-index: 1;
     background: white;
     border: 3px solid black;
-    padding: 1rem;
+    padding: .5rem;
     border-radius: 1rem;
 }
 
@@ -39,30 +39,6 @@
 
 .closeButton:hover[b-8lf05c6pvd]{
     cursor:pointer;
-}
-/* /Components/BoardViewComponent.razor.rz.scp.css */
-.itemAge[b-mz9trbcva9] {
-    background: #F2E33A;
-    width: 2rem;
-    height: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    color: black;
-    font-weight: bold;
-}
-
-.wipLimitNumber[b-mz9trbcva9]{
-    font-size: 1rem;
-    background: gray;
-    padding: .25rem .6rem;
-    color: white;
-}
-
-.wipButton[b-mz9trbcva9]{
-    font-size: 1rem;
-    width: 1rem;
 }
 /* /Components/BoardViewComponent2.razor.rz.scp.css */
 .itemAge[b-h2dkydk1cb] {
@@ -258,6 +234,11 @@
 .hide[b-8llf89d5nz] {
     display: none;
 }
+/* /Components/EpicComponent.razor.rz.scp.css */
+.colorContainer[b-rdtch8u60m] {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}
 /* /Components/ManageSprintsComponent.razor.rz.scp.css */
 .sprintsContainer[b-kqbkwvnfhf] {
     border: 2px solid #2196F3;
@@ -340,6 +321,30 @@ max-width: 10rem;
     align-items: center;
     justify-content: center;
     
+}
+/* /Components/Old Components Not In Use/BoardViewComponent.razor.rz.scp.css */
+.itemAge[b-zb9x0d721d] {
+    background: #F2E33A;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: black;
+    font-weight: bold;
+}
+
+.wipLimitNumber[b-zb9x0d721d]{
+    font-size: 1rem;
+    background: gray;
+    padding: .25rem .6rem;
+    color: white;
+}
+
+.wipButton[b-zb9x0d721d]{
+    font-size: 1rem;
+    width: 1rem;
 }
 /* /Components/PriorityComponent.razor.rz.scp.css */
 .one[b-y819uac8ms] {
@@ -608,13 +613,24 @@ max-width: 10rem;
 }*/
 
 .idStyle[b-nmzoxhkka9] {
-    
     padding: 2px 8px 2px 8px;
     width: auto;
     height: 100%;
     font-size: .8rem;
     color: white;
     border-radius: .4rem 0rem 0em .4rem;
+}
+
+.epicStyle[b-nmzoxhkka9] {
+    width: 1rem;
+    height: 100%;
+    font-size: .5rem;
+    color: white;
+    border-radius: 0rem .4rem .4em 0rem;
+}
+
+.rotate90[b-nmzoxhkka9] {
+    transform: translateX(0%) translateY(80%) rotate(-90deg);
 }
 
 /*.RotateIdNumber {

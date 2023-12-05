@@ -10,7 +10,7 @@
       "Blazored.LocalStorage.dll": "sha256-6RRoYeDP3d0xabXmcCMF66wXeJlXVPem28Trs8sQiis=",
       "Microsoft.AspNetCore.Authorization.dll": "sha256-zcktckXsrSyqy9+ZaxrNslZtlLkoaE221VtqC7hKuB4=",
       "Microsoft.AspNetCore.Components.Authorization.dll": "sha256-cCdMEeFEbH2L09JM4zWhhT7ddxEnMgXT1Ow23g+LUxE=",
-      "Microsoft.AspNetCore.Components.dll": "sha256-WQ6jzeDS\/L\/ygHNdh3RlOst+mTam+XzR5LuD318osZs=",
+      "Microsoft.AspNetCore.Components.dll": "sha256-k5NgWxb+ZRdI3LfhtEz\/4nix+GxO9Q6by6nNlotqfGI=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-QYnabHspsr2N6wyU+HiaZbJ53fKgnoX73pX\/zq5UeuQ=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-74INIfFA\/4DaBSAZcied8Ie5tVX6p2psxaHqqjFgxuE=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-V18Z+LS3a1JPdoSDZFU\/BBnymoyu9Y3w6jk\/YgceNVI=",
@@ -126,8 +126,8 @@
       "System.Windows.Extensions.dll": "sha256-q76BRvo\/Y47p9aquhRgtct54B8nwoGMR7xTrTl88s7A=",
       "System.Xml.ReaderWriter.dll": "sha256-M50DxcP+IHIwTjR4HSKfxqbNb4yfvrPIJzvtd8fGJj4=",
       "System.Xml.XDocument.dll": "sha256-6r\/KACLlEnT2\/gUPYPSR6lEFOSRv6SZ9JTgFVE0tj1A=",
-      "Tasky.Client.dll": "sha256-Sx3o7yQlchb8XIm3Bbv7CGthdSGk2diAkDjW4BaHmV4=",
-      "Tasky.Shared.dll": "sha256-7s\/r4hZY9SjRBxKPs47hdsqxDy9sAUGMvV3TTx+L3CQ="
+      "Tasky.Client.dll": "sha256-jnP7Pmuz+nrWTzPtWHsWR6LasPSq\/lJ\/dwnzD6n2V2w=",
+      "Tasky.Shared.dll": "sha256-zQmekl7\/OahQsALju4gaQd8I2rNttmjloxRfSs4Z7Gw="
     },
     "extensions": null,
     "lazyAssembly": null,
