@@ -126,8 +126,8 @@
       "System.Windows.Extensions.dll": "sha256-q76BRvo\/Y47p9aquhRgtct54B8nwoGMR7xTrTl88s7A=",
       "System.Xml.ReaderWriter.dll": "sha256-M50DxcP+IHIwTjR4HSKfxqbNb4yfvrPIJzvtd8fGJj4=",
       "System.Xml.XDocument.dll": "sha256-6r\/KACLlEnT2\/gUPYPSR6lEFOSRv6SZ9JTgFVE0tj1A=",
-      "Tasky.Client.dll": "sha256-iFmITQsf2\/Vuqdt+h6OwmRkbrx\/HLM7rlvwdN4FgQj8=",
-      "Tasky.Shared.dll": "sha256-Fo36e+9IlPmiQFm\/xzJIGv1YCzpjCWjoa4G0NOBcU5I="
+      "Tasky.Client.dll": "sha256-bcH3trjs5SFltX\/q24SAiULfTpwPJuu6BNyTT95Aswk=",
+      "Tasky.Shared.dll": "sha256-N9h0Mj7eWy2vZO3jql69NPNgn1qaEveeVRzLVsmZptY="
     },
     "extensions": null,
     "lazyAssembly": null,

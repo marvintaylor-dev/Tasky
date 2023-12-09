@@ -760,8 +760,8 @@ max-width: 10rem;
 
 #taskInput[b-3xaex4g1hg] {
     padding: .2rem .5rem;
-    resize: none;
     scroll-behavior: smooth;
+    min-height: fit-content;
 }
 
 
@@ -788,6 +788,22 @@ max-width: 10rem;
 
 .nav-link:hover[b-wgurrrsii6]{
     cursor: pointer;
+}
+/* /Components/UserStoryInputComponent.razor.rz.scp.css */
+.taskName[b-gm4el4d7en] {
+    width: 200px;
+}
+
+#taskInput[b-gm4el4d7en] {
+    padding: .2rem .5rem;
+    scroll-behavior: smooth;
+    min-height: fit-content;
+}
+
+
+.taskInput:hover[b-gm4el4d7en] {
+    cursor: pointer;
+    border: 1px solid black;
 }
 /* /Pages/BoardView.razor.rz.scp.css */
 .itemAge[b-ly061c0dzs] {
