@@ -718,16 +718,13 @@ max-width: 10rem;
 }
 
 .moreComponents[b-nmzoxhkka9] {
+    width: fit-content;
     display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-content: start;
-    gap: 1rem;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 2;
-    border: .5px solid lightgray;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 2rem;
+    border: 0.5px solid lightgray;
+    align-items: center;
 }
 
 .subtasksIcon[b-nmzoxhkka9] {
@@ -741,7 +738,12 @@ max-width: 10rem;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
+   
     gap: .5rem;
+}
+
+.moreComponents p[b-nmzoxhkka9] {
+    margin-bottom: 0rem;
 }
 
 .moreBtn:hover[b-nmzoxhkka9] {

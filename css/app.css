@@ -143,23 +143,23 @@ article {
 }
 
 .xs-height {
-    height: 2rem;
+    min-height: 2rem;
 }
 
 .s-height {
-    height: 3rem;
+    min-height: 3rem;
 }
 
 .m-height {
-    height: 4.5rem;
+    min-height: 4.5rem;
 }
 
 .l-height {
-    height: 6rem;
+    min-height: 6rem;
 }
 
 .xl-height {
-    height: 8rem;
+    min-height: 8rem;
 }
 
 .mud-Primary {
