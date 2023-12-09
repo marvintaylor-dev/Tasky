@@ -608,7 +608,7 @@ max-width: 10rem;
     background: #FF4081;
 }
 
-.subtaskIndent[b-nmzoxhkka9]{
+.subtaskIndent[b-nmzoxhkka9] {
     transform: translateX(5%);
 }
 
@@ -622,15 +622,20 @@ max-width: 10rem;
 }
 
 .epicStyle[b-nmzoxhkka9] {
-    width: 1rem;
+    
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     height: 100%;
-    font-size: .5rem;
-    color: white;
     border-radius: 0rem .4rem .4em 0rem;
 }
 
 .rotate90[b-nmzoxhkka9] {
-    transform: translateX(0%) translateY(80%) rotate(-90deg);
+    color: white;
+    width: 1rem;
+    font-size: .5rem;
+    transform: rotate(-90deg);
+    margin: 0rem;
 }
 
 /*.RotateIdNumber {
@@ -652,12 +657,12 @@ max-width: 10rem;
     display: flex;
 }
 
-.dropzone[b-nmzoxhkka9]{
+.dropzone[b-nmzoxhkka9] {
     height: .5rem;
 }
 
 
-.color[b-nmzoxhkka9]{
+.color[b-nmzoxhkka9] {
     border: 2px dashed green;
 }
 
@@ -678,22 +683,27 @@ max-width: 10rem;
     border: .5px solid lightgray;
 }
 
+.subtasksIcon[b-nmzoxhkka9] {
+    background: var(--mud-palette-secondary);
+    color: white;
+    width: 1rem;
+    height: 1rem;
+}
+
 .moreComponentItem[b-nmzoxhkka9] {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     gap: .5rem;
-    
 }
 
-.moreBtn:hover[b-nmzoxhkka9]{
+.moreBtn:hover[b-nmzoxhkka9] {
     cursor: pointer;
 }
 
 .none[b-nmzoxhkka9] {
     display: none;
 }
-
 /* /Components/TaskInputComponent3.razor.rz.scp.css */
 .taskName[b-3xaex4g1hg] {
     width: 200px;
