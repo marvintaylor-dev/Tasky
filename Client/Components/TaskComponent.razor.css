@@ -19,6 +19,20 @@
     border-radius: .4rem 0rem 0em .4rem;
 }
 
+.splitButton{
+    position: relative;
+}
+
+.splitButton:hover::after{
+    content: "Split Task";
+    font-weight: bold;
+    position: absolute;
+    top: 1.5rem;
+    background: yellow;
+    padding-left: .5rem;
+    padding-right: .5rem;
+}
+
 .epicStyle {
     
     display: flex;

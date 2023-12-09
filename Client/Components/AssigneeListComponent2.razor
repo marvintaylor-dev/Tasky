@@ -61,7 +61,8 @@
                             <TaskComponent Task="task"
                        RefreshList="RefreshList"
                        CallSubTask="() => AddNewSubTask(member.MemberId,task.TaskId)"
-                       SimpleStateChange="RemoveTaskWithoutCallingDB" />
+                       SimpleStateChange="RemoveTaskWithoutCallingDB"
+                       />
 
                         }
                         else if (task.TaskId == 0 && task.Assignee == member.MemberId)
@@ -178,6 +179,9 @@
     [Parameter]
     public List<NoteModel> tasks { get; set; }
 
+    [Parameter]
+    public EventCallback TasksUpdated { get; set; }
+
 
     NoteModel newTask = new NoteModel();
     List<NoteModel> subtasks = new();
@@ -275,7 +279,7 @@
     public async Task RefreshList()
     {
         isLoading = true;
-        // tasks = await taskService.GetTasksInOrder();
+        await TasksUpdated.InvokeAsync();
         isLoading = false;
         CompletedTasksComponent.ChangeState();
         StateHasChanged();
@@ -285,6 +289,7 @@
     public async void RefreshSubTasks()
     {
         isLoading = true;
+        await TasksUpdated.InvokeAsync();
         //tasks = await taskService.GetTasksInOrder();
         isLoading = false;
         StateHasChanged();

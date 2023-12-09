@@ -68,7 +68,8 @@
                        CallSubTask="() => AddNewSubTask(task.TaskId)"
                        SimpleStateChange="RemoveTaskWithoutCallingDB"
                        OnTaskDragged="HandleTaskDragged"
-                       OnOrderUpdated="UpdateTaskAsync" />
+                       OnOrderUpdated="UpdateTaskAsync"
+                     />
                 }
             }
         }
@@ -88,6 +89,8 @@
     private bool isLoading = true;
     public bool ShowOrHideAcceptanceCriteria = false;
     private string message = string.Empty;
+    
+
 
     public TaskComponent? taskComponent;
     public NoteModel? Payload;

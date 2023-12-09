@@ -1,30 +1,99 @@
-﻿
-<div class="splitContainer">
-    <TaskComponent Task="Task" />
+﻿@inject ITaskService taskService;
 
-    @foreach (NoteModel task in TaskList)
-    {
-        <TaskComponent Task="task" />
-    }
+
+<div class="splitContainerBackground">
+    <div class="splitContainer">
+        <div class="closeIcon">
+            <div style="cursor: pointer;">
+                <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="CallClosePopup" />
+            </div>
+        </div>
+        <TaskComponent Task="Task" />
+
+        @foreach (NoteModel task in TaskList)
+        {
+            <TaskComponent Task="task" />
+        }
+
+
+        <div>
+            <MudFab Color="Color.Info" Style="margin-top: 1rem;" StartIcon="@Icons.Material.Filled.Add" Size="Size.Small" @onclick="AddNewTask" />
+        </div>
+        <div class="d-flex justify-content-end" style="width: 100%;">
+            <MudButton Color="Color.Success" @onclick="() => SaveTaskList(TaskList, Task.TaskId)">Save New Tasks and Replace Original</MudButton>
+        </div>
+
+    </div>
 </div>
+
 
 
 @code {
     [Parameter]
     public NoteModel Task { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> ClosePopup { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshTasks { get; set; }
+
     public List<NoteModel> TaskList = new();
     public NoteModel task1 = new();
     public NoteModel task2 = new();
+    public NoteModel additionalTask = new();
 
-    void PopUpSplit(NoteModel task)
+    async Task SaveTaskList(List<NoteModel> list, int splitTaskId)
     {
-        task1.Order = task.Order;
-        task1.EpicId = task.EpicId;
-        task2.Order = task.Order;
-        task2.EpicId = task.EpicId;
-        TaskList.Add(task1);
-        TaskList.Add(task2);
+        await taskService.AddMultipleTasks(list);
+        await taskService.DeleteTask(splitTaskId);
+        CallClosePopup();
+        await RefreshTasks.InvokeAsync();
         StateHasChanged();
     }
+
+    void AddNewTask()
+    {
+        additionalTask.Order = Task.Order;
+        additionalTask.EpicId = Task.EpicId;
+        additionalTask.Assignee = Task.Assignee;
+        TaskList.Add(additionalTask);
+        additionalTask = new();
+    }
+
+
+
+    async void CallClosePopup()
+    {
+        await ClosePopup.InvokeAsync(false);
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        task1.Order = Task.Order;
+        task1.EpicId = Task.EpicId;
+        task1.Assignee = Task.Assignee;
+        task2.Order = Task.Order;
+        task2.EpicId = Task.EpicId;
+        task2.Assignee = Task.Assignee;
+        if(Task.TasksSprints != null)
+        {
+            task1.TasksSprints = Task.TasksSprints;
+            task2.TasksSprints = Task.TasksSprints;
+        }
+        TaskList.Add(task1);
+        TaskList.Add(task2);
+    }
+
+    public string heightOfTask => Task.VisualHeightOfTask switch
+    {
+        0 => "",
+        1 => "xs-height",
+        2 => "s-height",
+        3 => "m-height",
+        4 => "l-height",
+        5 => "xl-height",
+        _ => ""
+    };
 }

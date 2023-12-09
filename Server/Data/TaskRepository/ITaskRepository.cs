@@ -11,6 +11,7 @@ namespace Tasky.Server.Data.TaskRepository
         Task<List<NoteModel>> GetAllSubtasksByParentId(int parentId);
         Task<NoteModel> GetTaskById(int id);
         Task<NoteModel> AddTask(NoteModel model);
+        Task<List<NoteModel>> AddMultipleTasks(List<NoteModel> tasks);
         Task<NoteModel> UpdateTask(NoteModel model);
         Task<NoteModel> DeleteTask(int id);
     }

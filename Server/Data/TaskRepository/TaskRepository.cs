@@ -20,7 +20,7 @@ namespace Tasky.Server.Data.TaskRepository
         public async Task<NoteModel> AddTask(NoteModel newTask)
         {
             var firstStatus = await _context.Statuses.OrderBy(x => x.StatusOrder).FirstAsync();
-            if(newTask.Status == null)
+            if (newTask.Status == null)
             {
                 newTask.Status = firstStatus.StatusId;
             }
@@ -29,9 +29,39 @@ namespace Tasky.Server.Data.TaskRepository
             return task.Entity;
         }
 
+        public async Task<List<NoteModel>> AddMultipleTasks(List<NoteModel> newTasks)
+        {
+            try
+            {
+                var firstStatus = await _context.Statuses.OrderBy(x => x.StatusOrder).FirstAsync();
+
+                if (newTasks.Count() > 0)
+                {
+
+                    foreach (var t in newTasks)
+                    {
+                        if (t.Status == null)
+                        {
+                            t.Status = firstStatus.StatusId;
+                        }
+                        
+                    }
+                    await _context.Tasks.AddRangeAsync(newTasks);
+                    await _context.SaveChangesAsync();
+                }
+
+                return newTasks;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error adding tasks to the database: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<NoteModel> DeleteTask(int id)
         {
-            NoteModel result = await _context.Tasks.Include(x=>x.TasksSprints).FirstOrDefaultAsync(t => t.TaskId == id) ?? throw new Exception("Could not find id");
+            NoteModel result = await _context.Tasks.Include(x => x.TasksSprints).FirstOrDefaultAsync(t => t.TaskId == id) ?? throw new Exception("Could not find id");
 
             if (result != null)
             {
@@ -54,16 +84,16 @@ namespace Tasky.Server.Data.TaskRepository
             }
             else
             {
-                
+
                 return result;
             }
         }
 
-        
+
 
         public async Task<List<NoteModel>> GetAllTasksInOrder()
         {
-            var result = await _context.Tasks.Include(x=>x.TasksSprints).OrderBy(x => x.Order ?? x.TaskId).ToListAsync();
+            var result = await _context.Tasks.Include(x => x.TasksSprints).OrderBy(x => x.Order ?? x.TaskId).ToListAsync();
             if (result == null)
             {
                 throw new Exception("No Tasks were found");
@@ -133,6 +163,6 @@ namespace Tasky.Server.Data.TaskRepository
             return result;
         }
 
-       
+
     }
 }

@@ -38,7 +38,7 @@
 
 @if (selectedView == 0)
 {
-    <AssigneeListComponent2 tasks="Tasks" SprintId="selectedSprint" />
+    <AssigneeListComponent2 tasks="Tasks" SprintId="selectedSprint" TasksUpdated="updateList" />
 }
 else if (selectedView == 1)
 {
@@ -66,6 +66,7 @@ else if (selectedView == 2)
     {
         SaveSelectedView(selectedView);
     }
+
 
     async void updateList()
     {

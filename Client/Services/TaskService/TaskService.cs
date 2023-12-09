@@ -23,6 +23,13 @@ namespace Tasky.Client.Services.TaskService
             return tasks;
         }
 
+        public async Task<List<NoteModel>> AddMultipleTasks(List<NoteModel> taskList)
+        {
+            var result = await _httpClient.PostAsJsonAsync("api/notemodels/split", taskList);
+            var tasks = await result.Content.ReadFromJsonAsync<List<NoteModel>>();
+            return tasks;
+        }
+
         public async Task<NoteModel> DeleteTask(int taskId)
         {
             var result = await _httpClient.DeleteAsync($"api/notemodels/{taskId}");

@@ -4,25 +4,25 @@
 
 <div class="memberContainer" @onfocusout="UnClick">
 
-    @if(Task.Assignee == 0)
+    @if (Task.Assignee == 0)
     {
-        
-    <div>
-        <MudIcon Icon="@Icons.Outlined.SupervisedUserCircle" Size="Size.Small" Color="Color.Default" @onclick="ToggleClicked" />
-    </div>
+
+        <div>
+            <MudIcon Icon="@Icons.Outlined.SupervisedUserCircle" Size="Size.Small" Color="Color.Default" @onclick="ToggleClicked" />
+        </div>
     }
 
-    @if(Task.Assignee > 0)
+    @if (Task.Assignee > 0)
     {
-         @foreach(var member in memberService.Members)
+        @foreach (var member in memberService.Members)
+        {
+            @if (member.MemberId == Task.Assignee)
             {
-                @if(member.MemberId == Task.Assignee)
-                {
-                    <div class="memberIcon" @onclick="ToggleClicked">
-                            <div>@member.Name[0]</div>
-                    </div>
-                }
+                <div class="memberIcon" @onclick="ToggleClicked">
+                    <div>@member.Name[0]</div>
+                </div>
             }
+        }
     }
 
     <div class="memberDropdown @UserMenuCssClass">
@@ -32,11 +32,9 @@
                 <option selected value="0" @onclick="AssignPerson">Select One</option>
                 @foreach (var member in memberService.Members)
                 {
-                    <option 
-                        class="memberOption" 
-                        value="@member.MemberId" 
-                        @onclick="AssignPerson"
-                    >
+                    <option class="memberOption"
+                            value="@member.MemberId"
+                    @onclick="AssignPerson">
                         @member.Name
                     </option>
                 }
@@ -69,9 +67,12 @@
 
     async Task AssignPerson()
     {
-        await taskService.UpdateTask(Task);
-        await UnClick();
-        await RefreshList.InvokeAsync();
+        if (Task?.TaskId > 0)
+        {
+            await taskService.UpdateTask(Task);
+            await UnClick();
+            await RefreshList.InvokeAsync();
+        }
     }
 
     private bool showMenu = false;

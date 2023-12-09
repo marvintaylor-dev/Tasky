@@ -61,7 +61,12 @@
         {
             <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
         }
-        <div @onclick="ToggleSplit" style="border: 1px solid gray;">Split</div>
+
+       <div style="cursor: pointer;">
+            <div @onclick="TurnOffSplit" class="splitButton" style="border: 1px solid gray; padding: 0rem .25rem 0rem .25rem;">/</div>
+       </div>
+        
+
 
         <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
 
@@ -137,7 +142,7 @@
 
 @if (showSplit)
 {
-    <SplittingComponent Task="Task" />
+    <SplittingComponent Task="Task" ClosePopup="HandleClosePopup" RefreshTasks="RefreshTasks" />
 }
 
 
@@ -154,16 +159,24 @@
     public bool ShowOrHideAcceptanceCriteria = false;
     public bool show = false;
     public bool showSplit = false;
+    
 
-
+    
     void toggleShow()
     {
         show = !show;
     }
 
-    void ToggleSplit()
+    void HandleClosePopup()
     {
-        showSplit = !showSplit;
+        showSplit = false;
+    }
+
+    async void TurnOffSplit()
+    {
+        //await DisplayOff.InvokeAsync();
+        showSplit = true;
+        StateHasChanged();
     }
 
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
@@ -298,8 +311,6 @@
     {
         //turn off adblocker in google chrome - else an error will be thrown
         //await JS.InvokeVoidAsync("preventTextAreaLineChange");
-
-        //tasks = await taskService.GetTasks();
         subtasks = await taskService.GetSubtasksByParentId(Task.TaskId);
         if (Task.EpicId != null)
         {

@@ -12,6 +12,7 @@ namespace Tasky.Client.Services.TaskService
         Task<List<NoteModel>> GetSubtasksByParentId(int parentId);
         Task<NoteModel> GetTaskById(int? taskId);
         Task<NoteModel> AddTask(NoteModel addTask);
+        Task<List<NoteModel>> AddMultipleTasks(List<NoteModel> tasks);
         Task<NoteModel> UpdateTask(NoteModel updateTask);
         Task<NoteModel> DeleteTask(int taskId);
 
