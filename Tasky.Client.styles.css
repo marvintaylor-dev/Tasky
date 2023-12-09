@@ -494,6 +494,39 @@ max-width: 10rem;
 .subtaskInfo:last-of-type[b-b5ndk2yh7k]{
     margin-bottom: 0;
 }
+/* /Components/SplittingComponent.razor.rz.scp.css */
+.splitContainerBackground[b-6j5ftsm00u] {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.splitContainer[b-6j5ftsm00u] {
+    position: fixed;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    background: white;
+    padding: 2rem;
+    z-index: 1001;
+    background: white;
+}
+
+.closeIcon[b-6j5ftsm00u] {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 1rem;
+
+}
 /* /Components/TableViewComponent.razor.rz.scp.css */
 .tableViewRow[b-osn3cx1hwu]{
     margin-bottom: 0rem;
@@ -619,6 +652,20 @@ max-width: 10rem;
     font-size: .8rem;
     color: white;
     border-radius: .4rem 0rem 0em .4rem;
+}
+
+.splitButton[b-nmzoxhkka9]{
+    position: relative;
+}
+
+.splitButton:hover[b-nmzoxhkka9]::after{
+    content: "Split Task";
+    font-weight: bold;
+    position: absolute;
+    top: 1.5rem;
+    background: yellow;
+    padding-left: .5rem;
+    padding-right: .5rem;
 }
 
 .epicStyle[b-nmzoxhkka9] {
