@@ -41,6 +41,18 @@ namespace Tasky.Client.Services.TaskService
             return tasksInOrder;
         }
 
+
+        public async Task<List<NoteModel>> GetSubtasksByParentId(int parentId)
+        {
+            var tasks = await _httpClient.GetFromJsonAsync<List<NoteModel>>($"api/notemodels/subtasks/{parentId}");
+            if (tasks == null)
+            {
+                return null;
+            }
+          //  var tasksInOrder = tasks.OrderBy(x => x.Order ?? x.TaskId).ToList();
+            return tasks;
+        }
+
         public async Task<NoteModel?> GetTaskById(int? taskId)
         {
             if (taskId == null)

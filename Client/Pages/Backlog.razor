@@ -32,7 +32,7 @@
         <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" LastStatus="lastStatus" ListUpdated="RefreshList" />
         <ProductGoalComponent />
     </div>
-    <EpicComponent Tasks="tasks" RefreshList="HandleEpicChange"></EpicComponent>
+    <EpicComponent Tasks="tasks" RefreshList="HandleEpicChange" EpicDeleted="HandleRefresh"></EpicComponent>
 }
 
 
@@ -69,19 +69,6 @@
                        SimpleStateChange="RemoveTaskWithoutCallingDB"
                        OnTaskDragged="HandleTaskDragged"
                        OnOrderUpdated="UpdateTaskAsync" />
-                    @foreach (var t in subtasks)
-                    {
-                        if (t.LinkTo == task.TaskId)
-                        {
-                            <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria"
-                       Task="t"
-                       RefreshList="RefreshList"
-                       CallSubTask="() => AddNewSubTask(task.TaskId)"
-                       SimpleStateChange="RemoveTaskWithoutCallingDB"
-                       OnTaskDragged="HandleTaskDragged"
-                       OnOrderUpdated="UpdateTaskAsync" />
-                        }
-                    }
                 }
             }
         }
@@ -104,6 +91,8 @@
 
     public TaskComponent? taskComponent;
     public NoteModel? Payload;
+
+
 
     void HandleTaskDragged(NoteModel payload)
     {

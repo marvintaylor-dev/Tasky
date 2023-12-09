@@ -71,22 +71,21 @@ namespace Tasky.Server.Data.EpicRepository
 
         public async Task<Epic> UpdateEpic(Epic Epic)
         {
-            Epic result = _db.Epics.FirstOrDefault(s => s.EpicId == Epic.EpicId) ?? throw new Exception($"Could not find id");
-            _mapper.Map(Epic, result);
+            Epic result = _db.Epics.Include(x => x.UserStoriesInEpic).FirstOrDefault(s => s.EpicId == Epic.EpicId) ?? throw new Exception($"Could not find id");
+            // _mapper.Map(Epic, result);
 
             //result.EpicId = Epic.EpicId;
-            //if (Epic != null)
-            //{
-            //    result.EpicName = Epic.EpicName;
-            //    result.EpicBudget = Epic.EpicBudget;
-            //    result.EpicCategory = Epic.EpicCategory;
-            //    result.EpicColor = Epic.EpicColor; 
-            //    result.UserStoriesInEpic?.Clear();
-            //    if (Epic.UserStoriesInEpic.Count > 0)
-            //    {
-            //        result.UserStoriesInEpic.AddRange(Epic.UserStoriesInEpic);
-            //    }
-            //}
+            if (Epic != null)
+            {
+                result.EpicName = Epic.EpicName;
+                result.EpicBudget = Epic.EpicBudget;
+                result.EpicCategory = Epic.EpicCategory;
+                result.EpicColor = Epic.EpicColor;
+                result.UserStoriesInEpic = Epic.UserStoriesInEpic;
+            }
+
+
+
 
 
             await _db.SaveChangesAsync();

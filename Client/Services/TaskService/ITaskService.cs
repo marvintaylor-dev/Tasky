@@ -9,6 +9,7 @@ namespace Tasky.Client.Services.TaskService
         Task<List<NoteModel>> GetTasksInOrder();
 
         Task<List<NoteModel>> GetSubtasks();
+        Task<List<NoteModel>> GetSubtasksByParentId(int parentId);
         Task<NoteModel> GetTaskById(int? taskId);
         Task<NoteModel> AddTask(NoteModel addTask);
         Task<NoteModel> UpdateTask(NoteModel updateTask);

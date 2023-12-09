@@ -33,11 +33,11 @@ namespace Tasky.Shared
         [ForeignKey("MemberId")]
         public int Assignee { get; set; }
 
-        [ForeignKey("EpicId")]
+        [ForeignKey(nameof(EpicId))]
         public int? EpicId { get; set; } 
 
         //Navigation Property
-        public Epic Epic { get; set; } = new();
+        public Epic? Epic { get; set; }
 
         [ForeignKey("TagId")]
         public int? Tag { get; set; }

@@ -51,12 +51,18 @@
             <MudIconButton Icon="@Icons.Material.Filled.Link"
                        Variant="Variant.Outlined"
                        Style="@($"border:{Colors.Grey.Lighten1}; outline:{Colors.Grey.Lighten1}; padding: 2px;")"
-                       Size="Size.Small" @onclick="AddSubTask" />
+                       Size="Size.Small" @onclick="() => AddNewSubTask(Task.TaskId)" />
+            if (subtasks.Count > 0)
+            {
+                <button class="subtasksIcon" @onclick="toggleShow">@subtasks.Count</button>
+            }
         }
         else if (Task.isSubTask == true)
         {
             <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
         }
+        <div @onclick="ToggleSplit" style="border: 1px solid gray;">Split</div>
+
         <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
 
 
@@ -67,76 +73,134 @@
             <EstimationComponent Task="Task" RefreshList="StateHasChanged" />
         </div>
 
-     
+
 
         <div class="moreBtn" @onclick="showOptions">More...</div>
 
-       
-       
 
-        <div class="moreComponents mud-elevation-1 py-2 px-2 rounded white @displayNone ">
-            <div class="d-flex justify-content-end">
-                <span>
 
-                    <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="showOptions"></MudIcon>
-                </span>
-            </div>
+        @if (displayNone != "none")
+        {
+            <div class="moreComponents mud-elevation-1 py-2 px-2 rounded white @displayNone ">
+                <div class="d-flex justify-content-end">
+                    <span>
 
-            <div class="moreComponentItem">
-                <PriorityComponent OnClick="Activate" Task="Task" />
-                <p>Set Priority Level</p>
+                        <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="showOptions"></MudIcon>
+                    </span>
+                </div>
+
+                <div class="moreComponentItem">
+                    <PriorityComponent OnClick="Activate" Task="Task" />
+                    <p>Set Priority Level</p>
+                </div>
+                <div class="moreComponentItem">
+                    <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+                    <p>Assign Task</p>
+                </div>
+                <div class="moreComponentItem">
+                    <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+                    <p>Set Start/End Dates</p>
+                </div>
+                <div class="moreComponentItem">
+                    <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
+                    <p>Delete This Task</p>
+                </div>
+                <div>
+                    <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
+                </div>
             </div>
-            <div class="moreComponentItem">
-                <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-                <p>Assign Task</p>
-            </div>
-            <div class="moreComponentItem">
-                <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-                <p>Set Start/End Dates</p>
-            </div>
-            <div class="moreComponentItem">
-                <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
-                <p>Delete This Task</p>
-            </div>
-        </div>
-        <div>
-            @if (IsClicked)
-            {
-                <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
-            }
-        </div>
+        }
 
     </div>
 
-    @if (Task.EpicId != 0)
+    @if (Task.EpicId != null)
     {
-        foreach (var epic in epics)
-        {
-            if (epic.EpicId == Task.EpicId)
-            {
-                <div class="epicStyle mud-@epic.EpicColor.ToString().ToLower() mud-elevation-1 d-flex flex-column align-items-center justify-content-center">
-                    <p class="rotate90">@epic.EpicName</p>
-                </div>
-            }
-        }
+        <div class="epicStyle mud-@epic.EpicColor.ToString().ToLower() mud-elevation-1">
+            <p class="rotate90">@epic.EpicName</p>
+        </div>
     }
 
-    
 </div>
 
+@if (show)
+{
+    @foreach (var t in subtasks)
+    {
+        <TaskComponent ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria"
+               Task="t"
+               RefreshList="RefreshTasks"
+               CallSubTask="() => AddNewSubTask(Task.TaskId)"
+               SimpleStateChange="RemoveTaskWithoutCallingDB" />
+    }
+}
 
 
+@if (showSplit)
+{
+    <SplittingComponent Task="Task" />
+}
 
 
 
 
 
 @code {
-    public List<NoteModel> tasks = new List<NoteModel>();
-    public NoteModel newSubTask = new NoteModel();
-    public List<Epic> epics = new();
+    //public List<NoteModel> tasks = new List<NoteModel>();
+    public List<NoteModel> subtasks = new List<NoteModel>();
+    // public NoteModel newSubTask = new NoteModel();
+    public Epic epic = new();
+    public NoteModel newTask = new();
+    public string message = "";
+    public bool ShowOrHideAcceptanceCriteria = false;
+    public bool show = false;
+    public bool showSplit = false;
+
+
+    void toggleShow()
+    {
+        show = !show;
+    }
+
+    void ToggleSplit()
+    {
+        showSplit = !showSplit;
+    }
 
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
+
+    void RemoveTaskWithoutCallingDB()
+    {
+        subtasks = subtasks.FindAll(x => x.TaskId != 0);
+    }
+
+    void AddNewSubTask(int taskId)
+    {
+        //var anyTaskWithZero = tasks.Find(x => x.TaskId == 0);
+        var taskWithIdOfZero = subtasks.Find(x => x.TaskId == 0);
+        if (taskWithIdOfZero == null)
+        {
+            // newTask.Name = "New Subtask";
+            newTask.isSubTask = true;
+            newTask.LinkTo = taskId;
+            subtasks.Add(newTask);
+            show = true;
+            // await taskService.AddTask(newTask);
+            //Task = await taskService.GetTaskById(taskId);
+            StateHasChanged();
+            newTask = new NoteModel();
+        }
+        else
+        {
+            message = "Save your newly created task or subtask before creating another.";
+        }
+
+    }
+
+    void ToggleAcceptanceCriteriaVisibility()
+    {
+        ShowOrHideAcceptanceCriteria = !ShowOrHideAcceptanceCriteria;
+        StateHasChanged();
+    }
 
 
     void showOptions()
@@ -159,6 +223,8 @@
 
     [Parameter]
     public EventCallback<NoteModel> OnTaskDragged { get; set; }
+
+
 
     public NoteModel Payload = new();
 
@@ -233,8 +299,12 @@
         //turn off adblocker in google chrome - else an error will be thrown
         //await JS.InvokeVoidAsync("preventTextAreaLineChange");
 
-        tasks = await taskService.GetTasks();
-        epics = await epicService.GetAllEpics();
+        //tasks = await taskService.GetTasks();
+        subtasks = await taskService.GetSubtasksByParentId(Task.TaskId);
+        if (Task.EpicId != null)
+        {
+            epic = await epicService.GetEpicById((int)Task.EpicId);
+        }
         await base.OnParametersSetAsync();
     }
 
@@ -254,14 +324,14 @@
         await CallSubTask.InvokeAsync();
     }
 
-    void AddNewSubTask()
-    {
-        tasks.Add(newSubTask);
-        newSubTask.Name = String.Empty;
-        newSubTask.isSubTask = true;
-        newSubTask.LinkTo = Task.TaskId;
-        StateHasChanged();
-    }
+    //void AddNewSubTask()
+    //{
+    //    subtasks.Add(newSubTask);
+    //    newSubTask.Name = String.Empty;
+    //    newSubTask.isSubTask = true;
+    //    newSubTask.LinkTo = Task.TaskId;
+    //    StateHasChanged();
+    //}
 
     public async void RefreshTasks()
     {

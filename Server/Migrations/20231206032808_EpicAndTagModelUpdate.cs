@@ -4,17 +4,10 @@
 
 namespace Tasky.Server.Migrations
 {
-    public partial class EpicModelAdded : Migration
+    public partial class EpicAndTagModelUpdate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "Epic",
-                table: "Tasks",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-
             migrationBuilder.AddColumn<int>(
                 name: "EpicId",
                 table: "Tasks",
@@ -61,10 +54,6 @@ namespace Tasky.Server.Migrations
 
             migrationBuilder.DropIndex(
                 name: "IX_Tasks_EpicId",
-                table: "Tasks");
-
-            migrationBuilder.DropColumn(
-                name: "Epic",
                 table: "Tasks");
 
             migrationBuilder.DropColumn(

@@ -1,5 +1,7 @@
-﻿@inject IEpicService epicService;
+﻿@using Tasky.Shared.DTOs;
+@inject IEpicService epicService;
 @inject ITaskService taskService;
+@inject IStatusService statusService;
 
 
 
@@ -30,7 +32,6 @@
             </div>
             <MudChip Variant="Variant.Filled" Size="Size.Small" Color="(MudBlazor.Color)newEpic.EpicColor">@newEpic.EpicColor</MudChip>
 
-
             <MudButton Color="MudBlazor.Color.Success" @onclick="SaveEpic">Save</MudButton>
         </div>
     }
@@ -44,29 +45,38 @@
 
         if (toggler.Show && toggler.EpicId == epic.EpicId)
         {
-            @* <div class="d-flex flex-column">
-                @foreach (var task in epic.UserStoriesInEpic)
-                {
-                    <div class="d-flex gap-2">
-                        <p>@task.Order, </p>
-                        @DisplayText(task.Name, 20)
-                        <div style="color: red;" @onclick="() => RemoveTaskFromEpic(task, epic)">Remove</div>
-                    </div>
-                }
-            </div>*@
+            @* if (epic.UserStoriesInEpic?.Count > 0)
+            {
+                <div class="d-flex flex-column">
+                    @foreach (var task in epic.UserStoriesInEpic)
+                    {
 
-            <label for="taskList">Add Tasks to @epic.EpicName :</label>
-            <select name="taskList" @bind-value="placeholderTaskId" @bind-value:event="onchange">
-                @foreach (var task in Tasks)
-                {
-                    <option value="@task.TaskId">
-                        <p>@task.Order, </p>
-                        @DisplayText(task.Name, 20)
-                    </option>
-                }
-            </select>
+                        <div class="d-flex gap-2">
+                            <p>@task.Order, </p>
+                            @DisplayText(task.Name, 20)
+                            <div style="color: red;" @onclick="() => RemoveTaskFromEpic(task, epic)">Remove</div>
+                        </div>
+                    }
+                </div>
+            }*@
 
-            <MudButton OnClick="() => SaveToEpic(placeholderTaskId, epic)">Save to Epic</MudButton>
+            <div class="d-flex flex-column">
+                <label for="taskList">Add Tasks to @epic.EpicName :</label>
+                <select style="border: 2px solid lightgray; min-width: 150px; max-width: 200px; " name="taskList" @bind-value="placeholderTaskId" @bind-value:event="onchange">
+                    @foreach (var task in Tasks)
+                    {
+                        if (task.Status != lastStatus.StatusId)
+                        {
+                            <option value="@task.TaskId">
+                                <p>@task.Order, </p>
+                                @DisplayText(task.Name, 20)
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <MudButton OnClick="() => SaveToEpic(epic)">Save to Epic</MudButton>
 
         }
     }
@@ -80,7 +90,9 @@
     List<Epic> epics = new();
     List<int> taskList = new();
     public ToggleDropdown toggler = new();
+    public StatusDTO lastStatus = new();
     int placeholderTaskId;
+
 
     public MudBlazor.Color ColorIs { get; set; } = Color.Default;
 
@@ -88,6 +100,9 @@
 
     [Parameter]
     public EventCallback<int> RefreshList { get; set; }
+
+    [Parameter]
+    public EventCallback<int> EpicDeleted { get; set; }
 
     [Parameter]
     public List<NoteModel> Tasks { get; set; }
@@ -108,10 +123,11 @@
         StateHasChanged();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+        await base.OnParametersSetAsync();
+        lastStatus = await statusService.GetLastStatus();
         epics = await epicService.GetAllEpics();
-        await base.OnInitializedAsync();
     }
 
     public void HandleToggleDropdown(int epicId)
@@ -127,16 +143,16 @@
         public bool Show { get; set; } = false;
     }
 
-    public async Task SaveToEpic(int placeholderTaskId, Epic epic)
+    public async Task SaveToEpic(Epic epic)
     {
         NoteModel actualTask = await taskService.GetTaskById(placeholderTaskId);
         actualTask.EpicId = epic.EpicId;
         //epic.UserStoriesInEpic.Add(actualTask);
-        //await epicService.UpdateEpic(epic);
+        // await epicService.UpdateEpic(epic);
         await taskService.UpdateTask(actualTask);
         //StateHasChanged();
-        toggler = new();
         placeholderTaskId = 0;
+        toggler = new();
 
         await RefreshList.InvokeAsync(actualTask.TaskId);
     }
@@ -162,7 +178,7 @@
         await epicService.DeleteEpic(Epic.EpicId);
 
 
-        await RefreshList.InvokeAsync();
+        await EpicDeleted.InvokeAsync();
 
     }
 

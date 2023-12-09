@@ -50,6 +50,10 @@
         {
             var result = await _httpClient.PutAsJsonAsync($"api/Epic", updateEpic);
             var Epic = await result.Content.ReadFromJsonAsync<Epic>();
+            if (result == null)
+            {
+                return null;
+            }
             return Epic;
         }
     }

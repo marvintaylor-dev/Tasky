@@ -12,8 +12,8 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231204023512_updateEpicModel2")]
-    partial class updateEpicModel2
+    [Migration("20231206032808_EpicAndTagModelUpdate")]
+    partial class EpicAndTagModelUpdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

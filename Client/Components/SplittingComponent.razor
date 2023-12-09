@@ -1,0 +1,30 @@
+﻿
+<div class="splitContainer">
+    <TaskComponent Task="Task" />
+
+    @foreach (NoteModel task in TaskList)
+    {
+        <TaskComponent Task="task" />
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    public List<NoteModel> TaskList = new();
+    public NoteModel task1 = new();
+    public NoteModel task2 = new();
+
+    void PopUpSplit(NoteModel task)
+    {
+        task1.Order = task.Order;
+        task1.EpicId = task.EpicId;
+        task2.Order = task.Order;
+        task2.EpicId = task.EpicId;
+        TaskList.Add(task1);
+        TaskList.Add(task2);
+        StateHasChanged();
+    }
+}

@@ -49,6 +49,21 @@ namespace Tasky.Server.Controllers
         }
 
         [HttpGet]
+        [Route("subtasks/{parentId:int}")]
+        public async Task<ActionResult<NoteModel>> GetAllSubtasks(int parentId)
+        {
+            try
+            {
+                var tasks = await _repository.GetAllSubtasksByParentId(parentId);
+                return Ok(tasks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving data from the database. {ex}");
+            }
+        }
+
+        [HttpGet]
         [Route("inorder")]
         public async Task<ActionResult<NoteModel>> GetAllTasksInOrder()
         {

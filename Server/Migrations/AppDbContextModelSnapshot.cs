@@ -676,7 +676,7 @@ namespace Tasky.Server.Migrations
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
                 {
                     b.HasOne("Tasky.Shared.Epic", "Epic")
-                        .WithMany()
+                        .WithMany("UserStoriesInEpic")
                         .HasForeignKey("EpicId");
 
                     b.Navigation("Epic");
@@ -702,6 +702,11 @@ namespace Tasky.Server.Migrations
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Tasky.Shared.Epic", b =>
+                {
+                    b.Navigation("UserStoriesInEpic");
                 });
 
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>

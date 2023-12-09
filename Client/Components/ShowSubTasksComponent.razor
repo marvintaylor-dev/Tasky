@@ -47,7 +47,7 @@
     protected override async Task OnInitializedAsync()
     {
         task = await taskService.GetTaskById(TaskId);
-        tasks = await taskService.GetTasks();
+        tasks = await taskService.GetSubtasks();
 
         foreach (var potentialSubtask in tasks)
         {
