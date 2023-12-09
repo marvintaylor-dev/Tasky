@@ -57,6 +57,10 @@
         additionalTask.Order = Task.Order;
         additionalTask.EpicId = Task.EpicId;
         additionalTask.Assignee = Task.Assignee;
+        if (Task.TasksSprints != null)
+        {
+            additionalTask.TasksSprints = Task.TasksSprints;
+        }
         TaskList.Add(additionalTask);
         additionalTask = new();
     }
