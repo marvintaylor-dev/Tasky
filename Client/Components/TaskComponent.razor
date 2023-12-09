@@ -84,37 +84,7 @@
 
 
 
-        @if (displayNone != "none")
-        {
-            <div class="moreComponents mud-elevation-1 py-2 px-2 rounded white @displayNone ">
-                <div class="d-flex justify-content-end">
-                    <span>
-
-                        <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="showOptions"></MudIcon>
-                    </span>
-                </div>
-
-                <div class="moreComponentItem">
-                    <PriorityComponent OnClick="Activate" Task="Task" />
-                    <p>Set Priority Level</p>
-                </div>
-                <div class="moreComponentItem">
-                    <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-                    <p>Assign Task</p>
-                </div>
-                <div class="moreComponentItem">
-                    <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
-                    <p>Set Start/End Dates</p>
-                </div>
-                <div class="moreComponentItem">
-                    <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
-                    <p>Delete This Task</p>
-                </div>
-                <div>
-                    <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
-                </div>
-            </div>
-        }
+       
 
     </div>
 
@@ -126,6 +96,40 @@
     }
 
 </div>
+
+@if (displayNone != "none")
+{
+    <div class="moreComponents mud-elevation-1 py-2 px-2 rounded white @displayNone ">
+        
+
+        <div class="moreComponentItem">
+            <PriorityComponent OnClick="Activate" Task="Task" />
+            <p>Set Priority Level</p>
+        </div>
+        <div class="moreComponentItem">
+            <MemberComponent ReadClicked="IsClicked" OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            <p>Assign Task</p>
+        </div>
+        <div class="moreComponentItem">
+            <DateComponent OnClick="Activate" Task="Task" RefreshList="RefreshList" />
+            <p>Set Start/End Dates</p>
+        </div>
+        <div class="moreComponentItem">
+            <DeleteTaskComponent Task="Task" RefreshList="RefreshTasks" SimpleStateChange="InformPageOfStateChange" />
+            <p>Delete This Task</p>
+        </div>
+        <div>
+            <EditSaveComponent OnClick="Activate" Task="Task" RefreshList="RefreshTasks" />
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <span>
+                <MudIcon Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="showOptions"></MudIcon>
+            </span>
+            <p>Close</p>
+        </div>
+    </div>
+}
 
 @if (show)
 {
