@@ -24,8 +24,10 @@ namespace Tasky.Shared
 
         public int? Order { get; set; }
 
-        [ForeignKey("StoryId")]
-        public int? UserStory { get; set; }
+        [ForeignKey(nameof(UserStoryId))]
+        public int? UserStoryId { get; set; }
+
+        public UserStory UserStory { get; set; }
 
         public string AcceptanceCriteria { get; set; } = string.Empty;
 

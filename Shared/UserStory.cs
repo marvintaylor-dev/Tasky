@@ -11,7 +11,7 @@ namespace Tasky.Shared
     public class UserStory
     {
         [Key]
-        public int StoryId { get; set; }
+        public int UserStoryId { get; set; }
 
         [ForeignKey("TaskId")]
         public int TaskId { get; set; }
