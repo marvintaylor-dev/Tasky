@@ -28,7 +28,14 @@
                 Hide Acceptance Criteria
             </MudButton>
         }
-
+        @if(ShowUserStoriesOrTaskName == false)
+        {
+            <MudButton @onclick="ToggleShowStoriesOrTaskName">Show User Stories</MudButton>
+        }
+        else
+        {
+            <MudButton @onclick="ToggleShowStoriesOrTaskName">Show Task Names</MudButton>
+        }
         <CompletedTasksComponent @ref="CompletedTasksComponent" Tasks="tasks" Subtasks="subtasks" LastStatus="lastStatus" ListUpdated="RefreshList" />
         <ProductGoalComponent />
     </div>
@@ -62,6 +69,7 @@
                 {
                     <TaskComponent @key="task.TaskId"
                        ShowOrHideCriteria="@ShowOrHideAcceptanceCriteria"
+                       ShowUserStoriesOrTaskName="@ShowUserStoriesOrTaskName"
                        Task="task"
                        CurrentSprintId="CurrentSprint.SprintId"
                        RefreshList="RefreshList"
@@ -88,9 +96,14 @@
 @code {
     private bool isLoading = true;
     public bool ShowOrHideAcceptanceCriteria = false;
+    public bool ShowUserStoriesOrTaskName = false;
     private string message = string.Empty;
-    
 
+    void ToggleShowStoriesOrTaskName()
+    {
+        ShowUserStoriesOrTaskName = !ShowUserStoriesOrTaskName;
+        StateHasChanged();
+    }
 
     public TaskComponent? taskComponent;
     public NoteModel? Payload;

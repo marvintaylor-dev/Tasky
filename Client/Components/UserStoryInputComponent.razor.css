@@ -1,11 +1,10 @@
-﻿.taskName {
-    width: 200px;
-}
+﻿
 
-#taskInput {
+.user-story-input {
     padding: .2rem .5rem;
     scroll-behavior: smooth;
     min-height: fit-content;
+    border: 1px solid lightgray;
 }
 
 

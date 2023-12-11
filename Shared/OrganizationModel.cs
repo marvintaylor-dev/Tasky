@@ -12,7 +12,7 @@ namespace Tasky.Shared
     public class OrganizationModel
     {
         [Key]
-        public int OrganizationId { get; set; }
+        public Guid OrganizationId { get; set; }
         //[Required]
         public int? OwnerId { get; set; }
         //public List<Member> OrganizationMembers { get; set; } = new();

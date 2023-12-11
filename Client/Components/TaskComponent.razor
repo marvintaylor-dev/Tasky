@@ -37,7 +37,15 @@
     <div id="@Task.TaskId" class="taskContainer mud-elevation-1 px-5  white @heightOfTask">
 
         <OrderComponent Task="Task" Active="Activate" RefreshList="RefreshList" />
-        <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
+        <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Default" @onclick="ToggleShowUserStory" Size="Size.Small" />
+        @if (ShowUserStoriesOrTaskName)
+        {
+            <UserStoryInputComponent Active="Activate" Task="Task" RefreshList="RefreshList" />
+        }
+        else
+        {
+            <TaskInputComponent3 Active="Activate" Task="Task" RefreshList="RefreshList" />
+        }
         @if (ShowOrHideCriteria)
         {
             <textarea cols="40" rows="4" @bind-value="Task.AcceptanceCriteria" @bind-value:event="oninput"></textarea>
@@ -62,10 +70,10 @@
             <ReassignSubtaskComponent OnClick="Activate" Task="Task" />
         }
 
-       <div style="cursor: pointer;">
+        <div style="cursor: pointer;">
             <div @onclick="TurnOffSplit" class="splitButton" style="border: 1px solid gray; padding: 0rem .25rem 0rem .25rem;">/</div>
-       </div>
-        
+        </div>
+
 
 
         <TagComponent Task="Task" OnClick="Activate" RefreshList="RefreshList" />
@@ -84,7 +92,7 @@
 
 
 
-       
+
 
     </div>
 
@@ -100,7 +108,7 @@
 @if (displayNone != "none")
 {
     <div class="moreComponents mud-elevation-1 py-2 px-2 rounded white @displayNone ">
-        
+
 
         <div class="moreComponentItem">
             <PriorityComponent OnClick="Activate" Task="Task" />
@@ -154,6 +162,34 @@
 
 
 @code {
+    [Parameter]
+    public EventCallback<NoteModel> OnOrderUpdated { get; set; }
+
+    [Parameter]
+    public EventCallback<NoteModel> OnTaskDragged { get; set; }
+
+    [Parameter]
+    public int CurrentSprintId { get; set; }
+
+    [Parameter]
+    public NoteModel Task { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshList { get; set; }
+
+    [Parameter]
+    public EventCallback CallSubTask { get; set; }
+
+    [Parameter]
+    public EventCallback SimpleStateChange { get; set; }
+
+    [Parameter]
+    public bool ShowOrHideCriteria { get; set; }
+
+    [Parameter]
+    public bool ShowUserStoriesOrTaskName { get; set; }
+
+
     //public List<NoteModel> tasks = new List<NoteModel>();
     public List<NoteModel> subtasks = new List<NoteModel>();
     // public NoteModel newSubTask = new NoteModel();
@@ -161,11 +197,25 @@
     public NoteModel newTask = new();
     public string message = "";
     public bool ShowOrHideAcceptanceCriteria = false;
+    public bool ShowStoriesOrTaskName = false;
     public bool show = false;
     public bool showSplit = false;
-    
+    public bool showUserStory = true;
+    public bool display = false;
+    public string displayNone = "none";
+    public NoteModel Payload = new();
+    private string dragClass = string.Empty;
+    public string TaskOrSubtask => Task.isSubTask == false ? "taskId" : "subtaskId";
+    public bool IsClicked { get; set; }
 
-    
+
+
+    void ToggleShowUserStory()
+    {
+        ShowUserStoriesOrTaskName = !ShowUserStoriesOrTaskName;
+        StateHasChanged();
+    }
+
     void toggleShow()
     {
         show = !show;
@@ -232,22 +282,9 @@
             displayNone = "none";
         }
     }
-    public bool display = false;
-    public string displayNone = "none";
+   
 
-    [Parameter]
-    public EventCallback<NoteModel> OnOrderUpdated { get; set; }
-
-    [Parameter]
-    public EventCallback<NoteModel> OnTaskDragged { get; set; }
-
-
-
-    public NoteModel Payload = new();
-
-    [Parameter]
-    public int CurrentSprintId { get; set; }
-
+  
 
     public void HandleDragStart(NoteModel selectedTask)
     {
@@ -277,26 +314,7 @@
         dragClass = "expand";
     }
 
-    private string dragClass = string.Empty;
-
-    [Parameter]
-    public NoteModel Task { get; set; }
-
-    [Parameter]
-    public EventCallback RefreshList { get; set; }
-
-    [Parameter]
-    public EventCallback CallSubTask { get; set; }
-
-    [Parameter]
-    public EventCallback SimpleStateChange { get; set; }
-
-    [Parameter]
-    public bool ShowOrHideCriteria { get; set; }
-
-    public string TaskOrSubtask => Task.isSubTask == false ? "taskId" : "subtaskId";
-
-    public bool IsClicked { get; set; }
+    
 
     void Activate(bool isClicked)
     {

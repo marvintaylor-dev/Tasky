@@ -93,7 +93,7 @@ namespace Tasky.Server.Data.TaskRepository
 
         public async Task<List<NoteModel>> GetAllTasksInOrder()
         {
-            var result = await _context.Tasks.Include(x => x.TasksSprints).OrderBy(x => x.Order ?? x.TaskId).ToListAsync();
+            var result = await _context.Tasks.Include(x => x.TasksSprints).Include(x => x.UserStory).OrderBy(x => x.Order ?? x.TaskId).ToListAsync();
             if (result == null)
             {
                 throw new Exception("No Tasks were found");

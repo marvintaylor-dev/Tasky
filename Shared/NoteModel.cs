@@ -27,7 +27,7 @@ namespace Tasky.Shared
         [ForeignKey(nameof(UserStoryId))]
         public int? UserStoryId { get; set; }
 
-        public UserStory UserStory { get; set; }
+        public UserStory? UserStory { get; set; }
 
         public string AcceptanceCriteria { get; set; } = string.Empty;
 

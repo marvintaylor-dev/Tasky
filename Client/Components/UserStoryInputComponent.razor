@@ -1,13 +1,27 @@
 ﻿@inject IJSRuntime JS;
 @inject ITaskService taskService;
 
-<div class="taskInput d-flex justify-content-left align-items-center @SubtaskCss">
-    <textarea id="taskInput"
-              placeholder="Enter Task Name"
+<div class="taskInput d-flex justify-content-left align-items-center flex-wrap @SubtaskCss">
+    <textarea class="user-story-input"
+              placeholder="As a..."
+              rows="1" cols="10"
+              @onkeyup="KeyPressed"
+              @onfocusout="DeActivate"
+              @bind-value="userStory.As"
+              @bind-value:event="oninput" />
+    <textarea class="user-story-input"
+              placeholder="I want..."
+              rows="1" cols="20"
+              @onkeyup="KeyPressed"
+              @onfocusout="DeActivate"
+              @bind-value="userStory.Want"
+              @bind-value:event="oninput" />
+    <textarea class="user-story-input"
+              placeholder="So that..."
               rows="1" cols="30"
               @onkeyup="KeyPressed"
               @onfocusout="DeActivate"
-              @bind-value="Task.Name"
+              @bind-value="userStory.So"
               @bind-value:event="oninput" />
 </div>
 
@@ -18,15 +32,26 @@
 
     [Parameter]
     public EventCallback<bool> Active { get; set; }
-
     [Parameter]
     public EventCallback<bool> RefreshList { get; set; }
+
+    public UserStory userStory = new();
 
     public string SubtaskCss => Task.isSubTask == true ? "subtaskIndent" : "";
 
     public async void DeActivate()
     {
         await Active.InvokeAsync(false);
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        if (Task.UserStory != null)
+        {
+            userStory = Task.UserStory;
+        }
+        return base.OnParametersSetAsync();
+
     }
 
     public async void KeyPressed(KeyboardEventArgs e)
@@ -42,12 +67,16 @@
             {
                 if (Task.TaskId > 0)
                 {
+                    Task.UserStory = userStory;
+                    userStory.TaskId = Task.TaskId;
                     await taskService.UpdateTask(Task);
                     await RefreshList.InvokeAsync();
 
                 }
                 else if (Task.TaskId == 0)
                 {
+                    Task.UserStory = userStory;
+                    userStory.TaskId = Task.TaskId;
                     await taskService.AddTask(Task);
                     await RefreshList.InvokeAsync();
                 }
