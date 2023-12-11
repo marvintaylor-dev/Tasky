@@ -30,5 +30,11 @@ namespace Tasky.Shared
         public string TimeZone { get; set; } = string.Empty;
         //public List<TimeSpan> ActiveTimes { get; set; }
         public int TeamId { get; set; } = 0;
+
+        [ForeignKey(nameof(ProjectId))]
+        public int ProjectId { get; set; }
+        //[ForeignKey(nameof(OrganizationId))]
+
+        //public Guid OrganizationId { get; set; }
     }
 }

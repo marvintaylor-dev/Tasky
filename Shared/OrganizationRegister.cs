@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace Tasky.Shared
 {
-    public class UserRegister
+    public class OrganizationRegister
     {
         [Required, EmailAddress]
         public string Email { get; set; } = String.Empty;
+        [Required]
+        public string OrganizationName = string.Empty;
         [Required, StringLength(100, MinimumLength = 6)]
         public string Password { get; set; } = String.Empty;
         [Compare("Password", ErrorMessage = "The passwords do not match.")]

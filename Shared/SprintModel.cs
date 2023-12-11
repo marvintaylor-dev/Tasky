@@ -52,7 +52,14 @@ namespace Tasky.Shared
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime LastUpdatedAt { get; set; } = DateTime.Now;
-        
+
+        [ForeignKey(nameof(ProjectId))]
+
+        public int ProjectId { get; set; }
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
+
 
         //private readonly List<Member> _members = new();
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tasky.Shared
 {
@@ -17,5 +18,12 @@ namespace Tasky.Shared
         public int StatusOrder { get; set; } = 1;
 
         public DateTime? CreatedAt { get; set; }
+
+        [ForeignKey(nameof(ProjectId))]
+
+        public int ProjectId { get; set; }
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
     }
 }

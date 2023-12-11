@@ -23,7 +23,14 @@ namespace Tasky.Shared
         public string EpicCategory { get; set; } = string.Empty;
 
         //navigation property
-        public virtual IList<NoteModel>? UserStoriesInEpic { get; set; } 
+        public virtual IList<NoteModel>? UserStoriesInEpic { get; set; }
+
+        [ForeignKey(nameof(ProjectId))]
+
+        public int ProjectId { get; set; }
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
 
     }
 }

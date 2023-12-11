@@ -12,7 +12,7 @@ namespace Tasky.Shared
     {
         [Key]
         public int ProjectId { get; set; }
-        public int OrganizationId { get; set; }
+        
         public string ProjectName { get; set; } = string.Empty;
         public string ProjectDescription { get; set; } = string.Empty;
         [Column(TypeName = "decimal(13,4)")]
@@ -21,5 +21,8 @@ namespace Tasky.Shared
         public List<ProductGoal>? ProductGoalHistory { get; set; } = new();
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set;} = DateTime.Now;
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
     }
 }

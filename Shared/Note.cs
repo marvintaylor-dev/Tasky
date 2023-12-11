@@ -18,6 +18,13 @@ namespace Tasky.Shared
 
         [ForeignKey("TaskId")]
         public int AssignedToTask { get; set; }
-       
+
+        [ForeignKey(nameof(ProjectId))]
+
+        public int ProjectId { get; set; }
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
+
     }
 }

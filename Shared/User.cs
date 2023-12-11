@@ -18,5 +18,8 @@ namespace Tasky.Shared
 
 
         public DateTime DateCreated { get; set; } = DateTime.Now;
+
+
+        public List<Organization> Organizations { get; set; }
     }
 }

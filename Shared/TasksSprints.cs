@@ -14,5 +14,13 @@ namespace Tasky.Shared
         public int TaskId { get; set; }
         [Key, Column(Order = 1)]
         public int SprintId { get; set; }
+
+        [ForeignKey(nameof(ProjectId))]
+
+        public int ProjectId { get; set; }
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
+
     }
 }

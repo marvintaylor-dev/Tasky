@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tasky.Server.Data;
 
@@ -11,9 +12,10 @@ using Tasky.Server.Data;
 namespace Tasky.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231211044400_Major1-Projects")]
+    partial class Major1Projects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("SprintsAssignedToSprintId");
 
-                    b.ToTable("MemberSprintModel", (string)null);
+                    b.ToTable("MemberSprintModel");
                 });
 
             modelBuilder.Entity("NoteModelSprintModel", b =>
@@ -49,22 +51,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("AssignedToSprintSprintId");
 
-                    b.ToTable("NoteModelSprintModel", (string)null);
-                });
-
-            modelBuilder.Entity("OrganizationUser", b =>
-                {
-                    b.Property<Guid>("OrganizationsOrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("UsersUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrganizationsOrganizationId", "UsersUserId");
-
-                    b.HasIndex("UsersUserId");
-
-                    b.ToTable("OrganizationUser", (string)null);
+                    b.ToTable("NoteModelSprintModel");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Epic", b =>
@@ -89,15 +76,12 @@ namespace Tasky.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.HasKey("EpicId");
 
-                    b.ToTable("Epics", (string)null);
+                    b.ToTable("Epics");
                 });
 
             modelBuilder.Entity("Tasky.Shared.EstimationGroup", b =>
@@ -115,9 +99,6 @@ namespace Tasky.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
@@ -126,7 +107,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("EstimationGroupId");
 
-                    b.ToTable("EstimationGroups", (string)null);
+                    b.ToTable("EstimationGroups");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Member", b =>
@@ -182,7 +163,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("MemberId");
 
-                    b.ToTable("Members", (string)null);
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Note", b =>
@@ -206,15 +187,12 @@ namespace Tasky.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.HasKey("NoteId");
 
-                    b.ToTable("Notes", (string)null);
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
@@ -251,9 +229,6 @@ namespace Tasky.Server.Migrations
                     b.Property<int?>("Order")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("PriorityLevel")
                         .HasColumnType("int");
 
@@ -287,39 +262,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("UserStoryId");
 
-                    b.ToTable("Tasks", (string)null);
-                });
-
-            modelBuilder.Entity("Tasky.Shared.Organization", b =>
-                {
-                    b.Property<Guid>("OrganizationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OrganizationDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrganizationId");
-
-                    b.ToTable("Organizations", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Tasky.Shared.ProductGoal", b =>
@@ -332,9 +275,6 @@ namespace Tasky.Server.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProductGoalName")
                         .IsRequired()
@@ -350,7 +290,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProductGoalModels", (string)null);
+                    b.ToTable("ProductGoalModels");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Project", b =>
@@ -366,9 +306,6 @@ namespace Tasky.Server.Migrations
 
                     b.Property<int?>("CurrentProductGoal")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("ProjectBudget")
                         .HasColumnType("decimal(13,4)");
@@ -386,9 +323,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("ProjectId");
 
-                    b.HasIndex("OrganizationId");
-
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Tasky.Shared.RelativeEstimation", b =>
@@ -405,9 +340,6 @@ namespace Tasky.Server.Migrations
                     b.Property<int>("EstimationGroup")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
@@ -423,7 +355,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("EstimationId");
 
-                    b.ToTable("RelativeEstimates", (string)null);
+                    b.ToTable("RelativeEstimates");
                 });
 
             modelBuilder.Entity("Tasky.Shared.SprintGoal", b =>
@@ -436,9 +368,6 @@ namespace Tasky.Server.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ProductBacklogId")
                         .HasColumnType("int");
@@ -455,7 +384,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("SprintGoalId");
 
-                    b.ToTable("SprintGoalModels", (string)null);
+                    b.ToTable("SprintGoalModels");
                 });
 
             modelBuilder.Entity("Tasky.Shared.SprintModel", b =>
@@ -484,9 +413,6 @@ namespace Tasky.Server.Migrations
 
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("PercentOfTimeBuffer")
                         .HasColumnType("decimal(8,2)");
@@ -524,7 +450,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("SprintId");
 
-                    b.ToTable("Sprints", (string)null);
+                    b.ToTable("Sprints");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Status", b =>
@@ -537,9 +463,6 @@ namespace Tasky.Server.Migrations
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -561,7 +484,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("Statuses", (string)null);
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Tag", b =>
@@ -575,9 +498,6 @@ namespace Tasky.Server.Migrations
                     b.Property<int?>("Color")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
@@ -586,7 +506,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("TagId");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Tasky.Shared.TasksSprints", b =>
@@ -599,9 +519,6 @@ namespace Tasky.Server.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(1);
 
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
@@ -609,7 +526,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasIndex("SprintId");
 
-                    b.ToTable("TasksSprints", (string)null);
+                    b.ToTable("TasksSprints");
                 });
 
             modelBuilder.Entity("Tasky.Shared.User", b =>
@@ -637,7 +554,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Tasky.Shared.UserStory", b =>
@@ -651,9 +568,6 @@ namespace Tasky.Server.Migrations
                     b.Property<string>("As")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -671,7 +585,7 @@ namespace Tasky.Server.Migrations
 
                     b.HasKey("UserStoryId");
 
-                    b.ToTable("UserStories", (string)null);
+                    b.ToTable("UserStories");
                 });
 
             modelBuilder.Entity("MemberSprintModel", b =>
@@ -704,21 +618,6 @@ namespace Tasky.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OrganizationUser", b =>
-                {
-                    b.HasOne("Tasky.Shared.Organization", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizationsOrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Tasky.Shared.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
                 {
                     b.HasOne("Tasky.Shared.Epic", "Epic")
@@ -739,15 +638,6 @@ namespace Tasky.Server.Migrations
                     b.HasOne("Tasky.Shared.Project", null)
                         .WithMany("ProductGoalHistory")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Tasky.Shared.Project", b =>
-                {
-                    b.HasOne("Tasky.Shared.Organization", null)
-                        .WithMany("Projects")
-                        .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -775,11 +665,6 @@ namespace Tasky.Server.Migrations
             modelBuilder.Entity("Tasky.Shared.NoteModel", b =>
                 {
                     b.Navigation("TasksSprints");
-                });
-
-            modelBuilder.Entity("Tasky.Shared.Organization", b =>
-                {
-                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("Tasky.Shared.Project", b =>

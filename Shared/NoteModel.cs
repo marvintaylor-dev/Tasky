@@ -70,6 +70,12 @@ namespace Tasky.Shared
 
         public int? LinkTo { get; set; }
 
+        [ForeignKey(nameof(ProjectId))]
+        public int ProjectId { get; set; }
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
+
     }
 
 }

@@ -19,5 +19,12 @@ namespace Tasky.Shared
         public string As { get; set; } = string.Empty;
         public string Want { get; set; } = string.Empty;
         public string So { get; set; } = string.Empty;
+
+        [ForeignKey(nameof(ProjectId))]
+
+        public int ProjectId { get; set; }
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
     }
 }

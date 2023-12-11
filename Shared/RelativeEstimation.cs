@@ -12,7 +12,6 @@ namespace Tasky.Shared
     {
         [Key]
         public int EstimationId { get; set; }
-        public int OrganizationId { get; set; } 
         public string Value { get; set; } = string.Empty;
         //Estimation group is for creating different sets of estimation for different scenarios. Ex: T-shirt sizing, Fib numbers
         [ForeignKey("EstimationGroupId")]
@@ -21,5 +20,12 @@ namespace Tasky.Shared
         public int VisualHeight { get; set; } = 0;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public DateTime UpdatedOn { get; set;} = DateTime.Now;
+
+        [ForeignKey(nameof(ProjectId))]
+
+        public int ProjectId { get; set; }
+        [ForeignKey(nameof(OrganizationId))]
+
+        public Guid OrganizationId { get; set; }
     }
 }

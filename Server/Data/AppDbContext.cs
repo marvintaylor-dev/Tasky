@@ -19,8 +19,7 @@ namespace Tasky.Server.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<sectionNoteModel>().HasKey(x => new {x.TaskId, x.SectionId});
-            base.OnModelCreating(builder);
+           
 
             //builder.Entity<SprintModel>()
             //    .HasMany(x => x.AssignedTasks)
@@ -35,25 +34,21 @@ namespace Tasky.Server.Data
                 
         }
 
-        public DbSet<NoteModel> Tasks { get; set; }
-        public DbSet<Member> Members { get; set; }
-        public DbSet<Guest> Guests { get; set; }
-        public DbSet<Note> Notes { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Section> Sections { get; set; }
-
-        public DbSet<RelativeEstimation> RelativeEstimates { get; set; }
+        public DbSet<Epic> Epics { get; set; }
         public DbSet<EstimationGroup> EstimationGroups { get; set; }
-        public DbSet<UserStory> UserStories { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<Note> Notes { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<ProductGoal> ProductGoalModels { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<RelativeEstimation> RelativeEstimates { get; set; }
+        public DbSet<SprintGoal> SprintGoalModels { get; set; }
         public DbSet<SprintModel> Sprints { get; set; }
         public DbSet<Status> Statuses { get; set; }
-        public DbSet<sectionNoteModel> SectionNoteModels { get; set; }
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<ProductGoal> ProductGoalModels { get; set; }
-        public DbSet<SprintGoal> SprintGoalModels { get; set; }
-        public DbSet<OrganizationModel> Organizations { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<NoteModel> Tasks { get; set; }
         public DbSet<TasksSprints> TasksSprints { get; set; }
-        public DbSet<Epic> Epics { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserStory> UserStories { get; set; }
     }
 }
