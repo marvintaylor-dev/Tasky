@@ -790,14 +790,13 @@ max-width: 10rem;
     cursor: pointer;
 }
 /* /Components/UserStoryInputComponent.razor.rz.scp.css */
-.taskName[b-gm4el4d7en] {
-    width: 200px;
-}
 
-#taskInput[b-gm4el4d7en] {
+
+.user-story-input[b-gm4el4d7en] {
     padding: .2rem .5rem;
     scroll-behavior: smooth;
     min-height: fit-content;
+    border: 1px solid lightgray;
 }
 
 
