@@ -13,7 +13,7 @@ namespace Tasky.Shared
 {
     public class SprintModel
     {
-        [Key]
+        [Key] 
         public int SprintId { get; set; }
 
         //[ForeignKey("OrganizationId")]
