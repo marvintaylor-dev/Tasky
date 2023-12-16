@@ -11,17 +11,21 @@ namespace Tasky.Shared
     {
         [Key]
         public Guid OrganizationId { get; set; }
+
         public string OrganizationName { get; set; } = string.Empty;
 
         public string OrganizationDescription { get; set; } = string.Empty;
 
         public string OrganizationEmail { get; set; } = string.Empty; 
+
         public int OwnerId { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
         public DateTime LastUpdatedAt { get; set;} = DateTime.Now;
 
         public List<Project> Projects { get; set; }
+
         public List<User> Users { get; set; }
       // public List<Member> Members { get; set; }
     }
